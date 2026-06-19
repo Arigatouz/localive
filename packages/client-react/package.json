@@ -1,9 +1,9 @@
 {
   "name": "@localive/react",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "React integration for Localive — live in-context i18n editing",
   "license": "MIT",
-  "author": "Localive",
+  "author": "Ali Gamal <aga@luftborn.com> (https://github.com/Arigatouz)",
   "homepage": "https://localive.vercel.app/guides/react/",
   "bugs": "https://github.com/Arigatouz/localive/issues",
   "repository": {
@@ -47,7 +47,7 @@
   "peerDependencies": {
     "react": ">=18",
     "react-dom": ">=18",
-    "@localive/core": "^0.1.1"
+    "@localive/core": "^0.1.2"
   },
   "devDependencies": {
     "react": "^19.1.0",
@@ -57,7 +57,7 @@
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.0",
     "jsdom": "^25.0.0",
-    "@localive/core": "^0.1.1"
+    "@localive/core": "^0.1.2"
   },
   "nx": {
     "tags": [

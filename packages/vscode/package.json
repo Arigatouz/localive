@@ -2,10 +2,10 @@
   "name": "@localive/vscode",
   "displayName": "Localive",
   "description": "Live in-context i18n editing — hover translations, autocomplete keys, go-to-definition, diagnostics, and rename for React, Vue, Angular, and Svelte",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "license": "MIT",
   "publisher": "localive",
-  "author": "Localive",
+  "author": "Ali Gamal <aga@luftborn.com> (https://github.com/Arigatouz)",
   "homepage": "https://localive.vercel.app/vscode/",
   "bugs": "https://github.com/Arigatouz/localive/issues",
   "repository": {
@@ -98,12 +98,12 @@
     "package": "vsce package"
   },
   "dependencies": {
-    "@localive/core": "^0.1.1",
-    "@localive/cli": "^0.1.1"
+    "@localive/core": "^0.1.2",
+    "@localive/cli": "^0.1.2"
   },
   "devDependencies": {
-    "@localive/core": "^0.1.1",
-    "@localive/cli": "^0.1.1",
+    "@localive/core": "^0.1.2",
+    "@localive/cli": "^0.1.2",
     "@types/vscode": "^1.85.0",
     "@vscode/vsce": "^3.2.0",
     "esbuild": "^0.24.0",

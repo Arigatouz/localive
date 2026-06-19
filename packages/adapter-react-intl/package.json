@@ -1,9 +1,9 @@
 {
   "name": "@localive/adapter-react-intl",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "react-intl adapter for Localive — live in-context i18n editing",
   "license": "MIT",
-  "author": "Localive",
+  "author": "Ali Gamal <aga@luftborn.com> (https://github.com/Arigatouz)",
   "homepage": "https://localive.vercel.app/concepts/adapters/",
   "bugs": "https://github.com/Arigatouz/localive/issues",
   "repository": {
@@ -45,10 +45,10 @@
     "test:watch": "vitest"
   },
   "peerDependencies": {
-    "@localive/core": "^0.1.1"
+    "@localive/core": "^0.1.2"
   },
   "devDependencies": {
-    "@localive/core": "^0.1.1"
+    "@localive/core": "^0.1.2"
   },
   "nx": {
     "tags": [

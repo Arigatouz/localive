@@ -1,9 +1,9 @@
 {
   "name": "@localive/cli",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Command line tools for Localive translation workflows",
   "license": "MIT",
-  "author": "Localive",
+  "author": "Ali Gamal <aga@luftborn.com> (https://github.com/Arigatouz)",
   "homepage": "https://localive.vercel.app/cli/overview/",
   "bugs": "https://github.com/Arigatouz/localive/issues",
   "repository": {
@@ -48,10 +48,10 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@localive/core": "^0.1.1"
+    "@localive/core": "^0.1.2"
   },
   "devDependencies": {
-    "@localive/core": "^0.1.1"
+    "@localive/core": "^0.1.2"
   },
   "nx": {
     "tags": [
