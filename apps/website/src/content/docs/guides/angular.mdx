@@ -1,0 +1,88 @@
+---
+title: Angular
+description: Use Localive with Angular and Transloco or ngx-translate.
+---
+
+## Install
+
+```bash
+npm install @localive/angular @localive/adapter-transloco @ngneat/transloco
+```
+
+## Provide Localive in App Config
+
+```ts
+import { provideLocalive } from '@localive/angular';
+import { withTransloco } from '@localive/adapter-transloco';
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideLocalive({
+      adapter: withTransloco(translocoService),
+      locales: ['en', 'fr', 'de'],
+      defaultLocale: 'en',
+    }),
+  ],
+};
+```
+
+## Use the Overlay Component
+
+```html
+<live-editor-overlay />
+```
+
+Import `LiveEditorOverlayComponent` in your standalone component or NgModule:
+
+```ts
+import { LiveEditorOverlayComponent } from '@localive/angular';
+
+@Component({
+  imports: [LiveEditorOverlayComponent],
+  template: `
+    <live-editor-overlay />
+    <router-outlet />
+  `,
+})
+export class AppComponent {}
+```
+
+## Tag Elements with `data-i18n-key`
+
+```html
+<span [attr.data-i18n-key]="'nav.home'">{{ 'nav.home' | transloco }}</span>
+<span [attr.data-i18n-key]="'nav.about'">{{ 'nav.about' | transloco }}</span>
+```
+
+## Switch Locales
+
+```ts
+import { LocaliveInspectorService } from '@localive/angular';
+
+@Component({ ... })
+export class SomeComponent {
+  constructor(private localive: LocaliveInspectorService) {}
+
+  switchLocale(locale: string) {
+    this.localive.setLocale(locale);
+  }
+}
+```
+
+## ngx-translate Adapter
+
+If you use `ngx-translate` instead of Transloco:
+
+```bash
+npm install @localive/adapter-ngx-translate @ngx-translate/core
+```
+
+```ts
+import { withNgxTranslate } from '@localive/adapter-ngx-translate';
+
+provideLocalive({
+  adapter: withNgxTranslate(translateService),
+  locales: ['en', 'fr'],
+  defaultLocale: 'en',
+})
+```

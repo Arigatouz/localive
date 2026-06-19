@@ -1,0 +1,44 @@
+---
+title: Plugin Interface
+description: The I18nPlugin interface for extending Localive.
+---
+
+## I18nPlugin Interface
+
+```ts
+interface I18nPlugin {
+  name: string;
+  beforeSave?(entry: TranslationEntry): TranslationEntry | false;
+  afterSave?(entry: TranslationEntry, result: SaveResult): void;
+  onMissingKey?(key: string, locale: Locale): void;
+  suggestTranslation?(
+    key: string,
+    sourceText: string,
+    sourceLocale: Locale,
+    targetLocale: Locale,
+  ): Promise<string | null>;
+}
+```
+
+| Method | Description |
+|--------|-------------|
+| `beforeSave(entry)` | Called before a translation is saved. Return the entry (modified or unchanged) to proceed, or `false` to prevent the save. |
+| `afterSave(entry, result)` | Called after a successful save. Useful for logging or analytics. |
+| `onMissingKey(key, locale)` | Called when a missing translation key is encountered. |
+| `suggestTranslation(key, text, source, target)` | Called when a translation suggestion is requested. Return the translated string, or `null` if no suggestion is available. |
+
+## Example: Logging Plugin
+
+```ts
+const logger: I18nPlugin = {
+  name: 'logger',
+  afterSave(entry, result) {
+    console.log(`Saved ${entry.key} (${entry.locale}): ${entry.value}`);
+  },
+  onMissingKey(key, locale) {
+    console.warn(`Missing key: ${key} in ${locale}`);
+  },
+};
+
+localive.use(logger);
+```

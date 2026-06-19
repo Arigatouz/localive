@@ -1,21 +1,60 @@
 {
-  "name": "@org/source",
+  "name": "localive",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
   "private": true,
-  "dependencies": {},
+  "scripts": {
+    "build": "npx nx run-many -t build",
+    "test": "npx nx run-many -t test",
+    "lint": "npx nx run-many -t lint",
+    "test:core": "npx nx test core",
+    "test:affected": "npx nx affected -t test",
+    "check-bundle-sizes": "node tools/scripts/check-bundle-sizes.mjs",
+    "lint:all": "npx eslint packages/ apps/"
+  },
   "devDependencies": {
+    "@angular/common": "19.2.25",
+    "@angular/compiler": "19.2.25",
+    "@angular/core": "19.2.25",
+    "@angular/platform-browser": "19.2.25",
+    "@angular/platform-browser-dynamic": "19.2.25",
+    "@nx/eslint": "22.7.5",
+    "@nx/eslint-plugin": "^22.7.5",
     "@nx/js": "22.7.5",
+    "@nx/vite": "22.7.5",
+    "@nx/workspace": "22.7.5",
     "@swc-node/register": "1.11.1",
     "@swc/core": "1.15.8",
     "@swc/helpers": "0.5.18",
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@types/node": "^25.9.1",
+    "@types/react": "^19.2.16",
+    "@types/react-dom": "^19.2.3",
+    "@typescript-eslint/eslint-plugin": "^8.61.0",
+    "@typescript-eslint/parser": "^8.61.0",
+    "@vitest/coverage-v8": "^3.2.6",
+    "eslint": "^10.4.1",
+    "jsdom": "^25.0.1",
     "nx": "22.7.5",
     "prettier": "^3.8.1",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "rxjs": "^7.8.2",
     "tslib": "^2.3.0",
-    "typescript": "~5.9.2"
+    "typescript": "~5.8.3",
+    "vite": "^6.4.3",
+    "vite-plugin-dts": "^5.0.2",
+    "vitest": "^3.2.6",
+    "zone.js": "^0.16.2"
   },
   "workspaces": [
-    "packages/*"
-  ]
+    "packages/*",
+    "apps/*"
+  ],
+  "overrides": {
+    "@angular-devkit/build-angular": "19.2.25",
+    "@angular/cli": "19.2.25"
+  }
 }

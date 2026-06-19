@@ -1,106 +1,125 @@
-# New Nx Repository
+<div align="center">
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+# Localive
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is ready ✨.
+**Live, in-context i18n editing for React, Vue, Angular & Svelte.**
 
-[Learn more about this workspace setup and its capabilities](https://nx.dev/nx-api/js?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
-## Finish your Nx platform setup
+Click any text in your running app, edit the translation inline, and it saves straight back to your locale files.
 
-🚀 [Finish setting up your workspace](https://cloud.nx.app/connect/BFO8aKXxUv) to get faster builds with remote caching, distributed task execution, and self-healing CI. [Learn more about Nx Cloud](https://nx.dev/ci/intro/why-nx-cloud).
-## Generate a library
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+[![npm](https://img.shields.io/npm/v/@localive/core.svg)](https://www.npmjs.com/package/@localive/core)
 
-```sh
-npx nx g @nx/js:lib packages/pkg1 --publishable --importPath=@my-org/pkg1
-```
+[Documentation](https://localive.dev) · [Publishing guide](./RELEASE.md)
 
-## Run tasks
+</div>
 
-To build the library use:
+---
 
-```sh
-npx nx build pkg1
-```
+## Why Localive?
 
-To run any task with Nx use:
+Translating an app usually means hunting for a key, switching to a JSON file, editing it, and reloading to see the result. Localive collapses that loop: it overlays your running app so you can **click the text you want to change, type the new translation, and have it written back to the correct locale file** — no context switching, no guessing which key maps to which string.
 
-```sh
-npx nx <target> <project-name>
-```
+It works with the i18n library you already use, across the four major frameworks, and ships editor tooling (a CLI and a VS Code extension) for the rest of the workflow.
 
-These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
+## Supported stacks
 
-[More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+Pick your framework **client** + your i18n-library **adapter** + a build **plugin**:
 
-## Versioning and releasing
+| Framework | Client | i18n libraries (adapters) | Build plugin |
+|---|---|---|---|
+| React | `@localive/react` | i18next, react-intl | `@localive/vite` / `@localive/webpack` |
+| Vue | `@localive/vue` | vue-i18n | `@localive/vite` / `@localive/webpack` |
+| Angular | `@localive/angular` | Transloco, ngx-translate | `@localive/plugin-angular` |
+| Svelte | `@localive/svelte` | svelte-i18n | `@localive/vite` / `@localive/webpack` |
 
-To version and release the library use
-
-```
-npx nx release
-```
-
-Pass `--dry-run` to see what would happen without actually releasing the library.
-
-[Learn more about Nx release &raquo;](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Keep TypeScript project references up to date
-
-Nx automatically updates TypeScript [project references](https://www.typescriptlang.org/docs/handbook/project-references.html) in `tsconfig.json` files to ensure they remain accurate based on your project dependencies (`import` or `require` statements). This sync is automatically done when running tasks such as `build` or `typecheck`, which require updated references to function correctly.
-
-To manually trigger the process to sync the project graph dependencies information to the TypeScript project references, run the following command:
+## Quick start (React + i18next)
 
 ```sh
-npx nx sync
+npm install @localive/react @localive/adapter-i18next @localive/vite
 ```
 
-You can enforce that the TypeScript project references are always in the correct state when running in CI by adding a step to your CI job configuration that runs the following command:
+```ts
+// vite.config.ts
+import { localive } from '@localive/vite';
+export default defineConfig({
+  plugins: [react(), localive({ localeDir: 'src/locales', defaultLocale: 'en' })],
+});
+```
+
+```tsx
+// main.tsx
+import { LocaliveProvider } from '@localive/react';
+import { withI18next } from '@localive/adapter-i18next';
+import i18n from './i18n';
+
+<LocaliveProvider adapter={withI18next(i18n)} locales={['en', 'fr']} defaultLocale="en">
+  <App />
+</LocaliveProvider>
+```
+
+Run your dev server, open the app, and click any translated text to edit it live.
+Full per-framework guides (Vue, Angular, Svelte) are at **[localive.dev](https://localive.dev)**.
+
+## Packages
+
+All published under the [`@localive`](https://www.npmjs.com/org/localive) scope.
+
+**Core**
+- [`@localive/core`](https://www.npmjs.com/package/@localive/core) — framework-agnostic engine (zero runtime deps)
+
+**Clients** (framework overlay components)
+- [`@localive/react`](https://www.npmjs.com/package/@localive/react) · [`@localive/vue`](https://www.npmjs.com/package/@localive/vue) · [`@localive/angular`](https://www.npmjs.com/package/@localive/angular) · [`@localive/svelte`](https://www.npmjs.com/package/@localive/svelte)
+
+**Adapters** (bridge your i18n library)
+- [`@localive/adapter-i18next`](https://www.npmjs.com/package/@localive/adapter-i18next) · [`@localive/adapter-react-intl`](https://www.npmjs.com/package/@localive/adapter-react-intl) · [`@localive/adapter-vue-i18n`](https://www.npmjs.com/package/@localive/adapter-vue-i18n) · [`@localive/adapter-transloco`](https://www.npmjs.com/package/@localive/adapter-transloco) · [`@localive/adapter-ngx-translate`](https://www.npmjs.com/package/@localive/adapter-ngx-translate) · [`@localive/adapter-svelte-i18n`](https://www.npmjs.com/package/@localive/adapter-svelte-i18n)
+
+**Build plugins**
+- [`@localive/vite`](https://www.npmjs.com/package/@localive/vite) · [`@localive/webpack`](https://www.npmjs.com/package/@localive/webpack) · [`@localive/plugin-angular`](https://www.npmjs.com/package/@localive/plugin-angular)
+
+**Tooling**
+- [`@localive/cli`](https://www.npmjs.com/package/@localive/cli) — `localive` binary
+- **Localive for VS Code** — on the VS Code Marketplace
+
+## CLI
 
 ```sh
-npx nx sync:check
+npm install -g @localive/cli     # or: npx @localive/cli --help
 ```
 
-[Learn more about nx sync](https://nx.dev/reference/nx-commands#sync)
+| Command | What it does |
+|---|---|
+| `localive extract` | Scan source files and collect translation keys into a locale JSON |
+| `localive validate` | Report missing / extra / empty translations (exit code 1 on issues — CI-friendly) |
+| `localive sync` | Add missing keys from the default locale to all others |
+| `localive types` | Generate a TypeScript union type of all keys |
 
-## Nx Cloud
+## VS Code extension
 
-Nx Cloud ensures a [fast and scalable CI](https://nx.dev/ci/intro/why-nx-cloud?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) pipeline. It includes features such as:
+Hover to preview translations, autocomplete keys, go-to-definition into locale JSON, find references, missing-key diagnostics, and create/rename keys across all locales. Search **"Localive"** in the Extensions panel.
 
-- [Remote caching](https://nx.dev/ci/features/remote-cache?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task distribution across multiple machines](https://nx.dev/ci/features/distribute-task-execution?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Automated e2e test splitting](https://nx.dev/ci/features/split-e2e-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task flakiness detection and rerunning](https://nx.dev/ci/features/flaky-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+## Repository layout
 
-### Set up CI (non-Github Actions CI)
+This is an [Nx](https://nx.dev) monorepo using npm workspaces:
 
-**Note:** This is only required if your CI provider is not GitHub Actions.
+- `packages/*` — the published libraries, CLI, and VS Code extension.
+- `apps/*` — framework playgrounds, the end-to-end test app (`playground-e2e`), and the docs `website`. These are **demos and tests, not published** (`private: true`) — but they're part of the open-source repo.
 
-Use the following command to configure a CI workflow for your workspace:
+## Development
 
 ```sh
-npx nx g ci-workflow
+npm install --legacy-peer-deps                       # required: Angular zone.js peer conflict
+npx nx run-many -t build --outputStyle=static        # build all
+npx nx run-many -t test --outputStyle=static         # test all
+npx nx run-many -t typecheck --outputStyle=static    # typecheck all
+npm run lint:all                                     # lint (use this, not `npm run lint`)
+npx nx serve playground-react                        # run a demo app
+npx nx e2e playground-e2e                            # end-to-end tests
 ```
 
-[Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+## Releasing
 
-## Install Nx Console
+See **[RELEASE.md](./RELEASE.md)** for the step-by-step publishing guide (npm + VS Code Marketplace), including how the MIT license, `private` flag, and npm scope access relate.
 
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
+## License
 
-[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Useful links
-
-Learn more:
-
-- [Learn more about this workspace setup](https://nx.dev/nx-api/js?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-And join the Nx community:
-
-- [Discord](https://go.nx.dev/community)
-- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+[MIT](./LICENSE) © Localive

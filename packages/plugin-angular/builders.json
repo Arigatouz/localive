@@ -1,0 +1,10 @@
+{
+  "$schema": "./node_modules/@angular-devkit/architect/schema/builders-schema.json",
+  "builders": {
+    "dev-server": {
+      "type": "./dist/index.js",
+      "schema": "./dist/schema.d.ts",
+      "description": "Extended Angular CLI dev server with Localive live i18n editing support"
+    }
+  }
+}

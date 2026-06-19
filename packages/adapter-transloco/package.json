@@ -1,0 +1,55 @@
+{
+  "name": "@localive/adapter-transloco",
+  "version": "0.0.1",
+  "description": "Transloco adapter for Localive — live in-context i18n editing",
+  "license": "MIT",
+  "author": "Localive",
+  "homepage": "https://localive.dev",
+  "bugs": "https://github.com/localive/localive/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/localive/localive.git",
+    "directory": "packages/adapter-transloco"
+  },
+  "keywords": [
+    "i18n",
+    "transloco",
+    "angular",
+    "translation",
+    "localization",
+    "live-editing",
+    "localive"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": ["dist", "README.md"],
+  "scripts": {
+    "build": "vite build",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "peerDependencies": {
+    "@jsverse/transloco": ">=7.0.0",
+    "@localive/core": "*"
+  },
+  "devDependencies": {
+    "@jsverse/transloco": "^7.0.0",
+    "@localive/core": "*"
+  },
+  "nx": {
+    "tags": ["scope:adapter", "type:lib"]
+  }
+}

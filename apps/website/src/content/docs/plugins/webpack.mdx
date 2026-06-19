@@ -1,0 +1,32 @@
+---
+title: Webpack Plugin
+description: Use Localive with Webpack dev server.
+---
+
+## Install
+
+```bash
+npm install @localive/webpack
+```
+
+## Configuration
+
+Add `LocaliveWebpackPlugin` to your Webpack config:
+
+```js
+const { LocaliveWebpackPlugin } = require('@localive/webpack');
+
+module.exports = {
+  plugins: [
+    new LocaliveWebpackPlugin({
+      translationsPath: 'src/locales',
+      locales: ['en', 'fr', 'de'],
+      defaultLocale: 'en',
+    }),
+  ],
+};
+```
+
+## Options
+
+Same options as the Vite plugin. See [Vite Plugin](/plugins/vite) for the full options list.

@@ -1,0 +1,40 @@
+---
+import config from 'virtual:starlight/user-config';
+import CyberLogo from '../components/CyberLogo.astro';
+const { siteTitle, siteTitleHref } = Astro.locals.starlightRoute;
+---
+
+<a href={siteTitleHref} class="site-title sl-flex">
+  <CyberLogo />
+  <span class:list={{ 'sr-only': config.logo?.replacesTitle }} translate="no">
+    {siteTitle}
+  </span>
+</a>
+
+<style>
+  @layer starlight.core {
+    .site-title {
+      align-items: center;
+      gap: var(--sl-nav-gap);
+      font-size: var(--sl-text-h4);
+      font-weight: 600;
+      color: var(--sl-color-text-accent);
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .site-title span {
+      text-overflow: ellipsis;
+      overflow: visible;
+    }
+    .logo-svg {
+      height: calc(var(--sl-nav-height) - 2 * var(--sl-nav-pad-y) - 4px);
+      width: auto;
+      max-width: 100%;
+      flex-shrink: 0;
+    }
+    :global(html[data-theme="dark"] .logo-light),
+    :global(html[data-theme="light"] .logo-dark) {
+      display: none;
+    }
+  }
+</style>

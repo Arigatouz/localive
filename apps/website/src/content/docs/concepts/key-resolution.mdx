@@ -1,0 +1,43 @@
+---
+title: Key Resolution
+description: How Localive resolves translation keys from the DOM.
+---
+
+## Key Resolution Flow
+
+When a user clicks on a translatable element in the editor overlay:
+
+1. The `KeyResolver` receives the clicked DOM element.
+2. It first checks for `data-i18n-key` attribute on the element or its ancestors.
+3. If the adapter provides `getKeyFromElement()`, it calls that method.
+4. The resolved key is used to look up translations in the `I18nLiveStore`.
+
+## Key Format
+
+Translation keys use dot-notation for nested objects:
+
+```json
+{
+  "nav": {
+    "home": "Home",
+    "about": "About"
+  },
+  "card.welcome": "Welcome!"
+}
+```
+
+- `nav.home` resolves to `"Home"`
+- `card.welcome` resolves to `"Welcome!"`
+
+Both nested JSON and flat dot-notation keys are supported.
+
+## CLI Key Extraction
+
+The `localive extract` command finds keys in your source code using these patterns:
+
+| Pattern | Matches |
+|---------|---------|
+| `t('key')` | Generic `t()` calls (React, Vue, Svelte, i18next) |
+| `data-i18n-key="key"` | HTML attribute |
+| `[attr.data-i18n-key]="'key'"` | Angular attribute binding |
+| `v-localive-tag="'key'"` | Vue directive |

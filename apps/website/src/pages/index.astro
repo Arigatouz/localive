@@ -1,0 +1,270 @@
+---
+import '../styles/custom.css';
+import CyberLogo from '../components/CyberLogo.astro';
+---
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Localive - Live i18n editing</title>
+    <meta name="description" content="Edit translations live in your browser. Click any text, change the translation, see updates instantly." />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@400;500;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+    <script is:inline>
+      // Prevent FOUC — set theme before paint
+      (function() {
+        var stored = localStorage.getItem('starlight-theme');
+        var theme = stored || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+        document.documentElement.dataset.theme = theme;
+      })();
+    </script>
+  </head>
+  <body class="landing-page">
+    <button id="theme-toggle" aria-label="Toggle theme" title="Toggle theme">
+      <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+
+    <main>
+      <div class="top-bar"></div>
+
+      <a href="/" class="site-logo">
+        <CyberLogo />
+      </a>
+
+      <section class="hero">
+        <div class="glitch-wrap" data-text="Edit translations live, right in your app">
+          <h1>Edit translations live, right in your app</h1>
+        </div>
+        <span class="hero-trace"></span>
+        <p class="subtitle">
+          Click any text &bull; <em>Change the translation</em> &bull; See updates instantly
+        </p>
+        <div class="cta-buttons">
+          <a href="/get-started/" class="cta-primary">Get Started</a>
+          <a href="https://github.com/localive/localive" class="cta-secondary">View on GitHub</a>
+        </div>
+      </section>
+
+      <section class="video-placeholder">
+        <p><strong>Demo video placeholder</strong> - Record a browser demo showing live editing.</p>
+      </section>
+
+      <section>
+        <h2 class="section-heading">Works with your stack</h2>
+        <div class="stack-logos">
+          <span class="stack-badge" data-color="#61DAFB">React</span>
+          <span class="stack-badge" data-color="#42B883">Vue</span>
+          <span class="stack-badge" data-color="#DD0031">Angular</span>
+          <span class="stack-badge" data-color="#FF3E00">Svelte</span>
+        </div>
+        <div class="stack-logos">
+          <span class="stack-badge" data-color="#2496ED">i18next</span>
+          <span class="stack-badge" data-color="#42B883">vue-i18n</span>
+          <span class="stack-badge" data-color="#E23E6D">Transloco</span>
+          <span class="stack-badge" data-color="#E23E6D">ngx-translate</span>
+          <span class="stack-badge" data-color="#FF3E00">svelte-i18n</span>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="section-heading">Features</h2>
+        <div class="features">
+          <div class="feature-card">
+            <h3>Live Editing</h3>
+            <p>Click any text in your app and edit the translation directly. Changes appear instantly.</p>
+          </div>
+          <div class="feature-card">
+            <h3>Dev Server Plugin</h3>
+            <p>Works with Vite, Webpack, and Angular CLI. Saves edits back to locale JSON files.</p>
+          </div>
+          <div class="feature-card">
+            <h3>CLI Tools</h3>
+            <p>Extract keys, validate locales, sync missing translations, generate TypeScript types.</p>
+          </div>
+          <div class="feature-card">
+            <h3>VS Code Extension</h3>
+            <p>Hover to preview translations, autocomplete keys, go-to-definition, find references.</p>
+          </div>
+          <div class="feature-card">
+            <h3>Secure by Default</h3>
+            <p>All inputs validated. HTML injection prevented. Overlay runs only in development.</p>
+          </div>
+          <div class="feature-card">
+            <h3>Zero Config</h3>
+            <p>Drop in a provider, add an adapter, and you are done. No i18n rewrite required.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="demo" class="demo-section">
+        <h2 class="section-heading">Try It Live</h2>
+        <p class="demo-intro">Click any highlighted text to simulate editing a translation.</p>
+        <div class="demo-app">
+          <div class="demo-toolbar">
+            <span class="demo-locale-picker">
+              <button class="locale-btn active" data-locale="en">EN</button>
+              <button class="locale-btn" data-locale="fr">FR</button>
+              <button class="locale-btn" data-locale="de">DE</button>
+            </span>
+            <span class="demo-label">Localive Editor</span>
+          </div>
+          <div class="demo-content">
+            <nav class="demo-nav">
+              <span class="editable" data-key="nav.home">Home</span>
+              <span class="editable" data-key="nav.about">About</span>
+              <span class="editable" data-key="nav.contact">Contact</span>
+            </nav>
+            <h1 class="editable" data-key="hero.title">Welcome to Localive</h1>
+            <p class="editable" data-key="hero.subtitle">Edit translations live, right in your app.</p>
+          </div>
+        </div>
+        <div id="demo-editor" class="demo-editor" style="display:none">
+          <div class="demo-editor-header">
+            <span id="editor-key-label">key</span>
+            <button id="editor-close" title="Close">x</button>
+          </div>
+          <div class="demo-editor-body">
+            <label for="editor-input">Translation:</label>
+            <input type="text" id="editor-input" autocomplete="off" />
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="section-heading">Feature Comparison</h2>
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>Feature</th>
+              <th>Free / Dev</th>
+              <th>Pro</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Live in-context editing</td>
+              <td>Yes</td>
+              <td>Yes</td>
+            </tr>
+            <tr>
+              <td>CLI tools</td>
+              <td>Yes</td>
+              <td>Yes</td>
+            </tr>
+            <tr>
+              <td>VS Code Extension</td>
+              <td>Yes</td>
+              <td>Yes</td>
+            </tr>
+            <tr>
+              <td>AI suggestions</td>
+              <td>-</td>
+              <td>Yes</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section>
+        <h2 class="section-heading">Quick Start</h2>
+        <div class="quickstart">
+          <h3>1. Install</h3>
+          <p>npm install @localive/react @localive/adapter-i18next @localive/vite</p>
+          <h3>2. Wrap your app</h3>
+          <p>Import LocaliveProvider and withI18next, then wrap your app with LocaliveProvider. Pass in your i18n instance, locales, and defaultLocale.</p>
+          <h3>3. Add the Vite plugin</h3>
+          <p>Import localive from @localive/vite and add it to your Vite plugins array.</p>
+          <p class="quickstart-cta"><a href="/get-started/" class="cta-primary">Read the full guide</a></p>
+        </div>
+      </section>
+
+      <footer class="site-footer">
+        <p>Open source under MIT License.</p>
+        <div class="footer-trace">
+          <span class="footer-dot"></span>
+          <span>system_status: online</span>
+        </div>
+      </footer>
+    </main>
+    <script is:inline>
+      // Theme toggle — syncs with Starlight's localStorage key
+      (function () {
+        var toggle = document.getElementById('theme-toggle');
+        var key = 'starlight-theme';
+
+        function getTheme() {
+          var stored = localStorage.getItem(key);
+          if (stored === 'light' || stored === 'dark') return stored;
+          return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+        }
+
+        function applyTheme(theme) {
+          document.documentElement.dataset.theme = theme;
+        }
+
+        toggle.addEventListener('click', function () {
+          var current = document.documentElement.dataset.theme || 'dark';
+          var next = current === 'dark' ? 'light' : 'dark';
+          applyTheme(next);
+          localStorage.setItem(key, next);
+        });
+
+        applyTheme(getTheme());
+
+        // Demo logic
+        var t = {
+          en: { 'nav.home': 'Home', 'nav.about': 'About', 'nav.contact': 'Contact', 'hero.title': 'Welcome to Localive', 'hero.subtitle': 'Edit translations live, right in your app.' },
+          fr: { 'nav.home': 'Accueil', 'nav.about': 'A propos', 'nav.contact': 'Contact', 'hero.title': 'Bienvenue sur Localive', 'hero.subtitle': 'Modifiez les traductions en direct.' },
+          de: { 'nav.home': 'Startseite', 'nav.about': 'Uber uns', 'nav.contact': 'Kontakt', 'hero.title': 'Willkommen bei Localive', 'hero.subtitle': 'Bearbeiten Sie Ubersetzungen live.' }
+        };
+        var loc = 'en';
+        var active = null;
+        var btns = document.querySelectorAll('.locale-btn');
+        var els = document.querySelectorAll('.editable');
+        var ed = document.getElementById('demo-editor');
+        var lab = document.getElementById('editor-key-label');
+        var inp = document.getElementById('editor-input');
+        var cls = document.getElementById('editor-close');
+        function render() {
+          els.forEach(function (e) {
+            var k = e.dataset.key;
+            e.textContent = t[loc][k] || k;
+          });
+        }
+        btns.forEach(function (b) {
+          b.addEventListener('click', function () {
+            btns.forEach(function (x) { x.classList.remove('active'); });
+            b.classList.add('active');
+            loc = b.dataset.locale;
+            render();
+            if (active) { inp.value = t[loc][active.dataset.key] || ''; }
+          });
+        });
+        els.forEach(function (e) {
+          e.addEventListener('click', function () {
+            if (active) { active.classList.remove('active'); }
+            active = e;
+            active.classList.add('active');
+            lab.textContent = active.dataset.key;
+            inp.value = t[loc][active.dataset.key] || '';
+            ed.style.display = 'block';
+          });
+        });
+        inp.addEventListener('input', function () {
+          if (!active) { return; }
+          t[loc][active.dataset.key] = inp.value;
+          active.textContent = inp.value || active.dataset.key;
+        });
+        cls.addEventListener('click', function () {
+          ed.style.display = 'none';
+          if (active) { active.classList.remove('active'); active = null; }
+        });
+        render();
+      })();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,24 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "noEmit": true,
+    "jsx": "preserve"
+  },
+  "include": ["src"],
+  "references": [
+    {
+      "path": "../../packages/plugin-vite"
+    },
+    {
+      "path": "../../packages/adapter-vue-i18n"
+    },
+    {
+      "path": "../../packages/client-vue"
+    },
+    {
+      "path": "../../packages/core"
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+---
+title: Adapters
+description: How adapters connect Localive to your i18n library.
+---
+
+## What Is an Adapter?
+
+An **adapter** is a small object that tells Localive how to communicate with your i18n library. It provides three things:
+
+1. **`getLocale()`** — returns the currently active locale
+2. **`getTranslations(locale)`** — returns all translations for a locale
+3. **`onLocaleChange(callback)`** — subscribes to locale changes
+
+Optionally, `getKeyFromElement(element)` can be provided for auto-tagging support.
+
+## Available Adapters
+
+| Adapter | Package | For |
+|---------|---------|-----|
+| i18next | `@localive/adapter-i18next` | React + i18next |
+| react-intl | `@localive/adapter-react-intl` | React + react-intl |
+| vue-i18n | `@localive/adapter-vue-i18n` | Vue + vue-i18n |
+| Transloco | `@localive/adapter-transloco` | Angular + Transloco |
+| ngx-translate | `@localive/adapter-ngx-translate` | Angular + ngx-translate |
+| svelte-i18n | `@localive/adapter-svelte-i18n` | Svelte + svelte-i18n |
+
+## Creating a Custom Adapter
+
+Implement the `I18nAdapter` interface:
+
+```ts
+import type { I18nAdapter, Locale, TranslationDictionary } from '@localive/core';
+
+const myAdapter: I18nAdapter = {
+  name: 'my-i18n-lib',
+  getLocale: () => currentLocale,
+  getTranslations: (locale: Locale) => allTranslations[locale],
+  onLocaleChange: (callback) => {
+    // Subscribe to locale changes, return unsubscribe function
+    const handler = (newLocale) => callback(newLocale);
+    i18nLib.onLocaleChange(handler);
+    return () => i18nLib.offLocaleChange(handler);
+  },
+  destroy: () => {
+    // Optional cleanup
+  },
+};
+```
+
+Then pass it to `createLocalive`:
+
+```ts
+const localive = createLocalive({
+  adapter: myAdapter,
+  locales: ['en', 'fr'],
+  defaultLocale: 'en',
+});
+```

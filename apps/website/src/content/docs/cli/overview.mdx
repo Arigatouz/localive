@@ -1,0 +1,50 @@
+---
+title: CLI Overview
+description: The localive command-line tool for translation workflows.
+---
+
+## Install
+
+The CLI is included with `@localive/cli`:
+
+```bash
+npm install @localive/cli
+```
+
+Or run directly:
+
+```bash
+npx localive <command> [options]
+```
+
+## Commands
+
+| Command | Description |
+|---------|-------------|
+| `extract` | Extract translation keys from source files |
+| `validate` | Compare extracted keys against locale files |
+| `sync` | Add missing keys to locale files |
+| `types` | Generate TypeScript type declarations |
+
+## Global Options
+
+| Option | Description |
+|--------|-------------|
+| `--json` | Output structured JSON instead of human-readable text |
+| `--help` | Show help for any command |
+
+## Quick Example
+
+```bash
+# Extract keys from your source code
+localive extract --source src --json
+
+# Validate locale files against extracted keys
+localive validate --source src --locale-file src/locales/en.json
+
+# Sync missing keys into locale files
+localive sync --source src --locale-file src/locales/fr.json --source-locale en
+
+# Generate TypeScript types
+localive types --locale-file src/locales/en.json --out src/i18n.d.ts
+```

@@ -1,0 +1,25 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "target": "es2022",
+    "lib": ["es2022", "dom"],
+    "strict": true,
+    "skipLibCheck": true,
+    "types": ["svelte"]
+  },
+  "include": ["src/**/*.ts", "src/**/*.svelte"],
+  "exclude": ["node_modules", "dist"],
+  "references": [
+    {
+      "path": "../../packages/plugin-vite"
+    },
+    {
+      "path": "../../packages/client-svelte"
+    },
+    {
+      "path": "../../packages/core"
+    }
+  ]
+}

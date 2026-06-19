@@ -2,5 +2,60 @@
   "extends": "./tsconfig.base.json",
   "compileOnSave": false,
   "files": [],
-  "references": []
+  "references": [
+    {
+      "path": "./packages/adapter-ngx-translate"
+    },
+    {
+      "path": "./packages/adapter-svelte-i18n"
+    },
+    {
+      "path": "./packages/adapter-react-intl"
+    },
+    {
+      "path": "./packages/adapter-transloco"
+    },
+    {
+      "path": "./packages/adapter-vue-i18n"
+    },
+    {
+      "path": "./packages/adapter-i18next"
+    },
+    {
+      "path": "./packages/client-angular"
+    },
+    {
+      "path": "./packages/plugin-angular"
+    },
+    {
+      "path": "./packages/plugin-webpack"
+    },
+    {
+      "path": "./packages/client-svelte"
+    },
+    {
+      "path": "./apps/playground-svelte"
+    },
+    {
+      "path": "./packages/client-react"
+    },
+    {
+      "path": "./apps/playground-react"
+    },
+    {
+      "path": "./packages/plugin-vite"
+    },
+    {
+      "path": "./packages/cli"
+    },
+    {
+      "path": "./packages/client-vue"
+    },
+    {
+      "path": "./apps/playground-vue"
+    },
+    {
+      "path": "./packages/core"
+    }
+  ]
 }

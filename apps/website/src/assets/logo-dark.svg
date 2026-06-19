@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <!-- Hexagonal outline — asymmetric clip-button shape matching --clip-button -->
+  <!-- polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%) mapped to 100x100 -->
+  <path
+    d="M10 0 L100 0 L100 70 L90 100 L0 100 L0 30 Z"
+    stroke="#00f3ff"
+    stroke-width="2.5"
+    fill="none"
+    stroke-linejoin="round"
+    stroke-dasharray="420"
+    stroke-dashoffset="420"
+  >
+    <animate attributeName="stroke-dashoffset" from="420" to="0" dur="1.5s" fill="freeze" begin="0.3s" calcMode="spline" keySplines="0.4 0 0.2 1"/>
+  </path>
+
+  <!-- L glyph — angular geometric style -->
+  <path
+    d="M36 28 L36 72 L64 72"
+    stroke="#ffffff"
+    stroke-width="5"
+    fill="none"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    stroke-dasharray="80"
+    stroke-dashoffset="80"
+  >
+    <animate attributeName="stroke-dashoffset" from="80" to="0" dur="0.8s" fill="freeze" begin="1.5s" calcMode="spline" keySplines="0.4 0 0.2 1"/>
+  </path>
+
+  <!-- Magenta accent line — bottom edge highlight -->
+  <line x1="0" y1="100" x2="90" y2="100" stroke="#ff00ff" stroke-width="1.5" opacity="0">
+    <animate attributeName="opacity" from="0" to="0.6" dur="0.5s" fill="freeze" begin="2s"/>
+  </line>
+
+  <!-- Glitch flicker on hex outline -->
+  <path
+    d="M10 0 L100 0 L100 70 L90 100 L0 100 L0 30 Z"
+    stroke="#00f3ff"
+    stroke-width="2.5"
+    fill="none"
+    opacity="0"
+    stroke-linejoin="round"
+  >
+    <animate attributeName="opacity" values="0;0;0;0;0;0;0;0;0;0;0;0;0;0.7;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0" dur="8s" repeatCount="indefinite" begin="4s"/>
+  </path>
+
+  <!-- Node pulse circles at hex vertices -->
+  <!-- Top-left vertex (10, 0) mapped to stroke start at (10, 30) bottom-left of left edge -->
+  <circle cx="10" cy="30" r="2" fill="#00f3ff" opacity="0">
+    <animate attributeName="opacity" values="0;0.8;0" dur="2s" repeatCount="indefinite" begin="2.5s"/>
+    <animate attributeName="r" values="2;2.8;2" dur="2s" repeatCount="indefinite" begin="2.5s"/>
+  </circle>
+
+  <!-- Top-right vertex (100, 0) -->
+  <circle cx="100" cy="0" r="2" fill="#00f3ff" opacity="0">
+    <animate attributeName="opacity" values="0;0.8;0" dur="2s" repeatCount="indefinite" begin="3.5s"/>
+    <animate attributeName="r" values="2;2.8;2" dur="2s" repeatCount="indefinite" begin="3.5s"/>
+  </circle>
+
+  <!-- Bottom-right notch (90, 100) -->
+  <circle cx="90" cy="100" r="2" fill="#ff00ff" opacity="0">
+    <animate attributeName="opacity" values="0;0.8;0" dur="2.5s" repeatCount="indefinite" begin="4.5s"/>
+    <animate attributeName="r" values="2;2.8;2" dur="2.5s" repeatCount="indefinite" begin="4.5s"/>
+  </circle>
+</svg>

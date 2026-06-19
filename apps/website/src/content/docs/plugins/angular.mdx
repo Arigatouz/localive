@@ -1,0 +1,39 @@
+---
+title: Angular Builder
+description: Use Localive with Angular CLI dev server.
+---
+
+## Install
+
+```bash
+npm install @localive/plugin-angular
+```
+
+## Configuration
+
+Replace the default `browser` builder in your `angular.json`:
+
+```json
+{
+  "projects": {
+    "my-app": {
+      "architect": {
+        "build": {
+          "builder": "@localive/plugin-angular:dev-server",
+          "options": {
+            "translationsPath": "src/locales",
+            "locales": ["en", "fr", "de"],
+            "defaultLocale": "en"
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+The Angular builder wraps the standard dev-server build and intercepts translation update requests.
+
+## Options
+
+Same as the Vite plugin. See [Vite Plugin](/plugins/vite) for details.

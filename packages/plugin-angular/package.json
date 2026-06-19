@@ -1,0 +1,59 @@
+{
+  "name": "@localive/plugin-angular",
+  "version": "0.0.1",
+  "description": "Angular CLI dev-server builder for Localive — live in-context i18n editing",
+  "license": "MIT",
+  "sideEffects": false,
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./builders": {
+      "import": "./dist/builders.js",
+      "types": "./dist/builders.d.ts"
+    }
+  },
+  "files": ["dist", "README.md", "builders.json"],
+  "builders": "./builders.json",
+  "author": "Localive",
+  "homepage": "https://localive.dev",
+  "bugs": "https://github.com/localive/localive/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/localive/localive.git",
+    "directory": "packages/plugin-angular"
+  },
+  "keywords": [
+    "i18n",
+    "angular",
+    "angular-builder",
+    "translation",
+    "localization",
+    "live-editing",
+    "localive"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "vite build",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "peerDependencies": {
+    "@angular-devkit/build-angular": ">=17",
+    "@angular-devkit/architect": ">=0.1700"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "^19.0.0",
+    "@angular-devkit/architect": "^0.1900.0",
+    "@angular-devkit/core": "^19.0.0",
+    "@localive/core": "*",
+    "@localive/vite": "*"
+  },
+  "nx": {
+    "tags": ["scope:plugin", "type:lib"]
+  }
+}

@@ -1,0 +1,42 @@
+---
+title: validate
+description: Compare extracted keys against locale files and report missing or unused keys.
+---
+
+## Usage
+
+```bash
+localive validate [options]
+```
+
+## Options
+
+| Option | Default | Description |
+|--------|---------|-------------|
+| `--source <path>` | `src` | Source root directory |
+| `--locale-file <path>` | `src/locales/*.json` | Locale JSON file(s) |
+| `--json` | `false` | Output structured JSON |
+
+## Output
+
+Returns a `ValidateResult` with:
+
+- `extracted` — keys found in source code
+- `results` — per-locale validation result
+  - `locale` — locale code
+  - `missingKeys` — keys in source but not in locale file
+  - `unusedKeys` — keys in locale file but not in source code
+- `ok` — `true` if all locales have zero missing and zero unused keys
+
+## Examples
+
+```bash
+# Validate against default locale files
+localive validate
+
+# Validate against specific files
+localive validate --locale-file src/i18n/en.json --locale-file src/i18n/fr.json
+
+# CI: exit non-zero on validation errors
+localive validate --json || exit 1
+```

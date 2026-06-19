@@ -1,0 +1,79 @@
+---
+title: Vue
+description: Use Localive with Vue and vue-i18n.
+---
+
+## Install
+
+```bash
+npm install @localive/vue @localive/adapter-vue-i18n vue-i18n
+```
+
+## Create a Localive Instance
+
+```ts
+import { createLocalive } from '@localive/core';
+import { withVueI18n } from '@localive/adapter-vue-i18n';
+import i18n from './i18n';
+
+const localive = createLocalive({
+  adapter: withVueI18n(i18n),
+  locales: ['en', 'fr', 'de'],
+  defaultLocale: 'en',
+});
+```
+
+## Register the Plugin
+
+```ts
+import { LocalivePlugin } from '@localive/vue';
+
+const app = createApp(App);
+app.use(LocalivePlugin, { localive });
+app.mount('#app');
+```
+
+## Tag Elements with `v-localive-tag`
+
+Use the `v-localive-tag` directive in your templates:
+
+```vue
+<template>
+  <nav>
+    <a v-localive-tag="'nav.home'">{{ t('nav.home') }}</a>
+    <a v-localive-tag="'nav.about'">{{ t('nav.about') }}</a>
+  </nav>
+</template>
+```
+
+## Show the Editor Overlay
+
+```vue
+<template>
+  <div>
+    <RouterView />
+    <LiveEditorOverlay />
+  </div>
+</template>
+
+<script setup>
+import { LiveEditorOverlay } from '@localive/vue';
+</script>
+```
+
+## Switch Locales
+
+```vue
+<template>
+  <select v-model="locale">
+    <option value="en">English</option>
+    <option value="fr">Français</option>
+    <option value="de">Deutsch</option>
+  </select>
+</template>
+
+<script setup>
+import { useLocaliveEditor } from '@localive/vue';
+const { locale, setLocale } = useLocaliveEditor();
+</script>
+```

@@ -1,0 +1,34 @@
+---
+title: Auto-Tagging
+description: How Localive marks elements for in-context editing.
+---
+
+## What Is Auto-Tagging?
+
+Auto-tagging adds invisible markers to your translatable elements so the editor overlay can identify which key belongs to which text. When you click a tagged element, the overlay knows exactly which translation key to edit.
+
+## How It Works
+
+Each framework adapter can provide a `getKeyFromElement(element)` method that inspects a DOM element and returns its translation key. For frameworks where this isn't possible (or convenient), you tag elements explicitly:
+
+| Framework | Tagging Method |
+|-----------|---------------|
+| React | `useLocaliveTag('key')` hook — spreads props onto the element |
+| Vue | `v-localive-tag="'key'"` directive |
+| Angular | `[attr.data-i18n-key]="'key'"` attribute binding |
+| Svelte | `data-i18n-key="key"` attribute |
+
+## Manual Tagging Example (React)
+
+```tsx
+const tag = useLocaliveTag('nav.home');
+return <a {...tag}>{t('nav.home')}</a>;
+```
+
+This renders as:
+
+```html
+<a data-i18n-key="nav.home">Home</a>
+```
+
+The `LiveEditorOverlay` reads `data-i18n-key` and highlights matching elements when the editor is active.

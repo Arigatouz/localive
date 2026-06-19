@@ -1,0 +1,37 @@
+---
+title: sync
+description: Add missing translation keys to locale files.
+---
+
+## Usage
+
+```bash
+localive sync [options]
+```
+
+## Options
+
+| Option | Default | Description |
+|--------|---------|-------------|
+| `--source <path>` | `src` | Source root directory |
+| `--locale-file <path>` | `src/locales/*.json` | Target locale JSON file(s) |
+| `--source-locale <code>` | first locale | Locale to use as source for default values |
+| `--missing-value <empty\|source>` | `empty` | Strategy for missing values: `empty` fills with empty string, `source` copies from source locale |
+
+## Behavior
+
+- Extracts keys from source files
+- Compares against each locale file
+- Adds keys found in source but missing from locale file
+- Preserves existing key order and formatting
+- Does **not** remove unused keys (use `validate` to find them)
+
+## Examples
+
+```bash
+# Sync missing keys using empty values
+localive sync --locale-file src/locales/fr.json
+
+# Sync using English as source for default values
+localive sync --locale-file src/locales/fr.json --source-locale en --missing-value source
+```

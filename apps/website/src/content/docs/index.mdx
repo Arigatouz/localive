@@ -1,0 +1,33 @@
+---
+title: Localive Docs
+description: Live in-context i18n editing for React, Vue, Angular & Svelte.
+hero:
+  tagline: Edit translations live in your browser. Click any text, change the translation, see updates instantly.
+  actions:
+    - text: Get Started
+      link: /get-started/
+      icon: right-arrow
+    - text: React Guide
+      link: /guides/react/
+      icon: right-arrow
+      variant: minimal
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+## Quick links
+
+<CardGrid stagger>
+	<Card title="Framework Guides" icon="rocket">
+		Pick your framework: [React](/guides/react/), [Vue](/guides/vue/), [Angular](/guides/angular/), or [Svelte](/guides/svelte/).
+	</Card>
+	<Card title="CLI Reference" icon="terminal">
+		Extract, validate, sync, and generate types from the command line with [`localive extract`](/cli/overview/), [`validate`](/cli/validate/), [`sync`](/cli/sync/), and [`types`](/cli/types/).
+	</Card>
+	<Card title="VS Code Extension" icon="star">
+		Hover previews, autocomplete, go-to-definition, find references, and key management right in your editor. [Learn more →](/vscode/)
+	</Card>
+	<Card title="Plugin System" icon="puzzle">
+		Extend Localive with custom plugins for AI suggestions, translation memory, and validation. [Learn more →](/concepts/plugin-system/)
+	</Card>
+</CardGrid>

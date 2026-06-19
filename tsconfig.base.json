@@ -1,13 +1,14 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
     "composite": true,
     "declarationMap": true,
     "emitDeclarationOnly": true,
     "importHelpers": true,
     "isolatedModules": true,
-    "lib": ["es2022"],
-    "module": "nodenext",
-    "moduleResolution": "nodenext",
+    "lib": ["es2022", "dom", "dom.iterable"],
+    "module": "esnext",
+    "moduleResolution": "bundler",
     "noEmitOnError": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitOverride": true,
@@ -16,6 +17,25 @@
     "skipLibCheck": true,
     "strict": true,
     "target": "es2022",
-    "customConditions": ["@org/source"]
+    "verbatimModuleSyntax": true,
+    "paths": {
+      "@localive/core": ["packages/core/src/index.ts"],
+      "@localive/react": ["packages/client-react/src/index.ts"],
+      "@localive/vue": ["packages/client-vue/src/index.ts"],
+      "@localive/angular": ["packages/client-angular/src/index.ts"],
+      "@localive/svelte": ["packages/client-svelte/src/index.ts"],
+      "@localive/adapter-i18next": ["packages/adapter-i18next/src/index.ts"],
+      "@localive/adapter-react-intl": ["packages/adapter-react-intl/src/index.ts"],
+      "@localive/adapter-vue-i18n": ["packages/adapter-vue-i18n/src/index.ts"],
+      "@localive/adapter-transloco": ["packages/adapter-transloco/src/index.ts"],
+      "@localive/adapter-ngx-translate": ["packages/adapter-ngx-translate/src/index.ts"],
+      "@localive/adapter-svelte-i18n": ["packages/adapter-svelte-i18n/src/index.ts"],
+      "@localive/vite": ["packages/plugin-vite/src/index.ts"],
+      "@localive/webpack": ["packages/plugin-webpack/src/index.ts"],
+      "@localive/plugin-angular": ["packages/plugin-angular/src/index.ts"],
+      "@localive/cli": ["packages/cli/src/index.ts"],
+      "@localive/vscode": ["packages/vscode/src/index.ts"],
+      "@localive/ai-openai": ["packages/ai-openai/src/index.ts"]
+    }
   }
 }

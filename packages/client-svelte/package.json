@@ -1,0 +1,60 @@
+{
+  "name": "@localive/svelte",
+  "version": "0.0.1",
+  "description": "Svelte 5 integration for Localive — live in-context i18n editing",
+  "license": "MIT",
+  "author": "Localive",
+  "homepage": "https://localive.dev",
+  "bugs": "https://github.com/localive/localive/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/localive/localive.git",
+    "directory": "packages/client-svelte"
+  },
+  "keywords": [
+    "i18n",
+    "svelte",
+    "translation",
+    "localization",
+    "live-editing",
+    "localive",
+    "developer-tools"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "svelte": "./dist/index.js",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "svelte": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": ["dist", "README.md"],
+  "scripts": {
+    "build": "vite build",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "peerDependencies": {
+    "@localive/core": "*",
+    "svelte": ">=5.0.0"
+  },
+  "devDependencies": {
+    "@localive/core": "*",
+    "@sveltejs/vite-plugin-svelte": "^5.0.0",
+    "@testing-library/svelte": "^5.2.0",
+    "jsdom": "^25.0.1",
+    "svelte": "^5.0.0"
+  },
+  "nx": {
+    "tags": ["scope:client:svelte", "type:lib"]
+  }
+}

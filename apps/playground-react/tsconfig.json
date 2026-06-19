@@ -1,0 +1,24 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "noEmit": true
+  },
+  "include": ["src"],
+  "references": [
+    {
+      "path": "../../packages/plugin-vite"
+    },
+    {
+      "path": "../../packages/adapter-i18next"
+    },
+    {
+      "path": "../../packages/client-react"
+    },
+    {
+      "path": "../../packages/core"
+    }
+  ]
+}

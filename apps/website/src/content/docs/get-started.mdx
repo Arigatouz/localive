@@ -1,0 +1,230 @@
+---
+title: Getting Started
+description: Install Localive and start editing translations live in your app.
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+Localive is a live in-context i18n editing toolkit. Click any text in your app, change the translation, and see updates instantly.
+
+## Install
+
+<Tabs syncKey="framework">
+  <TabItem label="React" icon="react">
+
+```bash
+npm install @localive/react @localive/adapter-i18next @localive/vite
+```
+
+  </TabItem>
+  <TabItem label="Vue" icon="vue">
+
+```bash
+npm install @localive/vue @localive/adapter-vue-i18n @localive/vite
+```
+
+  </TabItem>
+  <TabItem label="Angular" icon="angular">
+
+```bash
+npm install @localive/angular @localive/adapter-transloco @localive/plugin-angular
+```
+
+  </TabItem>
+  <TabItem label="Svelte" icon="svelte">
+
+```bash
+npm install @localive/svelte @localive/adapter-svelte-i18n @localive/vite
+```
+
+  </TabItem>
+</Tabs>
+
+## Set Up Your App
+
+<Tabs syncKey="framework">
+  <TabItem label="React" icon="react">
+
+Wrap your app with `LocaliveProvider` and the i18next adapter:
+
+```tsx
+import { createLocalive } from '@localive/core';
+import { LocaliveProvider, useLocaliveEditor } from '@localive/react';
+import { withI18next } from '@localive/adapter-i18next';
+import i18n from './i18n';
+
+const localive = createLocalive({
+  adapter: withI18next(i18n),
+  locales: ['en', 'fr', 'de'],
+  defaultLocale: 'en',
+});
+
+function App() {
+  return (
+    <LocaliveProvider localive={localive}>
+      <MyApp />
+    </LocaliveProvider>
+  );
+}
+```
+
+Add `useLocaliveTag` to tag elements for in-context editing:
+
+```tsx
+import { useLocaliveTag } from '@localive/react';
+
+function Nav() {
+  const homeTag = useLocaliveTag('nav.home');
+  return <span {...homeTag}>{t('nav.home')}</span>;
+}
+```
+
+  </TabItem>
+  <TabItem label="Vue" icon="vue">
+
+Wrap your app with the Vue plugin and adapter:
+
+```ts
+import { createLocalive } from '@localive/core';
+import { LocalivePlugin } from '@localive/vue';
+import { withVueI18n } from '@localive/adapter-vue-i18n';
+import i18n from './i18n';
+
+const localive = createLocalive({
+  adapter: withVueI18n(i18n),
+  locales: ['en', 'fr', 'de'],
+  defaultLocale: 'en',
+});
+
+app.use(LocalivePlugin, { localive });
+```
+
+Use `v-localive-tag` directive in templates:
+
+```vue
+<template>
+  <span v-localive-tag="'nav.home'">{{ t('nav.home') }}</span>
+</template>
+```
+
+  </TabItem>
+  <TabItem label="Angular" icon="angular">
+
+Provide Localive in your app config and add the Transloco adapter:
+
+```ts
+import { provideLocalive } from '@localive/angular';
+import { withTransloco } from '@localive/adapter-transloco';
+import { TRANSLOCO_CONFIG } from '@ngneat/transloco';
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideLocalive({
+      adapter: withTransloco(translocoService),
+      locales: ['en', 'fr', 'de'],
+      defaultLocale: 'en',
+    }),
+  ],
+};
+```
+
+Add `LiveEditorOverlayComponent` and use `data-i18n-key` in templates:
+
+```html
+<live-editor-overlay />
+<span [attr.data-i18n-key]="'nav.home'">{{ 'nav.home' | transloco }}</span>
+```
+
+  </TabItem>
+  <TabItem label="Svelte" icon="svelte">
+
+Create a Localive instance and pass it to your app:
+
+```ts
+import { createLocalive } from '@localive/core';
+import { withSvelteI18n } from '@localive/adapter-svelte-i18n';
+import { _, locale } from './i18n';
+
+const localive = createLocalive({
+  adapter: withSvelteI18n({ _, locale }),
+  locales: ['en', 'fr', 'de'],
+  defaultLocale: 'en',
+});
+```
+
+Use `data-i18n-key` in your Svelte templates:
+
+```svelte
+<span data-i18n-key="nav.home">{$_('nav.home')}</span>
+<LiveEditorOverlay {localive} />
+```
+
+  </TabItem>
+</Tabs>
+
+## Add the Dev Server Plugin
+
+<Tabs syncKey="bundler">
+  <TabItem label="Vite">
+
+```ts
+// vite.config.ts
+import { defineConfig } from 'vite';
+import { localive } from '@localive/vite';
+
+export default defineConfig({
+  plugins: [
+    localive({
+      translationsPath: 'src/locales',
+      locales: ['en', 'fr', 'de'],
+      defaultLocale: 'en',
+    }),
+  ],
+});
+```
+
+  </TabItem>
+  <TabItem label="Webpack">
+
+```ts
+// webpack.config.js
+const { LocaliveWebpackPlugin } = require('@localive/webpack');
+
+module.exports = {
+  plugins: [
+    new LocaliveWebpackPlugin({
+      translationsPath: 'src/locales',
+      locales: ['en', 'fr', 'de'],
+      defaultLocale: 'en',
+    }),
+  ],
+};
+```
+
+  </TabItem>
+  <TabItem label="Angular">
+
+```json
+// angular.json — add to your build options
+{
+  "builder": "@localive/plugin-angular:dev-server",
+  "options": {
+    "translationsPath": "src/locales",
+    "locales": ["en", "fr", "de"],
+    "defaultLocale": "en"
+  }
+}
+```
+
+  </TabItem>
+</Tabs>
+
+## Open the Editor
+
+Start your dev server and click the **"Open Editor"** button that appears in the bottom corner of your app. Any text tagged with a translation key becomes clickable — edit it and your locale JSON files update instantly.
+
+## Next Steps
+
+- [CLI Tools](/cli/overview) — extract, validate, sync, and generate types
+- [VS Code Extension](/vscode) — hover, autocomplete, go-to-definition
+- [Core Concepts](/concepts/adapters) — how adapters and auto-tagging work

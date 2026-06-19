@@ -1,0 +1,16 @@
+{
+  "name": "playground-e2e",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "e2e": "playwright test",
+    "test": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.52.0"
+  },
+  "nx": {
+    "tags": ["scope:e2e", "type:app"]
+  }
+}

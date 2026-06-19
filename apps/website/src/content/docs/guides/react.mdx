@@ -1,0 +1,114 @@
+---
+title: React
+description: Use Localive with React and i18next.
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+## Install
+
+```bash
+npm install @localive/react @localive/adapter-i18next i18next react-i18next
+```
+
+## Create a Localive Instance
+
+```tsx
+import { createLocalive } from '@localive/core';
+import { withI18next } from '@localive/adapter-i18next';
+import i18n from './i18n';
+
+const localive = createLocalive({
+  adapter: withI18next(i18n),
+  locales: ['en', 'fr', 'de'],
+  defaultLocale: 'en',
+});
+```
+
+## Wrap Your App
+
+```tsx
+import { LocaliveProvider } from '@localive/react';
+
+function App() {
+  return (
+    <LocaliveProvider localive={localive}>
+      <MyApp />
+    </LocaliveProvider>
+  );
+}
+```
+
+## Tag Elements for Editing
+
+Use `useLocaliveTag` to make any element clickable in the overlay:
+
+```tsx
+import { useLocaliveTag } from '@localive/react';
+
+function Nav() {
+  const homeTag = useLocaliveTag('nav.home');
+  const aboutTag = useLocaliveTag('nav.about');
+
+  return (
+    <nav>
+      <a {...homeTag}>{t('nav.home')}</a>
+      <a {...aboutTag}>{t('nav.about')}</a>
+    </nav>
+  );
+}
+```
+
+## Show the Editor Overlay
+
+Import and render the overlay component anywhere inside your `LocaliveProvider`:
+
+```tsx
+import { LiveEditorOverlay } from '@localive/react';
+
+function Layout({ children }) {
+  return (
+    <div>
+      {children}
+      <LiveEditorOverlay />
+    </div>
+  );
+}
+```
+
+## Switch Locales
+
+```tsx
+import { useLocaliveEditor } from '@localive/react';
+
+function LocaleSwitcher() {
+  const { locale, setLocale } = useLocaliveEditor();
+
+  return (
+    <select value={locale} onChange={(e) => setLocale(e.target.value)}>
+      <option value="en">English</option>
+      <option value="fr">Français</option>
+      <option value="de">Deutsch</option>
+    </select>
+  );
+}
+```
+
+## react-intl Adapter
+
+If you use `react-intl` instead of `i18next`:
+
+```bash
+npm install @localive/adapter-react-intl react-intl
+```
+
+```tsx
+import { withReactIntl } from '@localive/adapter-react-intl';
+import { IntlProvider } from 'react-intl';
+
+const localive = createLocalive({
+  adapter: withReactIntl(intl),
+  locales: ['en', 'fr'],
+  defaultLocale: 'en',
+});
+```

@@ -1,0 +1,118 @@
+{
+  "name": "@localive/vscode",
+  "displayName": "Localive",
+  "description": "Live in-context i18n editing — hover translations, autocomplete keys, go-to-definition, diagnostics, and rename for React, Vue, Angular, and Svelte",
+  "version": "0.0.1",
+  "license": "MIT",
+  "publisher": "localive",
+  "author": "Localive",
+  "homepage": "https://localive.dev",
+  "bugs": "https://github.com/localive/localive/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/localive/localive.git",
+    "directory": "packages/vscode"
+  },
+  "keywords": [
+    "i18n",
+    "translation",
+    "localization",
+    "vscode-extension",
+    "localive"
+  ],
+  "type": "commonjs",
+  "main": "./dist/extension.js",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onLanguage:typescript",
+    "onLanguage:typescriptreact",
+    "onLanguage:javascript",
+    "onLanguage:javascriptreact",
+    "onLanguage:vue",
+    "onLanguage:svelte",
+    "onLanguage:html",
+    "onCommand:localive.createKey",
+    "onCommand:localive.renameKey"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "localive.createKey",
+        "title": "Localive: Create Translation Key"
+      },
+      {
+        "command": "localive.renameKey",
+        "title": "Localive: Rename Translation Key"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "when": "editorHasSelection",
+          "command": "localive.createKey",
+          "group": "localive"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Localive",
+      "properties": {
+        "localive.localePaths": {
+          "type": "array",
+          "default": [
+            "src/i18n/**/*.json",
+            "src/locales/**/*.json",
+            "public/locales/**/*.json"
+          ],
+          "description": "Glob patterns for locale JSON files (relative to workspace root)"
+        },
+        "localive.defaultLocale": {
+          "type": "string",
+          "default": "en",
+          "description": "Default/source locale code"
+        },
+        "localive.sourcePaths": {
+          "type": "array",
+          "default": [
+            "src/**/*.{ts,tsx,js,jsx,vue,svelte,html}"
+          ],
+          "description": "Glob patterns for source files to scan for translation key usage"
+        }
+      }
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "node esbuild.js",
+    "watch": "node esbuild.js --watch",
+    "vscode:prepublish": "node esbuild.js --minify",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "package": "vsce package"
+  },
+  "dependencies": {
+    "@localive/core": "*",
+    "@localive/cli": "*"
+  },
+  "devDependencies": {
+    "@localive/core": "*",
+    "@localive/cli": "*",
+    "@types/vscode": "^1.85.0",
+    "@vscode/vsce": "^3.2.0",
+    "esbuild": "^0.24.0",
+    "vitest": "^3.2.6"
+  },
+  "nx": {
+    "tags": [
+      "scope:vscode",
+      "type:app"
+    ]
+  }
+}

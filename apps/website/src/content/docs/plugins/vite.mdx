@@ -1,0 +1,54 @@
+---
+title: Vite Plugin
+description: Configure the Localive Vite dev-server plugin for hot-swapping translations.
+---
+
+## Install
+
+```bash
+npm install @localive/vite
+```
+
+## Configuration
+
+Add `localive` to your Vite config:
+
+```ts
+import { defineConfig } from 'vite';
+import { localive } from '@localive/vite';
+
+export default defineConfig({
+  plugins: [
+    localive({
+      translationsPath: 'src/locales',
+      locales: ['en', 'fr', 'de'],
+      defaultLocale: 'en',
+      endpoint: '/__localive-update',
+      ws: true,
+    }),
+  ],
+});
+```
+
+## Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `translationsPath` | `string` | `'src/locales'` | Root directory for translation JSON files |
+| `searchRoots` | `string[]` | `[]` | Additional directories to scan for translations |
+| `locales` | `string[]` | required | Supported locale codes |
+| `defaultLocale` | `string` | first in `locales` | Default/source locale |
+| `endpoint` | `string` | `'/__localive-update'` | API endpoint path |
+| `ws` | `boolean` | `false` | Enable WebSocket for multi-tab sync |
+| `wsPort` | `number` | auto | WebSocket port |
+
+## How It Works
+
+1. The plugin scans your `translationsPath` for JSON locale files at startup.
+2. When you edit a translation in the overlay, it sends a POST to the `endpoint`.
+3. The server updates the locale file on disk, preserving formatting and key order.
+4. The browser receives the update and refreshes the displayed translation instantly.
+
+## Multi-Tab Sync
+
+When `ws` is enabled, all open tabs receive live updates when any tab edits a translation.

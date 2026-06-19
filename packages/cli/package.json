@@ -1,0 +1,56 @@
+{
+  "name": "@localive/cli",
+  "version": "0.0.1",
+  "description": "Command line tools for Localive translation workflows",
+  "license": "MIT",
+  "author": "Localive",
+  "homepage": "https://localive.dev",
+  "bugs": "https://github.com/localive/localive/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/localive/localive.git",
+    "directory": "packages/cli"
+  },
+  "keywords": [
+    "i18n",
+    "cli",
+    "translation",
+    "localization",
+    "extract",
+    "localive",
+    "developer-tools"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "localive": "./dist/index.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": ["dist", "README.md"],
+  "scripts": {
+    "build": "vite build",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@localive/core": "*"
+  },
+  "devDependencies": {
+    "@localive/core": "*"
+  },
+  "nx": {
+    "tags": ["scope:cli", "type:lib"]
+  }
+}

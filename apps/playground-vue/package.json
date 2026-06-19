@@ -1,0 +1,39 @@
+{
+  "name": "playground-vue",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@localive/core": "*",
+    "@localive/vue": "*",
+    "@localive/adapter-vue-i18n": "*",
+    "@localive/vite": "*",
+    "vue": "^3.5.0",
+    "vue-i18n": "^10.0.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.0",
+    "@vue/language-core": "^2.2.0",
+    "typescript": "~5.9.2",
+    "vite": "^6.4.3"
+  },
+  "nx": {
+    "tags": ["scope:app", "type:app"],
+    "targets": {
+      "typecheck": {
+        "executor": "nx:run-commands",
+        "dependsOn": ["^typecheck"],
+        "options": {
+          "cwd": "apps/playground-vue",
+          "command": "tsc --project tsconfig.json --noEmit"
+        },
+        "outputs": []
+      }
+    }
+  }
+}

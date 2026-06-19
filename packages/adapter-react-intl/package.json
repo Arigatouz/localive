@@ -1,0 +1,53 @@
+{
+  "name": "@localive/adapter-react-intl",
+  "version": "0.0.1",
+  "description": "react-intl adapter for Localive — live in-context i18n editing",
+  "license": "MIT",
+  "author": "Localive",
+  "homepage": "https://localive.dev",
+  "bugs": "https://github.com/localive/localive/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/localive/localive.git",
+    "directory": "packages/adapter-react-intl"
+  },
+  "keywords": [
+    "i18n",
+    "react-intl",
+    "react",
+    "translation",
+    "localization",
+    "live-editing",
+    "localive"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": ["dist", "README.md"],
+  "scripts": {
+    "build": "vite build",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "peerDependencies": {
+    "@localive/core": "*"
+  },
+  "devDependencies": {
+    "@localive/core": "*"
+  },
+  "nx": {
+    "tags": ["scope:adapter", "type:lib"]
+  }
+}

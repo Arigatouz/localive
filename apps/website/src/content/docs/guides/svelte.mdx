@@ -1,0 +1,60 @@
+---
+title: Svelte
+description: Use Localive with Svelte and svelte-i18n.
+---
+
+## Install
+
+```bash
+npm install @localive/svelte @localive/adapter-svelte-i18n svelte-i18n
+```
+
+## Create a Localive Instance
+
+```ts
+import { createLocalive } from '@localive/core';
+import { withSvelteI18n } from '@localive/adapter-svelte-i18n';
+import { _, locale } from './i18n';
+
+const localive = createLocalive({
+  adapter: withSvelteI18n({ _, locale }),
+  locales: ['en', 'fr', 'de'],
+  defaultLocale: 'en',
+});
+```
+
+## Use in Your App
+
+```svelte
+<script>
+  import { LiveEditorOverlay } from '@localive/svelte';
+  import { localiveState } from './localive-instance';
+</script>
+
+<LiveEditorOverlay localive={localive} />
+```
+
+## Tag Elements with `data-i18n-key`
+
+```svelte
+<span data-i18n-key="nav.home">{$_('nav.home')}</span>
+<span data-i18n-key="nav.about">{$_('nav.about')}</span>
+```
+
+## Switch Locales
+
+```svelte
+<script>
+  import { localiveState } from './localive-instance';
+
+  function switchLocale(locale) {
+    $localiveState.locale = locale;
+  }
+</script>
+
+<select on:change={(e) => switchLocale(e.target.value)}>
+  <option value="en">English</option>
+  <option value="fr">Français</option>
+  <option value="de">Deutsch</option>
+</select>
+```

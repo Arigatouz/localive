@@ -1,0 +1,4 @@
+{
+  "errors.brokenIcu": "You have {count, plural, =1 {one item} items}.",
+  "common.mismatched": "Hello {{name}}"
+}

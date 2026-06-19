@@ -1,0 +1,46 @@
+---
+title: Adapter Interface
+description: The I18nAdapter interface that connects Localive to your i18n library.
+---
+
+## I18nAdapter Interface
+
+```ts
+interface I18nAdapter {
+  name: string;
+  getLocale(): Locale;
+  getTranslations(locale: Locale): TranslationDictionary;
+  onLocaleChange(callback: (locale: Locale) => void): () => void;
+  getKeyFromElement?(element: HTMLElement): string | null;
+  destroy?(): void;
+}
+```
+
+| Property/Method | Required | Description |
+|-----------------|----------|-------------|
+| `name` | ✅ | Unique adapter identifier |
+| `getLocale()` | ✅ | Returns the currently active locale |
+| `getTranslations(locale)` | ✅ | Returns the full translation dictionary for a locale |
+| `onLocaleChange(cb)` | ✅ | Subscribes to locale changes. Returns unsubscribe function |
+| `getKeyFromElement(el)` | ❌ | Extract the i18n key from a DOM element (for auto-tagging) |
+| `destroy()` | ❌ | Clean up any listeners or observers |
+
+## TranslationDictionary
+
+```ts
+type TranslationDictionary = Record<string, string | TranslationValue>;
+type TranslationValue = string | Record<string, string>;
+```
+
+Supports both flat and nested structures:
+
+```json
+{
+  "nav.home": "Home",
+  "card.welcome": "Welcome!",
+  "app": {
+    "title": "My App",
+    "subtitle": "Edit translations live"
+  }
+}
+```

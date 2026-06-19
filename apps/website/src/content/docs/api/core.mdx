@@ -1,0 +1,56 @@
+---
+title: Core API
+description: The @localive/core package — framework-agnostic live i18n editing engine.
+---
+
+## Installation
+
+```bash
+npm install @localive/core
+```
+
+## Creating a Localive Instance
+
+```ts
+import { createLocalive } from '@localive/core';
+import type { I18nLiveConfig, I18nAdapter } from '@localive/core';
+
+const config: I18nLiveConfig = {
+  translationsPath: 'src/locales',
+  locales: ['en', 'fr', 'de'],
+  defaultLocale: 'en',
+  adapter: myAdapter,
+};
+
+const localive = createLocalive(config);
+```
+
+## I18nLiveConfig
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| `translationsPath` | `string` | ✅ | Root directory for translation files |
+| `locales` | `string[]` | ✅ | Supported locale codes |
+| `defaultLocale` | `string` | ✅ | Default/source locale |
+| `adapter` | `I18nAdapter` | ✅ | Framework adapter instance |
+| `plugins` | `I18nPlugin[]` | ❌ | Optional plugins |
+| `searchRoots` | `string[]` | ❌ | Additional directories to scan |
+| `wsPort` | `number` | ❌ | WebSocket port for multi-tab sync |
+| `activeByDefault` | `boolean` | ❌ | Start editor in active state |
+
+## I18nLiveInstance
+
+The instance returned by `createLocalive`:
+
+| Method | Description |
+|--------|-------------|
+| `store` | The reactive `I18nLiveStore` |
+| `activate()` | Activate the editor overlay |
+| `deactivate()` | Deactivate the editor overlay |
+| `isActive()` | Check if editor is active |
+| `resolveKey(element)` | Get translation key from a DOM element |
+| `getTranslation(key, locale)` | Get a single translation value |
+| `getTranslations(locale)` | Get full dictionary for a locale |
+| `saveTranslation(entry)` | Save a translation (sends to dev server) |
+| `use(plugin)` | Register a plugin |
+| `destroy()` | Clean up listeners |

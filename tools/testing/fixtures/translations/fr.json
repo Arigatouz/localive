@@ -1,0 +1,17 @@
+{
+  "common.greeting": "Bonjour",
+  "common.farewell": "Au revoir",
+  "common.ok": "D'accord",
+  "common.cancel": "Annuler",
+  "home.title": "Bienvenue",
+  "home.description": "Ceci est la page d'accueil",
+  "home.subtitle": "Content de vous voir, {{name}} !",
+  "nav.dashboard": "Tableau de bord",
+  "nav.settings": "Paramètres",
+  "nav.profile": "Profil",
+  "users.title": "Utilisateurs",
+  "users.count": "{{count}} utilisateur en ligne",
+  "users.count_plural": "{{count}} utilisateurs en ligne",
+  "errors.notFound": "Page non trouvée",
+  "errors.serverError": "Erreur serveur"
+}

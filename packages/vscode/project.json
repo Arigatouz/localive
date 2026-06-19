@@ -1,0 +1,26 @@
+{
+  "name": "@localive/vscode",
+  "$schema": "https://json.schema.nx.org/nx-schema.json",
+  "targets": {
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/vscode",
+        "command": "tsc --noEmit"
+      }
+    },
+    "build": {
+      "executor": "nx:run-script",
+      "options": {
+        "script": "build"
+      }
+    },
+    "test": {
+      "executor": "nx:run-script",
+      "options": {
+        "script": "test"
+      }
+    }
+  },
+  "tags": ["scope:vscode", "type:app"]
+}

@@ -1,0 +1,55 @@
+{
+  "name": "@localive/webpack",
+  "version": "0.0.1",
+  "description": "Webpack dev-server plugin for Localive — live in-context i18n editing",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": ["dist", "README.md"],
+  "author": "Localive",
+  "homepage": "https://localive.dev",
+  "bugs": "https://github.com/localive/localive/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/localive/localive.git",
+    "directory": "packages/plugin-webpack"
+  },
+  "keywords": [
+    "i18n",
+    "webpack",
+    "webpack-plugin",
+    "translation",
+    "localization",
+    "live-editing",
+    "localive"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "vite build",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "peerDependencies": {
+    "webpack": ">=5.0.0",
+    "@localive/vite": "*"
+  },
+  "devDependencies": {
+    "webpack": "^5.99.0",
+    "@localive/vite": "*"
+  },
+  "nx": {
+    "tags": ["scope:plugin", "type:lib"]
+  }
+}

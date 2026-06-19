@@ -1,0 +1,57 @@
+---
+title: Plugin System
+description: Extend Localive with custom plugins for AI suggestions, translation memory, and more.
+---
+
+## The Plugin Interface
+
+Plugins implement the `I18nPlugin` interface:
+
+```ts
+import type { I18nPlugin, TranslationEntry, Locale } from '@localive/core';
+
+const myPlugin: I18nPlugin = {
+  name: 'my-plugin',
+
+  beforeSave(entry: TranslationEntry): TranslationEntry | false {
+    // Modify a translation before saving, or return false to prevent it
+    return entry;
+  },
+
+  afterSave(entry: TranslationEntry, result: SaveResult): void {
+    // Called after a successful save
+  },
+
+  onMissingKey(key: string, locale: Locale): void {
+    // Called when a missing key is encountered
+  },
+
+  suggestTranslation?(
+    key: string,
+    sourceText: string,
+    sourceLocale: Locale,
+    targetLocale: Locale,
+  ): Promise<string | null> {
+    // Return a translation suggestion (e.g., from AI)
+    return Promise.resolve(null);
+  },
+};
+```
+
+## Registering a Plugin
+
+```ts
+const localive = createLocalive({
+  adapter: myAdapter,
+  locales: ['en', 'fr'],
+  defaultLocale: 'en',
+  plugins: [myPlugin],
+});
+```
+
+## Use Cases
+
+- **AI translation suggestions** — implement `suggestTranslation()` to call an LLM API
+- **Translation memory** — cache previous translations in `beforeSave()`
+- **Validation** — reject edits in `beforeSave()` that don't meet quality criteria
+- **Analytics** — log saves in `afterSave()`

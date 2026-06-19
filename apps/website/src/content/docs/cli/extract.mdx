@@ -1,0 +1,48 @@
+---
+title: extract
+description: Extract translation keys from source files.
+---
+
+## Usage
+
+```bash
+localive extract [options]
+```
+
+## Options
+
+| Option | Default | Description |
+|--------|---------|-------------|
+| `--source <path>` | `src` | Source root directory to scan |
+| `--json` | `false` | Output structured JSON |
+
+## Output
+
+Returns an `ExtractResult` with:
+
+- `cwd` — working directory
+- `files` — list of scanned source files
+- `keys` — sorted array of unique translation keys
+
+## Supported Patterns
+
+| Pattern | Matches |
+|---------|---------|
+| `t('key')` | Generic `t()` function calls |
+| `data-i18n-key="key"` | HTML attribute |
+| `[attr.data-i18n-key]="'key'"` | Angular attribute binding |
+| `v-localive-tag="'key'"` | Vue directive |
+| `translations()[currentLocale()].keyName` | Angular service access |
+
+## Examples
+
+```bash
+# Extract from default source directory
+localive extract
+
+# Extract from custom directory
+localive extract --source packages/app/src
+
+# Output as JSON for CI integration
+localive extract --json
+```

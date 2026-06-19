@@ -1,0 +1,24 @@
+{
+  "en": {
+    "app.title": "LocaLive Svelte Playground",
+    "app.subtitle": "Click any text to edit translations live",
+    "nav.home": "Home",
+    "nav.about": "About",
+    "nav.contact": "Contact",
+    "card.welcome": "Welcome to LocaLive!",
+    "card.description": "This playground demonstrates live in-context i18n editing with Svelte.",
+    "card.switch": "Switch language",
+    "footer.rights": "All rights reserved."
+  },
+  "fr": {
+    "app.title": "LocaLive Bac à sable Svelte",
+    "app.subtitle": "Cliquez sur n'importe quel texte pour modifier les traductions en direct",
+    "nav.home": "Accueil",
+    "nav.about": "À propos",
+    "nav.contact": "Contact",
+    "card.welcome": "Bienvenue dans LocaLive !",
+    "card.description": "Ce bac à sable illustre l'édition en contexte des traductions avec Svelte.",
+    "card.switch": "Changer de langue",
+    "footer.rights": "Tous droits réservés."
+  }
+}

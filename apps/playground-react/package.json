@@ -1,0 +1,42 @@
+{
+  "name": "playground-react",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@localive/core": "*",
+    "@localive/react": "*",
+    "@localive/adapter-i18next": "*",
+    "@localive/vite": "*",
+    "i18next": "^24.2.2",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "react-i18next": "^15.5.2"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.16",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^4.6.0",
+    "typescript": "~5.9.2",
+    "vite": "^6.4.3"
+  },
+  "nx": {
+    "tags": ["scope:app", "type:app"],
+    "targets": {
+      "typecheck": {
+        "executor": "nx:run-commands",
+        "dependsOn": ["^typecheck"],
+        "options": {
+          "cwd": "apps/playground-react",
+          "command": "tsc --project tsconfig.json --noEmit"
+        },
+        "outputs": []
+      }
+    }
+  }
+}

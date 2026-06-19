@@ -1,0 +1,55 @@
+---
+title: VS Code Extension
+description: Edit translations directly in VS Code with hover, autocomplete, go-to-definition, and more.
+---
+
+## Install
+
+Search for "Localive" in the VS Code Extensions marketplace, or install the `.vsix` file manually.
+
+## Features
+
+### Hover Translations
+
+Hover over any translation key to see translations across all locales:
+
+```
+nav.home →
+  en: Home
+  fr: Accueil
+  de: Startseite
+```
+
+### Autocomplete
+
+Type `t('` or `data-i18n-key="` and get autocomplete suggestions from your locale files.
+
+### Go to Definition
+
+Right-click a translation key → **Go to Definition** opens the locale JSON file at that key's location.
+
+### Find All References
+
+Right-click a translation key → **Find All References** shows every file where that key is used in source code.
+
+### Diagnostics
+
+- **Missing keys** — keys used in code but missing from one or more locale files
+- **Unused keys** — keys in locale files but not referenced in source code
+
+### Commands
+
+| Command | Description |
+|---------|-------------|
+| `Localive: Create Translation Key` | Select text → create a key in all locale files |
+| `Localive: Rename Translation Key` | Rename a key across all locale files and source references |
+
+## Configuration
+
+Open VS Code settings and search for "Localive":
+
+| Setting | Default | Description |
+|---------|---------|-------------|
+| `localive.localePaths` | `["src/i18n/**/*.json", ...]` | Glob patterns for locale JSON files |
+| `localive.defaultLocale` | `"en"` | Default/source locale code |
+| `localive.sourcePaths` | `["src/**/*.{ts,tsx,js,jsx,vue,svelte,html}"]` | Glob patterns for source files |

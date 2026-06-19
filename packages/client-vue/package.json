@@ -1,0 +1,61 @@
+{
+  "name": "@localive/vue",
+  "version": "0.0.1",
+  "description": "Vue integration for Localive — live in-context i18n editing",
+  "license": "MIT",
+  "author": "Localive",
+  "homepage": "https://localive.dev",
+  "bugs": "https://github.com/localive/localive/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/localive/localive.git",
+    "directory": "packages/client-vue"
+  },
+  "keywords": [
+    "i18n",
+    "vue",
+    "translation",
+    "localization",
+    "live-editing",
+    "localive",
+    "developer-tools"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "vite build",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "peerDependencies": {
+    "@localive/core": "*",
+    "vue": ">=3.3.0"
+  },
+  "devDependencies": {
+    "@localive/core": "*",
+    "@vitejs/plugin-vue": "^6.0.7",
+    "@vue/language-core": "^3.3.4",
+    "@vue/test-utils": "^2.4.0",
+    "vue": "^3.5.0"
+  },
+  "nx": {
+    "tags": ["scope:client:vue", "type:lib"]
+  }
+}

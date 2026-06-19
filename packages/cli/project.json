@@ -1,0 +1,7 @@
+{
+  "name": "cli",
+  "root": "packages/cli",
+  "sourceRoot": "packages/cli/src",
+  "projectType": "library",
+  "tags": ["scope:cli", "type:lib"]
+}

@@ -1,0 +1,29 @@
+---
+title: Security
+description: How Localive validates inputs and prevents injection attacks.
+---
+
+## Input Validation
+
+Localive validates all inputs before processing:
+
+- **Keys** must match `/^[a-zA-Z0-9_.-]+$/` — no special characters, no path traversal
+- **Values** are sanitized to prevent HTML/script injection
+- **Paths** are validated to prevent directory traversal attacks
+- **Locales** must match `/^[a-z]{2}(-[A-Z]{2})?$/` — standard locale codes only
+
+## Dev-Only Mode
+
+The editor overlay and dev-server plugin are **production-safe by default**:
+
+- The `LiveEditorOverlay` component only renders when explicitly activated
+- The Vite/Webpack plugins only run during `dev` mode — they are stripped in production builds
+- No editing functionality is included in production bundles
+
+## File Writing Safety
+
+The dev-server plugin uses indentation-preserving writes:
+
+- Existing formatting and key order in your JSON files are preserved
+- Only the changed key is updated — the rest of the file remains untouched
+- Validate-before-write ensures no corrupt JSON is written

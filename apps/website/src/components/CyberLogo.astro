@@ -1,0 +1,233 @@
+---
+/**
+ * Cyberpunk animated logo — inline SVG with CSS theme switching.
+ * Dark: cyan hex + white L + magenta scanline + neon glow
+ * Light: teal hex + navy L + purple accent + softer glow
+ */
+---
+
+<svg class="logo-svg logo-dark" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <!-- === HEXAGONAL FRAME (asymmetric clip-button shape) === -->
+  <path class="hex-outline"
+    d="M18 4 L112 4 L112 78 L98 112 L4 112 L4 34 Z"
+    stroke="#00f3ff" stroke-width="2.5" fill="none" stroke-linejoin="round"
+    stroke-dasharray="460" stroke-dashoffset="460"
+  >
+    <animate attributeName="stroke-dashoffset" from="460" to="0" dur="1.2s" fill="freeze" begin="0.2s"
+      calcMode="spline" keySplines="0.4 0 0.2 1"/>
+  </path>
+
+  <!-- === INNER HEX GLOW (faint duplicate for depth) === -->
+  <path class="hex-glow"
+    d="M18 4 L112 4 L112 78 L98 112 L4 112 L4 34 Z"
+    stroke="#00f3ff" stroke-width="4" fill="none" stroke-linejoin="round" opacity="0"
+    filter="url(#glow-heavy)"
+  >
+    <animate attributeName="opacity" values="0;0;0.4;0;0;0" dur="4s" repeatCount="indefinite" begin="2s"/>
+  </path>
+
+  <!-- === L GLYPH — angular geometric === -->
+  <path class="l-glyph"
+    d="M42 30 L42 82 L76 82"
+    stroke="#ffffff" stroke-width="5.5" fill="none" stroke-linecap="square" stroke-linejoin="miter"
+    stroke-dasharray="100" stroke-dashoffset="100"
+  >
+    <animate attributeName="stroke-dashoffset" from="100" to="0" dur="0.7s" fill="freeze" begin="1.2s"
+      calcMode="spline" keySplines="0.4 0 0.2 1"/>
+  </path>
+
+  <!-- === SCAN LINE — sweeps across the hex === -->
+  <line x1="4" y1="4" x2="112" y2="4" stroke="#ff00ff" stroke-width="1.5" opacity="0">
+    <animate attributeName="y1" from="4" to="112" dur="2s" fill="freeze" begin="2s"/>
+    <animate attributeName="y2" from="4" to="112" dur="2s" fill="freeze" begin="2s"/>
+    <animate attributeName="opacity" values="0;0.9;0.9;0" dur="2s" fill="freeze" begin="2s"/>
+  </line>
+
+  <!-- === GLITCH FLICKER — hex outline ghost === -->
+  <path class="glitch-ghost"
+    d="M18 4 L112 4 L112 78 L98 112 L4 112 L4 34 Z"
+    stroke="#00f3ff" stroke-width="2.5" fill="none" opacity="0" stroke-linejoin="round"
+  >
+    <animate attributeName="opacity"
+      values="0;0;0;0;0;0;0;0;0;0;0;0;0;0.6;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
+      dur="8s" repeatCount="indefinite" begin="3s"/>
+  </path>
+
+  <!-- === GLITCH OFFSET — cyan shifted ghost === -->
+  <path
+    d="M18 4 L112 4 L112 78 L98 112 L4 112 L4 34 Z"
+    stroke="#00f3ff" stroke-width="2.5" fill="none" opacity="0" stroke-linejoin="round"
+    transform="translate(-2, 1)"
+  >
+    <animate attributeName="opacity"
+      values="0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0.4;0;0.3;0;0;0;0;0;0;0;0;0;0;0"
+      dur="8s" repeatCount="indefinite" begin="3s"/>
+  </path>
+
+  <!-- === GLITCH OFFSET — magenta shifted ghost === -->
+  <path
+    d="M18 4 L112 4 L112 78 L98 112 L4 112 L4 34 Z"
+    stroke="#ff00ff" stroke-width="1.5" fill="none" opacity="0" stroke-linejoin="round"
+    transform="translate(2, -1)"
+  >
+    <animate attributeName="opacity"
+      values="0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0.3;0;0;0;0;0;0;0;0;0;0;0;0"
+      dur="8s" repeatCount="indefinite" begin="3s"/>
+  </path>
+
+  <!-- === NODE PULSES at hex vertices === -->
+  <circle cx="18" cy="34" r="2.5" fill="#00f3ff" opacity="0">
+    <animate attributeName="opacity" values="0;1;0" dur="1.8s" repeatCount="indefinite" begin="2.5s"/>
+    <animate attributeName="r" values="2.5;4;2.5" dur="1.8s" repeatCount="indefinite" begin="2.5s"/>
+  </circle>
+  <circle cx="112" cy="4" r="2.5" fill="#00f3ff" opacity="0">
+    <animate attributeName="opacity" values="0;1;0" dur="1.8s" repeatCount="indefinite" begin="3.2s"/>
+    <animate attributeName="r" values="2.5;4;2.5" dur="1.8s" repeatCount="indefinite" begin="3.2s"/>
+  </circle>
+  <circle cx="112" cy="78" r="2.5" fill="#ff00ff" opacity="0">
+    <animate attributeName="opacity" values="0;0.8;0" dur="2s" repeatCount="indefinite" begin="3.8s"/>
+    <animate attributeName="r" values="2.5;3.5;2.5" dur="2s" repeatCount="indefinite" begin="3.8s"/>
+  </circle>
+  <circle cx="98" cy="112" r="2.5" fill="#ff00ff" opacity="0">
+    <animate attributeName="opacity" values="0;0.9;0" dur="1.6s" repeatCount="indefinite" begin="4.2s"/>
+    <animate attributeName="r" values="2.5;4;2.5" dur="1.6s" repeatCount="indefinite" begin="4.2s"/>
+  </circle>
+  <circle cx="4" cy="112" r="2.5" fill="#7000ff" opacity="0">
+    <animate attributeName="opacity" values="0;0.7;0" dur="2.2s" repeatCount="indefinite" begin="4.6s"/>
+    <animate attributeName="r" values="2.5;3.5;2.5" dur="2.2s" repeatCount="indefinite" begin="4.6s"/>
+  </circle>
+  <circle cx="4" cy="34" r="2.5" fill="#00f3ff" opacity="0">
+    <animate attributeName="opacity" values="0;1;0" dur="1.8s" repeatCount="indefinite" begin="5s"/>
+    <animate attributeName="r" values="2.5;4;2.5" dur="1.8s" repeatCount="indefinite" begin="5s"/>
+  </circle>
+
+  <!-- === DATA-FLOW PARTICLE — traveling along top edge === -->
+  <circle r="1.5" fill="#00f3ff" opacity="0">
+    <animate attributeName="opacity" values="0;1;1;0" dur="3s" repeatCount="indefinite" begin="2.5s"/>
+    <animateMotion dur="3s" repeatCount="indefinite" begin="2.5s" path="M18,4 L112,4"/>
+  </circle>
+  <!-- Particle — right edge -->
+  <circle r="1.5" fill="#ff00ff" opacity="0">
+    <animate attributeName="opacity" values="0;1;1;0" dur="2s" repeatCount="indefinite" begin="3s"/>
+    <animateMotion dur="2s" repeatCount="indefinite" begin="3s" path="M112,4 L112,78"/>
+  </circle>
+  <!-- Particle — bottom-right edge -->
+  <circle r="1.2" fill="#7000ff" opacity="0">
+    <animate attributeName="opacity" values="0;0.8;0.8;0" dur="1.5s" repeatCount="indefinite" begin="3.5s"/>
+    <animateMotion dur="1.5s" repeatCount="indefinite" begin="3.5s" path="M112,78 L98,112"/>
+  </circle>
+
+  <!-- === ACCENT: bottom magenta line === -->
+  <line x1="4" y1="112" x2="98" y2="112" stroke="#ff00ff" stroke-width="1.5" opacity="0">
+    <animate attributeName="opacity" from="0" to="0.6" dur="0.4s" fill="freeze" begin="2s"/>
+  </line>
+
+  <!-- === FILTERS === -->
+  <defs>
+    <filter id="glow-heavy" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+</svg>
+
+<!-- ==================== LIGHT MODE LOGO ==================== -->
+<svg class="logo-svg logo-light" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <!-- Hex outline -->
+  <path class="hex-outline"
+    d="M18 4 L112 4 L112 78 L98 112 L4 112 L4 34 Z"
+    stroke="#0a7a8f" stroke-width="2.5" fill="none" stroke-linejoin="round"
+    stroke-dasharray="460" stroke-dashoffset="460"
+  >
+    <animate attributeName="stroke-dashoffset" from="460" to="0" dur="1.2s" fill="freeze" begin="0.2s"
+      calcMode="spline" keySplines="0.4 0 0.2 1"/>
+  </path>
+
+  <!-- Inner hex glow -->
+  <path class="hex-glow"
+    d="M18 4 L112 4 L112 78 L98 112 L4 112 L4 34 Z"
+    stroke="#0a7a8f" stroke-width="3.5" fill="none" stroke-linejoin="round" opacity="0"
+    filter="url(#glow-light)"
+  >
+    <animate attributeName="opacity" values="0;0;0.3;0;0;0" dur="4s" repeatCount="indefinite" begin="2s"/>
+  </path>
+
+  <!-- L glyph -->
+  <path class="l-glyph"
+    d="M42 30 L42 82 L76 82"
+    stroke="#1a1a2e" stroke-width="5.5" fill="none" stroke-linecap="square" stroke-linejoin="miter"
+    stroke-dasharray="100" stroke-dashoffset="100"
+  >
+    <animate attributeName="stroke-dashoffset" from="100" to="0" dur="0.7s" fill="freeze" begin="1.2s"
+      calcMode="spline" keySplines="0.4 0 0.2 1"/>
+  </path>
+
+  <!-- Scan line -->
+  <line x1="4" y1="4" x2="112" y2="4" stroke="#b300b3" stroke-width="1.5" opacity="0">
+    <animate attributeName="y1" from="4" to="112" dur="2s" fill="freeze" begin="2s"/>
+    <animate attributeName="y2" from="4" to="112" dur="2s" fill="freeze" begin="2s"/>
+    <animate attributeName="opacity" values="0;0.7;0.7;0" dur="2s" fill="freeze" begin="2s"/>
+  </line>
+
+  <!-- Glitch flicker -->
+  <path class="glitch-ghost"
+    d="M18 4 L112 4 L112 78 L98 112 L4 112 L4 34 Z"
+    stroke="#0a7a8f" stroke-width="2.5" fill="none" opacity="0" stroke-linejoin="round"
+  >
+    <animate attributeName="opacity"
+      values="0;0;0;0;0;0;0;0;0;0;0;0;0;0.4;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
+      dur="8s" repeatCount="indefinite" begin="3s"/>
+  </path>
+
+  <!-- Node pulses -->
+  <circle cx="18" cy="34" r="2.5" fill="#0a7a8f" opacity="0">
+    <animate attributeName="opacity" values="0;0.8;0" dur="1.8s" repeatCount="indefinite" begin="2.5s"/>
+    <animate attributeName="r" values="2.5;3.5;2.5" dur="1.8s" repeatCount="indefinite" begin="2.5s"/>
+  </circle>
+  <circle cx="112" cy="4" r="2.5" fill="#0a7a8f" opacity="0">
+    <animate attributeName="opacity" values="0;0.8;0" dur="1.8s" repeatCount="indefinite" begin="3.2s"/>
+    <animate attributeName="r" values="2.5;3.5;2.5" dur="1.8s" repeatCount="indefinite" begin="3.2s"/>
+  </circle>
+  <circle cx="112" cy="78" r="2.5" fill="#b300b3" opacity="0">
+    <animate attributeName="opacity" values="0;0.6;0" dur="2s" repeatCount="indefinite" begin="3.8s"/>
+    <animate attributeName="r" values="2.5;3;2.5" dur="2s" repeatCount="indefinite" begin="3.8s"/>
+  </circle>
+  <circle cx="98" cy="112" r="2.5" fill="#7c3aed" opacity="0">
+    <animate attributeName="opacity" values="0;0.7;0" dur="1.6s" repeatCount="indefinite" begin="4.2s"/>
+    <animate attributeName="r" values="2.5;3.5;2.5" dur="1.6s" repeatCount="indefinite" begin="4.2s"/>
+  </circle>
+  <circle cx="4" cy="112" r="2.5" fill="#7c3aed" opacity="0">
+    <animate attributeName="opacity" values="0;0.5;0" dur="2.2s" repeatCount="indefinite" begin="4.6s"/>
+    <animate attributeName="r" values="2.5;3;2.5" dur="2.2s" repeatCount="indefinite" begin="4.6s"/>
+  </circle>
+  <circle cx="4" cy="34" r="2.5" fill="#0a7a8f" opacity="0">
+    <animate attributeName="opacity" values="0;0.8;0" dur="1.8s" repeatCount="indefinite" begin="5s"/>
+    <animate attributeName="r" values="2.5;3.5;2.5" dur="1.8s" repeatCount="indefinite" begin="5s"/>
+  </circle>
+
+  <!-- Data-flow particles -->
+  <circle r="1.5" fill="#0a7a8f" opacity="0">
+    <animate attributeName="opacity" values="0;0.8;0.8;0" dur="3s" repeatCount="indefinite" begin="2.5s"/>
+    <animateMotion dur="3s" repeatCount="indefinite" begin="2.5s" path="M18,4 L112,4"/>
+  </circle>
+  <circle r="1.5" fill="#b300b3" opacity="0">
+    <animate attributeName="opacity" values="0;0.8;0.8;0" dur="2s" repeatCount="indefinite" begin="3s"/>
+    <animateMotion dur="2s" repeatCount="indefinite" begin="3s" path="M112,4 L112,78"/>
+  </circle>
+  <circle r="1.2" fill="#7c3aed" opacity="0">
+    <animate attributeName="opacity" values="0;0.6;0.6;0" dur="1.5s" repeatCount="indefinite" begin="3.5s"/>
+    <animateMotion dur="1.5s" repeatCount="indefinite" begin="3.5s" path="M112,78 L98,112"/>
+  </circle>
+
+  <!-- Bottom accent line -->
+  <line x1="4" y1="112" x2="98" y2="112" stroke="#7c3aed" stroke-width="1.5" opacity="0">
+    <animate attributeName="opacity" from="0" to="0.5" dur="0.4s" fill="freeze" begin="2s"/>
+  </line>
+
+  <defs>
+    <filter id="glow-light" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+</svg>

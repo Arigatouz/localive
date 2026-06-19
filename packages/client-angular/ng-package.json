@@ -1,0 +1,8 @@
+{
+  "$schema": "https://repo.packagr.dev/schema/ng-packagr.json",
+  "dest": "dist",
+  "lib": {
+    "entryFile": "src/index.ts",
+    "flatModuleFile": "localive-angular"
+  }
+}
