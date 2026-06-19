@@ -2,9 +2,9 @@
 
 # Localive
 
-**Live, in-context i18n editing for React, Vue, Angular & Svelte.**
+**Edit your translations live, right in the running app — React, Vue, Angular & Svelte.**
 
-Click any text in your running app, edit the translation inline, and it saves straight back to your locale files.
+Click any text, change the translation inline, and it saves straight back to your locale files.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 [![npm](https://img.shields.io/npm/v/@localive/core.svg)](https://www.npmjs.com/package/@localive/core)
@@ -17,9 +17,11 @@ Click any text in your running app, edit the translation inline, and it saves st
 
 ## Why Localive?
 
-Translating an app usually means hunting for a key, switching to a JSON file, editing it, and reloading to see the result. Localive collapses that loop: it overlays your running app so you can **click the text you want to change, type the new translation, and have it written back to the correct locale file** — no context switching, no guessing which key maps to which string.
+Editing translations is slow. You find the string in the UI, dig through a JSON file for the right key, change it, reload, and check. Then you do it again for the next one. The annoying part is that the key-to-string mapping lives in your head, and you lose it every time you switch files.
 
-It works with the i18n library you already use, across the four major frameworks, and ships editor tooling (a CLI and a VS Code extension) for the rest of the workflow.
+Localive cuts out the middle steps. It draws an overlay on top of your running app, so you click the text, type the new translation, and it writes the change back to the right locale file for you. You never have to find the key yourself.
+
+It plugs into whatever i18n library you're already on, works across the four major frameworks, and comes with a CLI and a VS Code extension for the parts of the job the overlay doesn't cover.
 
 ## Supported stacks
 
@@ -57,8 +59,8 @@ import i18n from './i18n';
 </LocaliveProvider>
 ```
 
-Run your dev server, open the app, and click any translated text to edit it live.
-Full per-framework guides (Vue, Angular, Svelte) are at **[localive.dev](https://localive.dev)**.
+Start your dev server, open the app, and click any translated string to edit it.
+Guides for the other frameworks (Vue, Angular, Svelte) live at **[localive.dev](https://localive.dev)**.
 
 ## Packages
 
@@ -95,14 +97,14 @@ npm install -g @localive/cli     # or: npx @localive/cli --help
 
 ## VS Code extension
 
-Hover to preview translations, autocomplete keys, go-to-definition into locale JSON, find references, missing-key diagnostics, and create/rename keys across all locales. Search **"Localive"** in the Extensions panel.
+Preview translations on hover, autocomplete keys, jump to their definition in the locale JSON, find references, flag missing keys, and create or rename a key across every locale at once. Search **"Localive"** in the Extensions panel.
 
 ## Repository layout
 
-This is an [Nx](https://nx.dev) monorepo using npm workspaces:
+An [Nx](https://nx.dev) monorepo on npm workspaces:
 
-- `packages/*` — the published libraries, CLI, and VS Code extension.
-- `apps/*` — framework playgrounds, the end-to-end test app (`playground-e2e`), and the docs `website`. These are **demos and tests, not published** (`private: true`) — but they're part of the open-source repo.
+- `packages/*` — the libraries we publish, plus the CLI and VS Code extension.
+- `apps/*` — framework playgrounds, the end-to-end test app (`playground-e2e`), and the docs `website`. These are marked `private: true` and don't get published — they're demos and tests, but they're part of the open-source repo.
 
 ## Development
 
@@ -118,7 +120,7 @@ npx nx e2e playground-e2e                            # end-to-end tests
 
 ## Releasing
 
-See **[RELEASE.md](./RELEASE.md)** for the step-by-step publishing guide (npm + VS Code Marketplace), including how the MIT license, `private` flag, and npm scope access relate.
+See **[RELEASE.md](./RELEASE.md)** for the step-by-step publishing guide (npm + VS Code Marketplace), including how the MIT license, the `private` flag, and npm scope access fit together.
 
 ## License
 
