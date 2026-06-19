@@ -9,7 +9,7 @@ Click any text, change the translation inline, and it saves straight back to you
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 [![npm](https://img.shields.io/npm/v/@localive/core.svg)](https://www.npmjs.com/package/@localive/core)
 
-[Documentation](https://localive.dev) · [Publishing guide](./RELEASE.md)
+[Documentation](https://localive.vercel.app) · [Publishing guide](./RELEASE.md)
 
 </div>
 
@@ -60,7 +60,7 @@ import i18n from './i18n';
 ```
 
 Start your dev server, open the app, and click any translated string to edit it.
-Guides for the other frameworks (Vue, Angular, Svelte) live at **[localive.dev](https://localive.dev)**.
+Guides for the other frameworks (Vue, Angular, Svelte) live at **[localive.vercel.app](https://localive.vercel.app)**.
 
 ## Packages
 

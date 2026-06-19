@@ -1,14 +1,14 @@
 {
   "name": "@localive/cli",
-  "version": "0.0.1",
+  "version": "0.1.1",
   "description": "Command line tools for Localive translation workflows",
   "license": "MIT",
   "author": "Localive",
-  "homepage": "https://localive.dev",
-  "bugs": "https://github.com/localive/localive/issues",
+  "homepage": "https://localive.vercel.app/cli/overview/",
+  "bugs": "https://github.com/Arigatouz/localive/issues",
   "repository": {
     "type": "git",
-    "url": "https://github.com/localive/localive.git",
+    "url": "git+https://github.com/Arigatouz/localive.git",
     "directory": "packages/cli"
   },
   "keywords": [
@@ -29,7 +29,7 @@
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "bin": {
-    "localive": "./dist/index.js"
+    "localive": "dist/index.js"
   },
   "exports": {
     ".": {
@@ -38,19 +38,25 @@
       "require": "./dist/index.cjs"
     }
   },
-  "files": ["dist", "README.md"],
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "scripts": {
     "build": "vite build",
     "test": "vitest run",
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@localive/core": "*"
+    "@localive/core": "^0.1.1"
   },
   "devDependencies": {
-    "@localive/core": "*"
+    "@localive/core": "^0.1.1"
   },
   "nx": {
-    "tags": ["scope:cli", "type:lib"]
+    "tags": [
+      "scope:cli",
+      "type:lib"
+    ]
   }
 }

@@ -4,7 +4,7 @@ import starlight from '@astrojs/starlight';
 import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
-  site: 'https://localive.dev',
+  site: 'https://localive.vercel.app',
   integrations: [
     sitemap(),
     starlight({
@@ -18,7 +18,7 @@ export default defineConfig({
         SiteTitle: './src/components/SiteTitle.astro',
       },
       social: [
-        { icon: 'github', label: 'GitHub', href: 'https://github.com/localive/localive' },
+        { icon: 'github', label: 'GitHub', href: 'https://github.com/Arigatouz/localive' },
       ],
       head: [
         { tag: 'link', attrs: { rel: 'preconnect', href: 'https://fonts.googleapis.com' } },
@@ -27,7 +27,7 @@ export default defineConfig({
         { tag: 'meta', attrs: { property: 'og:title', content: 'Localive - Live i18n editing' } },
         { tag: 'meta', attrs: { property: 'og:description', content: 'Edit translations live in your browser. Click any text, change the translation, see updates instantly.' } },
         { tag: 'meta', attrs: { property: 'og:type', content: 'website' } },
-        { tag: 'meta', attrs: { property: 'og:url', content: 'https://localive.dev' } },
+        { tag: 'meta', attrs: { property: 'og:url', content: 'https://localive.vercel.app' } },
         { tag: 'meta', attrs: { name: 'twitter:card', content: 'summary_large_image' } },
         { tag: 'meta', attrs: { name: 'twitter:title', content: 'Localive - Live i18n editing' } },
         { tag: 'meta', attrs: { name: 'twitter:description', content: 'Edit translations live in your browser. Click any text, change the translation, see updates instantly.' } },

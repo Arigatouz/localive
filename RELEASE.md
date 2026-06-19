@@ -37,7 +37,7 @@ These are **three independent things**. Mixing them up is the usual confusion:
 git status                     # why: review exactly what's staged before committing
 git add -A                     # why: stage everything that isn't gitignored
 git commit -m "Prepare packages for first release"
-git remote add origin https://github.com/localive/localive.git   # why: link GitHub (first time only)
+git remote add origin https://github.com/Arigatouz/localive.git   # why: link GitHub (first time only)
 git push -u origin main        # why: upload it
 ```
 

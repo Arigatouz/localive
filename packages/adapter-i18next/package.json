@@ -1,6 +1,6 @@
 {
   "name": "@localive/adapter-i18next",
-  "version": "0.0.1",
+  "version": "0.1.1",
   "description": "i18next adapter for Localive — live in-context i18n editing",
   "license": "MIT",
   "type": "module",
@@ -16,11 +16,11 @@
     }
   },
   "author": "Localive",
-  "homepage": "https://localive.dev",
-  "bugs": "https://github.com/localive/localive/issues",
+  "homepage": "https://localive.vercel.app/concepts/adapters/",
+  "bugs": "https://github.com/Arigatouz/localive/issues",
   "repository": {
     "type": "git",
-    "url": "https://github.com/localive/localive.git",
+    "url": "git+https://github.com/Arigatouz/localive.git",
     "directory": "packages/adapter-i18next"
   },
   "keywords": [
@@ -35,7 +35,10 @@
   "publishConfig": {
     "access": "public"
   },
-  "files": ["dist", "README.md"],
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "scripts": {
     "build": "vite build",
     "test": "vitest run",
@@ -43,13 +46,16 @@
   },
   "peerDependencies": {
     "i18next": ">=22.0.0",
-    "@localive/core": "*"
+    "@localive/core": "^0.1.1"
   },
   "devDependencies": {
     "i18next": "^24.2.0",
-    "@localive/core": "*"
+    "@localive/core": "^0.1.1"
   },
   "nx": {
-    "tags": ["scope:adapter", "type:lib"]
+    "tags": [
+      "scope:adapter",
+      "type:lib"
+    ]
   }
 }

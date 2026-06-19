@@ -2,7 +2,7 @@
 
 > svelte-i18n adapter for Localive — bridges svelte-i18n to Localive's live i18n editing.
 
-Part of [Localive](https://github.com/localive/localive) — live, in-context i18n editing for React, Vue, Angular, and Svelte.
+Part of [Localive](https://github.com/Arigatouz/localive) — live, in-context i18n editing for React, Vue, Angular, and Svelte.
 
 ## Install
 
@@ -21,7 +21,7 @@ import { locale, locales, _ } from 'svelte-i18n';
 const adapter = withSvelteI18n({ locale, locales, t: $_ });
 ```
 
-See the full documentation at **https://localive.dev**.
+See the full documentation at **https://localive.vercel.app/concepts/adapters/**.
 
 ## License
 

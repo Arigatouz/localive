@@ -1,6 +1,6 @@
 {
   "name": "@localive/webpack",
-  "version": "0.0.1",
+  "version": "0.1.1",
   "description": "Webpack dev-server plugin for Localive — live in-context i18n editing",
   "license": "MIT",
   "type": "module",
@@ -15,13 +15,16 @@
       "require": "./dist/index.cjs"
     }
   },
-  "files": ["dist", "README.md"],
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "author": "Localive",
-  "homepage": "https://localive.dev",
-  "bugs": "https://github.com/localive/localive/issues",
+  "homepage": "https://localive.vercel.app/plugins/webpack/",
+  "bugs": "https://github.com/Arigatouz/localive/issues",
   "repository": {
     "type": "git",
-    "url": "https://github.com/localive/localive.git",
+    "url": "git+https://github.com/Arigatouz/localive.git",
     "directory": "packages/plugin-webpack"
   },
   "keywords": [
@@ -43,13 +46,16 @@
   },
   "peerDependencies": {
     "webpack": ">=5.0.0",
-    "@localive/vite": "*"
+    "@localive/vite": "^0.1.1"
   },
   "devDependencies": {
     "webpack": "^5.99.0",
-    "@localive/vite": "*"
+    "@localive/vite": "^0.1.1"
   },
   "nx": {
-    "tags": ["scope:plugin", "type:lib"]
+    "tags": [
+      "scope:plugin",
+      "type:lib"
+    ]
   }
 }

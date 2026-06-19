@@ -2,7 +2,7 @@
 
 > Svelte component for Localive — live, in-context i18n editing.
 
-Part of [Localive](https://github.com/localive/localive) — click any text in your running app, edit the translation, and it saves back to your locale files.
+Part of [Localive](https://github.com/Arigatouz/localive) — click any text in your running app, edit the translation, and it saves back to your locale files.
 
 ## Install
 
@@ -28,7 +28,7 @@ Requires the peer dependencies `svelte` (>=5) and `@localive/core`.
 </LocaliveWrapper>
 ```
 
-See the full documentation at **https://localive.dev**.
+See the full documentation at **https://localive.vercel.app/guides/svelte/**.
 
 ## License
 

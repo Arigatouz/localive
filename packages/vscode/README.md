@@ -2,7 +2,7 @@
 
 > Live i18n editing superpowers in your editor — hover, autocomplete, go-to-definition, diagnostics, and key refactoring for your translation keys.
 
-Part of [Localive](https://github.com/localive/localive) — live, in-context i18n editing for React, Vue, Angular, and Svelte.
+Part of [Localive](https://github.com/Arigatouz/localive) — live, in-context i18n editing for React, Vue, Angular, and Svelte.
 
 ## Features
 
@@ -26,7 +26,7 @@ Supported languages: TypeScript, TSX, JavaScript, JSX, Vue, Svelte, HTML.
 | `localive.defaultLocale` | `"en"` | Default/source locale code |
 | `localive.sourcePaths` | `["src/**/*.{ts,tsx,js,jsx,vue,svelte,html}"]` | Source files to scan for key usage |
 
-See the full documentation at **https://localive.dev**.
+See the full documentation at **https://localive.vercel.app/vscode/**.
 
 ## License
 

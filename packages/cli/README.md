@@ -2,7 +2,7 @@
 
 > Localive CLI — extract, validate, sync, and generate types for your translation keys.
 
-Part of [Localive](https://github.com/localive/localive) — live, in-context i18n editing for React, Vue, Angular, and Svelte.
+Part of [Localive](https://github.com/Arigatouz/localive) — live, in-context i18n editing for React, Vue, Angular, and Svelte.
 
 ## Install
 
@@ -26,7 +26,7 @@ localive extract --src "src/**/*.{ts,tsx}" --locale en --output src/locales/en.j
 localive validate --locales "src/locales/*.json" --default en
 ```
 
-See the full documentation at **https://localive.dev**.
+See the full documentation at **https://localive.vercel.app/cli/overview/**.
 
 ## License
 

@@ -2,7 +2,7 @@
 
 > Vue plugin for Localive — live, in-context i18n editing.
 
-Part of [Localive](https://github.com/localive/localive) — click any text in your running app, edit the translation, and it saves back to your locale files.
+Part of [Localive](https://github.com/Arigatouz/localive) — click any text in your running app, edit the translation, and it saves back to your locale files.
 
 ## Install
 
@@ -22,7 +22,7 @@ import i18n from './i18n';
 app.use(LocalivePlugin, { adapter: withVueI18n(i18n), locales: ['en', 'fr'], defaultLocale: 'en' });
 ```
 
-See the full documentation at **https://localive.dev**.
+See the full documentation at **https://localive.vercel.app/guides/vue/**.
 
 ## License
 

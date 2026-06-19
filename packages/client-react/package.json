@@ -1,14 +1,14 @@
 {
   "name": "@localive/react",
-  "version": "0.0.1",
+  "version": "0.1.1",
   "description": "React integration for Localive — live in-context i18n editing",
   "license": "MIT",
   "author": "Localive",
-  "homepage": "https://localive.dev",
-  "bugs": "https://github.com/localive/localive/issues",
+  "homepage": "https://localive.vercel.app/guides/react/",
+  "bugs": "https://github.com/Arigatouz/localive/issues",
   "repository": {
     "type": "git",
-    "url": "https://github.com/localive/localive.git",
+    "url": "git+https://github.com/Arigatouz/localive.git",
     "directory": "packages/client-react"
   },
   "keywords": [
@@ -35,7 +35,10 @@
       "require": "./dist/index.cjs"
     }
   },
-  "files": ["dist", "README.md"],
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "scripts": {
     "build": "vite build",
     "test": "vitest run",
@@ -44,7 +47,7 @@
   "peerDependencies": {
     "react": ">=18",
     "react-dom": ">=18",
-    "@localive/core": "*"
+    "@localive/core": "^0.1.1"
   },
   "devDependencies": {
     "react": "^19.1.0",
@@ -54,9 +57,12 @@
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.0",
     "jsdom": "^25.0.0",
-    "@localive/core": "*"
+    "@localive/core": "^0.1.1"
   },
   "nx": {
-    "tags": ["scope:client:react", "type:lib"]
+    "tags": [
+      "scope:client:react",
+      "type:lib"
+    ]
   }
 }

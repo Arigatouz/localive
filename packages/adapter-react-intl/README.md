@@ -2,7 +2,7 @@
 
 > react-intl adapter for Localive — bridges react-intl to Localive's live i18n editing.
 
-Part of [Localive](https://github.com/localive/localive) — live, in-context i18n editing for React, Vue, Angular, and Svelte.
+Part of [Localive](https://github.com/Arigatouz/localive) — live, in-context i18n editing for React, Vue, Angular, and Svelte.
 
 ## Install
 
@@ -14,7 +14,7 @@ Requires `@localive/core` and `react-intl` in your app.
 
 ## Usage
 
-See the full documentation at **https://localive.dev**.
+See the full documentation at **https://localive.vercel.app/concepts/adapters/**.
 
 ## License
 
