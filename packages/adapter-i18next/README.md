@@ -1,8 +1,8 @@
 # @localive/adapter-i18next
 
-> i18next adapter for Localive — bridges i18next to Localive's live i18n editing.
+> Use Localive with i18next. Edit your translations from inside the running app.
 
-Part of [Localive](https://github.com/Arigatouz/localive) — live, in-context i18n editing for React, Vue, Angular, and Svelte.
+Part of [Localive](https://github.com/Arigatouz/localive), live in-context i18n editing for React, Vue, Angular, and Svelte.
 
 ## Install
 
@@ -26,4 +26,4 @@ See the full documentation at **https://localive.vercel.app/concepts/adapters/**
 
 ## License
 
-MIT © Localive — see [LICENSE](./LICENSE).
+MIT © Localive, see [LICENSE](./LICENSE).

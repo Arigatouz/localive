@@ -1,7 +1,7 @@
 {
   "name": "@localive/adapter-react-intl",
-  "version": "0.1.2",
-  "description": "react-intl adapter for Localive — live in-context i18n editing",
+  "version": "0.1.3",
+  "description": "Connect Localive to react-intl and fix copy without digging through message files.",
   "license": "MIT",
   "author": "Ali Gamal <aga@luftborn.com> (https://github.com/Arigatouz)",
   "homepage": "https://localive.vercel.app/concepts/adapters/",
@@ -45,10 +45,10 @@
     "test:watch": "vitest"
   },
   "peerDependencies": {
-    "@localive/core": "^0.1.2"
+    "@localive/core": "^0.1.3"
   },
   "devDependencies": {
-    "@localive/core": "^0.1.2"
+    "@localive/core": "^0.1.3"
   },
   "nx": {
     "tags": [

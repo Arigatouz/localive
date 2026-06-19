@@ -1,7 +1,7 @@
 {
   "name": "@localive/vue",
-  "version": "0.1.2",
-  "description": "Vue integration for Localive — live in-context i18n editing",
+  "version": "0.1.3",
+  "description": "Vue bindings for Localive. Drop in the provider and fix copy right on the page.",
   "license": "MIT",
   "author": "Ali Gamal <aga@luftborn.com> (https://github.com/Arigatouz)",
   "homepage": "https://localive.vercel.app/guides/vue/",
@@ -45,11 +45,11 @@
     "test:watch": "vitest"
   },
   "peerDependencies": {
-    "@localive/core": "^0.1.2",
+    "@localive/core": "^0.1.3",
     "vue": ">=3.3.0"
   },
   "devDependencies": {
-    "@localive/core": "^0.1.2",
+    "@localive/core": "^0.1.3",
     "@vitejs/plugin-vue": "^6.0.7",
     "@vue/language-core": "^3.3.4",
     "@vue/test-utils": "^2.4.0",

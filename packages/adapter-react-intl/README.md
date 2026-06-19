@@ -1,8 +1,8 @@
 # @localive/adapter-react-intl
 
-> react-intl adapter for Localive — bridges react-intl to Localive's live i18n editing.
+> Connect Localive to react-intl and fix copy without digging through message files.
 
-Part of [Localive](https://github.com/Arigatouz/localive) — live, in-context i18n editing for React, Vue, Angular, and Svelte.
+Part of [Localive](https://github.com/Arigatouz/localive), live in-context i18n editing for React, Vue, Angular, and Svelte.
 
 ## Install
 
@@ -18,4 +18,4 @@ See the full documentation at **https://localive.vercel.app/concepts/adapters/**
 
 ## License
 
-MIT © Localive — see [LICENSE](./LICENSE).
+MIT © Localive, see [LICENSE](./LICENSE).

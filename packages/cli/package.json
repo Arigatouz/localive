@@ -1,7 +1,7 @@
 {
   "name": "@localive/cli",
-  "version": "0.1.2",
-  "description": "Command line tools for Localive translation workflows",
+  "version": "0.1.3",
+  "description": "Command-line tools for Localive. Extract, validate, sync, and generate types for your translation keys.",
   "license": "MIT",
   "author": "Ali Gamal <aga@luftborn.com> (https://github.com/Arigatouz)",
   "homepage": "https://localive.vercel.app/cli/overview/",
@@ -48,10 +48,10 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@localive/core": "^0.1.2"
+    "@localive/core": "^0.1.3"
   },
   "devDependencies": {
-    "@localive/core": "^0.1.2"
+    "@localive/core": "^0.1.3"
   },
   "nx": {
     "tags": [

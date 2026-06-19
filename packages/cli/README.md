@@ -1,8 +1,8 @@
 # @localive/cli
 
-> Localive CLI — extract, validate, sync, and generate types for your translation keys.
+> Command-line tools for Localive. Extract, validate, sync, and generate types for your translation keys.
 
-Part of [Localive](https://github.com/Arigatouz/localive) — live, in-context i18n editing for React, Vue, Angular, and Svelte.
+Part of [Localive](https://github.com/Arigatouz/localive), live in-context i18n editing for React, Vue, Angular, and Svelte.
 
 ## Install
 
@@ -17,7 +17,7 @@ npx @localive/cli --help
 | Command | What it does |
 |---|---|
 | `localive extract` | Scan source files for translation keys and write them to a locale JSON file |
-| `localive validate` | Report missing, extra, and empty translations across locales (exit code 1 on issues — CI-friendly) |
+| `localive validate` | Report missing, extra, and empty translations across locales (exit code 1 on issues, CI-friendly) |
 | `localive sync` | Add missing keys from the default locale to all other locales |
 | `localive types` | Generate a TypeScript union type of all translation keys |
 
@@ -30,4 +30,4 @@ See the full documentation at **https://localive.vercel.app/cli/overview/**.
 
 ## License
 
-MIT © Localive — see [LICENSE](./LICENSE).
+MIT © Localive, see [LICENSE](./LICENSE).

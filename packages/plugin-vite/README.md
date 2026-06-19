@@ -1,8 +1,8 @@
 # @localive/vite
 
-> Vite dev-server plugin for Localive — saves live i18n edits back to your locale files.
+> Vite dev-server plugin that writes your Localive edits back to the locale files.
 
-Part of [Localive](https://github.com/Arigatouz/localive) — live, in-context i18n editing for React, Vue, Angular, and Svelte.
+Part of [Localive](https://github.com/Arigatouz/localive), live in-context i18n editing for React, Vue, Angular, and Svelte.
 
 ## Install
 
@@ -28,4 +28,4 @@ See the full documentation at **https://localive.vercel.app/plugins/vite/**.
 
 ## License
 
-MIT © Localive — see [LICENSE](./LICENSE).
+MIT © Localive, see [LICENSE](./LICENSE).

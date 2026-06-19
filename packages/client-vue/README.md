@@ -1,8 +1,8 @@
 # @localive/vue
 
-> Vue plugin for Localive — live, in-context i18n editing.
+> Vue bindings for Localive. Drop in the provider and fix copy right on the page.
 
-Part of [Localive](https://github.com/Arigatouz/localive) — click any text in your running app, edit the translation, and it saves back to your locale files.
+Part of [Localive](https://github.com/Arigatouz/localive), click any text in your running app, edit the translation, and it saves back to your locale files.
 
 ## Install
 
@@ -26,4 +26,4 @@ See the full documentation at **https://localive.vercel.app/guides/vue/**.
 
 ## License
 
-MIT © Localive — see [LICENSE](./LICENSE).
+MIT © Localive, see [LICENSE](./LICENSE).

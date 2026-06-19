@@ -2,7 +2,7 @@
 
 # Localive
 
-**Edit your translations live, right in the running app — React, Vue, Angular & Svelte.**
+**Edit your translations live, right in the running app for React, Vue, Angular & Svelte.**
 
 Click any text, change the translation inline, and it saves straight back to your locale files.
 
@@ -67,7 +67,7 @@ Guides for the other frameworks (Vue, Angular, Svelte) live at **[localive.verce
 All published under the [`@localive`](https://www.npmjs.com/org/localive) scope.
 
 **Core**
-- [`@localive/core`](https://www.npmjs.com/package/@localive/core) — framework-agnostic engine (zero runtime deps)
+- [`@localive/core`](https://www.npmjs.com/package/@localive/core): framework-agnostic engine (zero runtime deps)
 
 **Clients** (framework overlay components)
 - [`@localive/react`](https://www.npmjs.com/package/@localive/react) · [`@localive/vue`](https://www.npmjs.com/package/@localive/vue) · [`@localive/angular`](https://www.npmjs.com/package/@localive/angular) · [`@localive/svelte`](https://www.npmjs.com/package/@localive/svelte)
@@ -79,8 +79,8 @@ All published under the [`@localive`](https://www.npmjs.com/org/localive) scope.
 - [`@localive/vite`](https://www.npmjs.com/package/@localive/vite) · [`@localive/webpack`](https://www.npmjs.com/package/@localive/webpack) · [`@localive/plugin-angular`](https://www.npmjs.com/package/@localive/plugin-angular)
 
 **Tooling**
-- [`@localive/cli`](https://www.npmjs.com/package/@localive/cli) — `localive` binary
-- **Localive for VS Code** — on the VS Code Marketplace
+- [`@localive/cli`](https://www.npmjs.com/package/@localive/cli): the `localive` binary
+- **Localive for VS Code**: on the VS Code Marketplace
 
 ## CLI
 
@@ -91,7 +91,7 @@ npm install -g @localive/cli     # or: npx @localive/cli --help
 | Command | What it does |
 |---|---|
 | `localive extract` | Scan source files and collect translation keys into a locale JSON |
-| `localive validate` | Report missing / extra / empty translations (exit code 1 on issues — CI-friendly) |
+| `localive validate` | Report missing / extra / empty translations (exit code 1 on issues, CI-friendly) |
 | `localive sync` | Add missing keys from the default locale to all others |
 | `localive types` | Generate a TypeScript union type of all keys |
 
@@ -103,8 +103,8 @@ Preview translations on hover, autocomplete keys, jump to their definition in th
 
 An [Nx](https://nx.dev) monorepo on npm workspaces:
 
-- `packages/*` — the libraries we publish, plus the CLI and VS Code extension.
-- `apps/*` — framework playgrounds, the end-to-end test app (`playground-e2e`), and the docs `website`. These are marked `private: true` and don't get published — they're demos and tests, but they're part of the open-source repo.
+- `packages/*`: the libraries we publish, plus the CLI and VS Code extension.
+- `apps/*`: framework playgrounds, the end-to-end test app (`playground-e2e`), and the docs `website`. These are marked `private: true` and do not get published. They are demos and tests, but they're part of the open-source repo.
 
 ## Development
 

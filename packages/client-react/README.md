@@ -1,8 +1,8 @@
 # @localive/react
 
-> React overlay components for Localive — live, in-context i18n editing.
+> React bindings for Localive. Add the provider and edit translations inline as the app runs.
 
-Part of [Localive](https://github.com/Arigatouz/localive) — click any text in your running app, edit the translation, and it saves back to your locale files.
+Part of [Localive](https://github.com/Arigatouz/localive), click any text in your running app, edit the translation, and it saves back to your locale files.
 
 ## Install
 
@@ -28,4 +28,4 @@ See the full documentation at **https://localive.vercel.app/guides/react/**.
 
 ## License
 
-MIT © Localive — see [LICENSE](./LICENSE).
+MIT © Localive, see [LICENSE](./LICENSE).

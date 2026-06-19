@@ -1,8 +1,8 @@
 # @localive/adapter-ngx-translate
 
-> ngx-translate adapter for Localive — bridges @ngx-translate/core to Localive's live i18n editing.
+> Wire Localive into ngx-translate to make Angular strings editable in the running app.
 
-Part of [Localive](https://github.com/Arigatouz/localive) — live, in-context i18n editing for React, Vue, Angular, and Svelte.
+Part of [Localive](https://github.com/Arigatouz/localive), live in-context i18n editing for React, Vue, Angular, and Svelte.
 
 ## Install
 
@@ -25,4 +25,4 @@ See the full documentation at **https://localive.vercel.app/concepts/adapters/**
 
 ## License
 
-MIT © Localive — see [LICENSE](./LICENSE).
+MIT © Localive, see [LICENSE](./LICENSE).

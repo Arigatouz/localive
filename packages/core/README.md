@@ -1,8 +1,8 @@
 # @localive/core
 
-> Framework-agnostic engine for Localive live in-context i18n editing — zero runtime dependencies.
+> The framework-agnostic engine behind Localive's in-app translation editing. No runtime dependencies.
 
-Part of [Localive](https://github.com/Arigatouz/localive) — live, in-context i18n editing for React, Vue, Angular, and Svelte. Click any text in your running app, edit the translation, and it saves back to your locale files.
+Part of [Localive](https://github.com/Arigatouz/localive), live in-context i18n editing for React, Vue, Angular, and Svelte. Click any text in your running app, edit the translation, and it saves back to your locale files.
 
 ## Install
 
@@ -18,4 +18,4 @@ This package has no peer dependencies. Most users install a framework client (e.
 
 ## License
 
-MIT © Localive — see [LICENSE](./LICENSE).
+MIT © Localive, see [LICENSE](./LICENSE).

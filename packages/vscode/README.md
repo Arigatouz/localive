@@ -1,8 +1,8 @@
 # Localive for VS Code
 
-> Live i18n editing superpowers in your editor — hover, autocomplete, go-to-definition, diagnostics, and key refactoring for your translation keys.
+> Work with i18n keys without leaving your editor. Hover to preview translations, autocomplete keys, jump to definitions, find references, spot missing keys, and rename across every locale. Supports React, Vue, Angular, and Svelte.
 
-Part of [Localive](https://github.com/Arigatouz/localive) — live, in-context i18n editing for React, Vue, Angular, and Svelte.
+Part of [Localive](https://github.com/Arigatouz/localive), live in-context i18n editing for React, Vue, Angular, and Svelte.
 
 ## Features
 
@@ -30,4 +30,4 @@ See the full documentation at **https://localive.vercel.app/vscode/**.
 
 ## License
 
-MIT © Localive — see [LICENSE](./LICENSE).
+MIT © Localive, see [LICENSE](./LICENSE).
