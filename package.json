@@ -13,11 +13,11 @@
     "lint:all": "npx eslint packages/ apps/"
   },
   "devDependencies": {
-    "@angular/common": "19.2.25",
-    "@angular/compiler": "19.2.25",
-    "@angular/core": "19.2.25",
-    "@angular/platform-browser": "19.2.25",
-    "@angular/platform-browser-dynamic": "19.2.25",
+    "@angular/common": "^22.0.0",
+    "@angular/compiler": "^22.0.0",
+    "@angular/core": "^22.0.0",
+    "@angular/platform-browser": "^22.0.0",
+    "@angular/platform-browser-dynamic": "^22.0.0",
     "@nx/eslint": "22.7.5",
     "@nx/eslint-plugin": "^22.7.5",
     "@nx/js": "22.7.5",

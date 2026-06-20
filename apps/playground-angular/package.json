@@ -9,24 +9,23 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/common": "19.2.25",
-    "@angular/compiler": "19.2.25",
-    "@angular/core": "19.2.25",
-    "@angular/forms": "19.2.25",
-    "@angular/platform-browser": "19.2.25",
-    "@angular/platform-browser-dynamic": "19.2.25",
-    "@angular/router": "19.2.25",
+    "@angular/common": "^22.0.0",
+    "@angular/compiler": "^22.0.0",
+    "@angular/core": "^22.0.0",
+    "@angular/forms": "^22.0.0",
+    "@angular/platform-browser": "^22.0.0",
+    "@angular/platform-browser-dynamic": "^22.0.0",
+    "@angular/router": "^22.0.0",
     "@localive/adapter-transloco": "*",
     "@localive/angular": "*",
     "@localive/core": "*",
     "rxjs": "~7.8.0",
-    "tslib": "^2.3.0",
-    "zone.js": "~0.15.0"
+    "tslib": "^2.3.0"
   },
-"devDependencies": {
-    "@angular-devkit/build-angular": "^19.2.25",
-    "@angular/cli": "^22.0.3",
-    "@angular/compiler-cli": "^19.2.0",
+  "devDependencies": {
+    "@angular-devkit/build-angular": "^22.0.0",
+    "@angular/cli": "^22.0.0",
+    "@angular/compiler-cli": "^22.0.0",
     "@types/jasmine": "~5.1.0",
     "jasmine-core": "~5.6.0",
     "karma": "~6.4.0",
@@ -37,11 +36,16 @@
     "typescript": "5.8.3"
   },
   "nx": {
-    "tags": ["scope:app", "type:app"],
+    "tags": [
+      "scope:app",
+      "type:app"
+    ],
     "targets": {
       "typecheck": {
         "executor": "nx:run-commands",
-        "dependsOn": ["^typecheck"],
+        "dependsOn": [
+          "^typecheck"
+        ],
         "options": {
           "cwd": "apps/playground-angular",
           "command": "tsc --project tsconfig.app.json --noEmit"
