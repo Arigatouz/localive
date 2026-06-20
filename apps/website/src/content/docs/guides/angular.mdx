@@ -57,11 +57,12 @@ export class AppComponent {}
 ## Switch Locales
 
 ```ts
+import { inject } from '@angular/core';
 import { LocaliveInspectorService } from '@localive/angular';
 
 @Component({ ... })
 export class SomeComponent {
-  constructor(private localive: LocaliveInspectorService) {}
+  private localive = inject(LocaliveInspectorService);
 
   switchLocale(locale: string) {
     this.localive.setLocale(locale);
