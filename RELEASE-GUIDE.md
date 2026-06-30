@@ -131,7 +131,7 @@ From `packages/vscode`:
 - [x] All 15 npm packages published and visible at `0.1.4` (verified June 2026)
 - [ ] VS Code extension listed at https://marketplace.visualstudio.com/items?itemName=localive.localive (pending)
 - [x] `npm view @localive/core dist.tarball` returns a tarball with `dist/`, `README.md`, `LICENSE`
-- [ ] Tag the release commit (`git tag v0.1.4 && git push --tags`) — optional but recommended
+- [x] Tag the release commit (`git tag v0.1.4 && git push --tags`) — done
 - [ ] Update the website's "latest version" reference if any docs hardcode the version
 
 ## 6. Rollback / unpublish
