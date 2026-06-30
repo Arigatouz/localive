@@ -11,15 +11,15 @@ npm install @localive/vite
 
 ## Configuration
 
-Add `localive` to your Vite config:
+Add `localiveVite` to your Vite config:
 
 ```ts
 import { defineConfig } from 'vite';
-import { localive } from '@localive/vite';
+import { localiveVite } from '@localive/vite';
 
 export default defineConfig({
   plugins: [
-    localive({
+    localiveVite({
       translationsPath: 'src/locales',
       locales: ['en', 'fr', 'de'],
       defaultLocale: 'en',
@@ -34,7 +34,7 @@ export default defineConfig({
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
-| `translationsPath` | `string` | `'src/locales'` | Root directory for translation JSON files |
+| `translationsPath` | `string` | required | Root directory for translation JSON files |
 | `searchRoots` | `string[]` | `[]` | Additional directories to scan for translations |
 | `locales` | `string[]` | required | Supported locale codes |
 | `defaultLocale` | `string` | first in `locales` | Default/source locale |

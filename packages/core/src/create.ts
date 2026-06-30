@@ -102,6 +102,11 @@ export function createLocalive(config: I18nLiveConfig): I18nLiveInstance {
         return { success: false, error: 'localive: instance destroyed' };
       }
 
+      // Live editing is only available in dev mode
+      if (typeof import.meta !== 'undefined' && import.meta.env && !import.meta.env.DEV) {
+        return { success: false, error: 'localive: live editing is only available in dev mode' };
+      }
+
       let processedEntry = entry;
       for (const plugin of plugins) {
         if (plugin.beforeSave) {
@@ -115,8 +120,10 @@ export function createLocalive(config: I18nLiveConfig): I18nLiveInstance {
         }
       }
 
+      const endpoint = config.endpoint ?? '/__localive-update';
+
       try {
-        const response = await fetch('/__localive-update', {
+        const response = await fetch(endpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -128,8 +135,14 @@ export function createLocalive(config: I18nLiveConfig): I18nLiveInstance {
         });
 
         if (!response.ok) {
-          const errorText = await response.text();
-          return { success: false, error: errorText };
+          let errorText: string;
+          try {
+            const errorJson = await response.json();
+            errorText = errorJson.error ?? errorJson.message ?? await response.text();
+          } catch {
+            errorText = await response.text();
+          }
+          return { success: false, error: `HTTP ${response.status}: ${errorText}` };
         }
 
         const result = await response.json();
@@ -144,6 +157,11 @@ export function createLocalive(config: I18nLiveConfig): I18nLiveInstance {
         const dict = store.dictionaries.get(processedEntry.locale);
         if (dict) {
           dict[processedEntry.key] = processedEntry.value;
+        }
+
+        // Push the new value back into the i18n library so UI reflects the edit
+        if (adapter.setTranslation) {
+          adapter.setTranslation(processedEntry.key, processedEntry.value, processedEntry.locale);
         }
 
         return saveResult;

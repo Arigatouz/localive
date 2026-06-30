@@ -1,18 +1,26 @@
 import { hasContext, getContext, setContext } from 'svelte';
+import { writable } from 'svelte/store';
 import type { I18nLiveInstance, Locale } from '@localive/core';
-
-const LOCALIVE_KEY = Symbol('localive');
+import type { SvelteLocaliveState } from './createLocalive';
+import { localiveSymbol } from './symbols';
 
 export function setLocaliveContext(instance: I18nLiveInstance): I18nLiveInstance {
-  setContext(LOCALIVE_KEY, instance);
+  const isActive = writable(instance.isActive());
+  const currentLocale = writable<Locale>(instance.store.locale);
+  instance.store.subscribe((state) => {
+    isActive.set(state.active);
+    currentLocale.set(state.locale);
+  });
+  const state: SvelteLocaliveState = { instance, isActive, currentLocale };
+  setContext(localiveSymbol, state);
   return instance;
 }
 
 export function getLocaliveContext(): I18nLiveInstance {
-  if (!hasContext(LOCALIVE_KEY)) {
+  if (!hasContext(localiveSymbol)) {
     throw new Error('Localive context not found. Did you wrap your app with initLocalive()?');
   }
-  return getContext<I18nLiveInstance>(LOCALIVE_KEY);
+  return getContext<SvelteLocaliveState>(localiveSymbol).instance;
 }
 
 export function useLocaliveEditor(instance: I18nLiveInstance) {

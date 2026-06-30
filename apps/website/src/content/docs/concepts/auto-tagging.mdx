@@ -13,7 +13,7 @@ Each framework adapter can provide a `getKeyFromElement(element)` method that in
 
 | Framework | Tagging Method |
 |-----------|---------------|
-| React | `useLocaliveTag('key')` hook — spreads props onto the element |
+| React | `useLocaliveTag()` hook — spread `getTagProps('key')` onto the element |
 | Vue | `v-localive-tag="'key'"` directive |
 | Angular | `[attr.data-i18n-key]="'key'"` attribute binding |
 | Svelte | `data-i18n-key="key"` attribute |
@@ -21,9 +21,13 @@ Each framework adapter can provide a `getKeyFromElement(element)` method that in
 ## Manual Tagging Example (React)
 
 ```tsx
-const tag = useLocaliveTag('nav.home');
-return <a {...tag}>{t('nav.home')}</a>;
+import { useLocaliveTag } from '@localive/react';
+
+const { getTagProps } = useLocaliveTag();
+return <a {...getTagProps('nav.home')}>{t('nav.home')}</a>;
 ```
+
+`useLocaliveTag()` takes no arguments and returns `{ getTagProps, resolveKey }`. Spread `getTagProps('nav.home')` onto the element you want to tag.
 
 This renders as:
 

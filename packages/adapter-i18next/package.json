@@ -1,6 +1,6 @@
 {
   "name": "@localive/adapter-i18next",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Use Localive with i18next. Edit your translations from inside the running app.",
   "license": "MIT",
   "type": "module",

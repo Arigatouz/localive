@@ -1,6 +1,6 @@
 {
   "name": "@localive/plugin-angular",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Angular CLI builder that lets Localive save translation edits during development.",
   "license": "MIT",
   "sideEffects": false,
@@ -13,12 +13,16 @@
     "./builders": {
       "import": "./dist/builders.js",
       "types": "./dist/builders.d.ts"
-    }
+    },
+    "./package.json": "./package.json",
+    "./builders.json": "./builders.json",
+    "./schema.json": "./schema.json"
   },
   "files": [
     "dist",
     "README.md",
-    "builders.json"
+    "builders.json",
+    "schema.json"
   ],
   "builders": "./builders.json",
   "author": "Ali Gamal <aga@luftborn.com> (https://github.com/Arigatouz)",
@@ -48,12 +52,14 @@
   },
   "peerDependencies": {
     "@angular-devkit/build-angular": ">=17",
-    "@angular-devkit/architect": ">=0.1700"
+    "@angular-devkit/architect": ">=0.1700",
+    "@localive/vite": "^0.1.3",
+    "rxjs": ">=7"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^19.0.0",
-    "@angular-devkit/architect": "^0.1900.0",
-    "@angular-devkit/core": "^19.0.0",
+    "@angular-devkit/build-angular": "^22.0.0",
+    "@angular-devkit/architect": "^0.2200.0",
+    "@angular-devkit/core": "^22.0.0",
     "@localive/core": "^0.1.3",
     "@localive/vite": "^0.1.3"
   },

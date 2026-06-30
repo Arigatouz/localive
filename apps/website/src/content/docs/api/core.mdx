@@ -36,15 +36,15 @@ const localive = createLocalive(config);
 | `plugins` | `I18nPlugin[]` | ❌ | Optional plugins |
 | `searchRoots` | `string[]` | ❌ | Additional directories to scan |
 | `wsPort` | `number` | ❌ | WebSocket port for multi-tab sync |
-| `activeByDefault` | `boolean` | ❌ | Start editor in active state |
+| `activeByDefault` | `boolean` | ❌ | Start editor in active state (defaults to `false`) |
 
 ## I18nLiveInstance
 
 The instance returned by `createLocalive`:
 
-| Method | Description |
+| Member | Description |
 |--------|-------------|
-| `store` | The reactive `I18nLiveStore` |
+| `store` | The reactive `I18nLiveStore` — a **runtime class** instance you can also `subscribe()` to |
 | `activate()` | Activate the editor overlay |
 | `deactivate()` | Deactivate the editor overlay |
 | `isActive()` | Check if editor is active |

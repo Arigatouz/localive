@@ -6,41 +6,43 @@ description: Use Localive with Angular and Transloco or ngx-translate.
 ## Install
 
 ```bash
-npm install @localive/angular @localive/adapter-transloco @ngneat/transloco
+npm install @localive/angular @localive/adapter-transloco @localive/plugin-angular @jsverse/transloco
 ```
 
 ## Provide Localive in App Config
 
+`provideLocalive` takes an **adapter factory** (a function that returns the `I18nAdapter`) as its first argument and the locale options object as the second. The factory runs lazily inside Angular's DI, so you `inject(TranslocoService)` inside it:
+
 ```ts
-import { provideLocalive } from '@localive/angular';
+import { provideLocalive, LiveEditorOverlayComponent } from '@localive/angular';
 import { withTransloco } from '@localive/adapter-transloco';
+import { TranslocoService, TranslocoPipe } from '@jsverse/transloco';
+import { inject, ApplicationConfig } from '@angular/core';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideLocalive({
-      adapter: withTransloco(translocoService),
-      locales: ['en', 'fr', 'de'],
-      defaultLocale: 'en',
-    }),
+    provideLocalive(
+      () => withTransloco(inject(TranslocoService), TranslocoPipe),
+      { locales: ['en', 'fr', 'de'], defaultLocale: 'en' },
+    ),
   ],
 };
 ```
 
-## Use the Overlay Component
+> The Transloco adapter accepts the `TranslocoService` instance and the pipe/directive class (`TranslocoPipe` or your custom subclass). It uses them to resolve `data-i18n-key` from elements the Transloco directives touched.
 
-```html
-<live-editor-overlay />
-```
+## Add the Overlay Component
 
-Import `LiveEditorOverlayComponent` in your standalone component or NgModule:
+The overlay selector is **`localive-overlay`** (not `live-editor-overlay`). Import `LiveEditorOverlayComponent` into your standalone root component or `NgModule`:
 
 ```ts
 import { LiveEditorOverlayComponent } from '@localive/angular';
+import { Component } from '@angular/core';
 
 @Component({
   imports: [LiveEditorOverlayComponent],
   template: `
-    <live-editor-overlay />
+    <localive-overlay></localive-overlay>
     <router-outlet />
   `,
 })
@@ -49,23 +51,30 @@ export class AppComponent {}
 
 ## Tag Elements with `data-i18n-key`
 
+Bind the `data-i18n-key` attribute to the same key you pass to the Transloco pipe. When the inspector is active, clicking the element opens the editor panel for that key:
+
 ```html
 <span [attr.data-i18n-key]="'nav.home'">{{ 'nav.home' | transloco }}</span>
 <span [attr.data-i18n-key]="'nav.about'">{{ 'nav.about' | transloco }}</span>
 ```
 
-## Switch Locales
+## Toggle the Inspector
+
+Inject `LocaliveInspectorService` and use `activate()` / `deactivate()` / `isActive()`. There is **no `setLocale()` method** on the service — switch locales through your Transloco service (`translocoService.setActiveLang('fr')`):
 
 ```ts
-import { inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { LocaliveInspectorService } from '@localive/angular';
 
-@Component({ ... })
+@Component({ /* ... */ })
 export class SomeComponent {
   private localive = inject(LocaliveInspectorService);
+  readonly active = signal(false);
 
-  switchLocale(locale: string) {
-    this.localive.setLocale(locale);
+  toggle() {
+    if (this.localive.isActive()) this.localive.deactivate();
+    else this.localive.activate();
+    this.active.set(this.localive.isActive());
   }
 }
 ```
@@ -78,12 +87,26 @@ If you use `ngx-translate` instead of Transloco:
 npm install @localive/adapter-ngx-translate @ngx-translate/core
 ```
 
-```ts
-import { withNgxTranslate } from '@localive/adapter-ngx-translate';
+The `withNgxTranslate` adapter takes the `TranslateService` and the `TranslatePipe` class as its second argument:
 
-provideLocalive({
-  adapter: withNgxTranslate(translateService),
-  locales: ['en', 'fr'],
-  defaultLocale: 'en',
-})
+```ts
+import { provideLocalive } from '@localive/angular';
+import { withNgxTranslate } from '@localive/adapter-ngx-translate';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
+import { inject, ApplicationConfig } from '@angular/core';
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideLocalive(
+      () => withNgxTranslate(inject(TranslateService), TranslatePipe),
+      { locales: ['en', 'fr'], defaultLocale: 'en' },
+    ),
+  ],
+};
 ```
+
+## Next Steps
+
+- [Angular Dev Server Plugin](/plugins/angular/) — wire the builder into `angular.json`
+- [CLI Tools](/cli/overview/) — extract, validate, sync, generate types
+- [Security Concept](/concepts/security/) — input validation and dev-only mode

@@ -1,49 +1,24 @@
-# Starlight Starter Kit: Basics
+# Localive Website
 
-[![Built with Starlight](https://astro.badg.es/v2/built-with-starlight/tiny.svg)](https://starlight.astro.build)
+The official Localive documentation site, built with Astro + Starlight.
 
-```
-npm create astro@latest -- --template starlight
-```
+- **Landing page** at `/` — cyberpunk-themed dual-mode (dark/light) with animated inline SVG logo
+- **Docs** at root level (no `/docs/` prefix) — covers concept guides, framework tutorials, plugin docs, CLI reference, and VS Code extension
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Tech stack
 
-## 🚀 Project Structure
+- Astro 6 + Starlight 0.40
+- Custom Cyberpunk dual theme (`html[data-theme]` switching via `localStorage('starlight-theme')`)
+- Animated logo via inline SVG (`src/components/CyberLogo.astro`) — SMIL animations + CSS glow
 
-Inside of your Astro + Starlight project, you'll see the following folders and files:
+## Development
 
-```
-.
-├── public/
-├── src/
-│   ├── assets/
-│   ├── content/
-│   │   └── docs/
-│   └── content.config.ts
-├── astro.config.mjs
-├── package.json
-└── tsconfig.json
+```bash
+npx nx serve website     # dev server at localhost:4321
+npx nx build website     # build to dist/
 ```
 
-Starlight looks for `.md` or `.mdx` files in the `src/content/docs/` directory. Each file is exposed as a route based on its file name.
+## Gotchas
 
-Images can be added to `src/assets/` and embedded in Markdown with a relative link.
-
-Static assets, like favicons, can be placed in the `public/` directory.
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Check out [Starlight’s docs](https://starlight.astro.build/), read [the Astro documentation](https://docs.astro.build), or jump into the [Astro Discord server](https://astro.build/chat).
+- `<pre><code>` blocks with JS `import` syntax cause esbuild errors — use plain `<p>` or `<div>` for code on the landing page
+- OG meta tags must be added via Starlight's `head` config in `astro.config.mjs`, not raw `<meta>` tags

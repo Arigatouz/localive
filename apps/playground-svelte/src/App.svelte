@@ -1,27 +1,42 @@
 <script lang="ts">
-  import { LiveEditorOverlay } from '@localive/svelte';
-  import { switchLocale } from './main';
-  import type { SvelteLocaliveState } from '@localive/svelte';
+  import { LiveEditorOverlay, initLocalive, getLocaliveState } from '@localive/svelte';
+  import { translations, currentLocale, getLocaleCallbacks, switchLocale } from './main';
+  import type { I18nAdapter } from '@localive/core';
 
-  let { localiveState }: { localiveState: SvelteLocaliveState } = $props();
+  const adapter: I18nAdapter = {
+    name: 'svelte-playground',
+    getLocale() { return currentLocale; },
+    getTranslations(locale: string) {
+      return translations[locale] ?? {};
+    },
+    onLocaleChange(callback: (locale: string) => void) {
+      getLocaleCallbacks().push(callback);
+      return () => {
+        const idx = getLocaleCallbacks().indexOf(callback);
+        if (idx > -1) getLocaleCallbacks().splice(idx, 1);
+      };
+    },
+    destroy() { getLocaleCallbacks().length = 0; },
+  };
 
-  let currentLocale = $state('en');
-  let isActive = $state(false);
-
-  (() => localiveState.isActive).call(null).subscribe((v: boolean) => {
-    isActive = v;
+  initLocalive(adapter, {
+    locales: ['en', 'fr'],
+    defaultLocale: 'en',
+    activeByDefault: true,
   });
 
-  (() => localiveState.currentLocale).call(null).subscribe((v: string) => {
-    currentLocale = v;
-  });
+  const { instance, isActive, currentLocale: localeStore } = getLocaliveState();
 
-  const translations = $derived(
-    (() => localiveState.instance).call(null).getTranslations(currentLocale) as Record<string, string>
-  );
+  let isActiveState = $state(instance.isActive());
+  let currentLocaleState = $state(instance.store.locale);
+
+  isActive.subscribe((v: boolean) => { isActiveState = v; });
+  localeStore.subscribe((v: string) => { currentLocaleState = v; });
+
+  const translations2 = $derived(instance.getTranslations(currentLocaleState) as Record<string, string>);
 
   function t(key: string): string {
-    return translations[key] ?? key;
+    return translations2[key] ?? key;
   }
 
   function handleSwitchLocale(locale: string) {
@@ -29,10 +44,10 @@
   }
 
   function handleToggle() {
-    if (isActive) {
-      (() => localiveState.instance).call(null).deactivate();
+    if (instance.isActive()) {
+      instance.deactivate();
     } else {
-      (() => localiveState.instance).call(null).activate();
+      instance.activate();
     }
   }
 </script>
@@ -42,9 +57,9 @@
     <h1 data-i18n-key="app.title">{t('app.title')}</h1>
     <button
       onclick={handleToggle}
-      style="margin-left: 8px; background-color: {isActive ? '#ef4444' : '#22c55e'}; color: white; border: none; border-radius: 4px; padding: 8px 16px; cursor: pointer;"
+      style="margin-left: 8px; background-color: {isActiveState ? '#ef4444' : '#22c55e'}; color: white; border: none; border-radius: 4px; padding: 8px 16px; cursor: pointer;"
     >
-      {isActive ? '✕ Close Editor' : '✎ Open Editor'}
+      {isActiveState ? '✕ Close Editor' : '✎ Open Editor'}
     </button>
   </header>
 
@@ -53,8 +68,8 @@
   </p>
 
   <nav>
-    <button class:active={currentLocale === 'en'} onclick={() => handleSwitchLocale('en')}>English</button>
-    <button class:active={currentLocale === 'fr'} onclick={() => handleSwitchLocale('fr')}>Français</button>
+    <button class:active={currentLocaleState === 'en'} onclick={() => handleSwitchLocale('en')}>English</button>
+    <button class:active={currentLocaleState === 'fr'} onclick={() => handleSwitchLocale('fr')}>Français</button>
   </nav>
 
   <div class="card" style="margin-top: 16px;">

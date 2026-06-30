@@ -1,0 +1,1 @@
+export const localiveSymbol = Symbol('localive');

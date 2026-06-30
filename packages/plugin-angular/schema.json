@@ -1,0 +1,164 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "title": "Localive Dev Server Target",
+  "description": "Extended Angular CLI dev server with Localive live i18n editing support.",
+  "type": "object",
+  "properties": {
+    "buildTarget": {
+      "type": "string",
+      "description": "A build builder target to serve in the format of `project:target[:configuration]`. You can also pass in more than one configuration name as a comma-separated list. Example: `project:target:production,staging`.",
+      "pattern": "^[^:\\s]*:[^:\\s]*(:[^\\s]+)?$"
+    },
+    "port": {
+      "type": "number",
+      "description": "Port to listen on.",
+      "default": 4200
+    },
+    "host": {
+      "type": "string",
+      "description": "Host to listen on.",
+      "default": "localhost"
+    },
+    "proxyConfig": {
+      "type": "string",
+      "description": "Proxy configuration file."
+    },
+    "ssl": {
+      "type": "boolean",
+      "description": "Serve using HTTPS.",
+      "default": false
+    },
+    "sslKey": {
+      "type": "string",
+      "description": "SSL key to use for serving HTTPS."
+    },
+    "sslCert": {
+      "type": "string",
+      "description": "SSL certificate to use for serving HTTPS."
+    },
+    "headers": {
+      "type": "object",
+      "description": "Custom HTTP headers to be added to all responses.",
+      "propertyNames": {
+        "pattern": "^[-_A-Za-z0-9]+$"
+      },
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "open": {
+      "type": "boolean",
+      "description": "Opens the url in default browser.",
+      "default": false,
+      "alias": "o"
+    },
+    "verbose": {
+      "type": "boolean",
+      "description": "Adds more details to output logging."
+    },
+    "liveReload": {
+      "type": "boolean",
+      "description": "Whether to reload the page on change, using live-reload.",
+      "default": true
+    },
+    "publicHost": {
+      "type": "string",
+      "description": "The URL that the browser client should use to connect to the development server."
+    },
+    "allowedHosts": {
+      "type": "array",
+      "description": "List of hosts that are allowed to access the dev server.",
+      "default": [],
+      "items": {
+        "type": "string"
+      }
+    },
+    "servePath": {
+      "type": "string",
+      "description": "The pathname where the application will be served."
+    },
+    "disableHostCheck": {
+      "type": "boolean",
+      "description": "Don't verify connected clients are part of allowed hosts.",
+      "default": false
+    },
+    "hmr": {
+      "type": "boolean",
+      "description": "Enable hot module replacement."
+    },
+    "watch": {
+      "type": "boolean",
+      "description": "Rebuild on change.",
+      "default": true
+    },
+    "poll": {
+      "type": "number",
+      "description": "Enable and define the file watching poll time period in milliseconds."
+    },
+    "forceEsbuild": {
+      "type": "boolean",
+      "description": "Force the development server to use the 'browser-esbuild' builder when building.",
+      "default": false
+    },
+    "prebundle": {
+      "description": "Enable and control the Vite-based development server's prebundling capabilities.",
+      "oneOf": [
+        { "type": "boolean" },
+        {
+          "type": "object",
+          "properties": {
+            "exclude": {
+              "description": "List of package imports that should not be prebundled by the development server.",
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          },
+          "additionalProperties": false,
+          "required": ["exclude"]
+        }
+      ]
+    },
+    "localive": {
+      "type": "object",
+      "description": "Localive live i18n editing configuration.",
+      "properties": {
+        "translationsPath": {
+          "type": "string",
+          "description": "Root directory for translation JSON files."
+        },
+        "searchRoots": {
+          "type": "array",
+          "description": "Additional directories to scan for translation files.",
+          "items": { "type": "string" }
+        },
+        "locales": {
+          "type": "array",
+          "description": "Supported locale codes, e.g. ['en', 'fr', 'de'].",
+          "items": { "type": "string" }
+        },
+        "defaultLocale": {
+          "type": "string",
+          "description": "Default/source locale. Defaults to the first entry in locales."
+        },
+        "endpoint": {
+          "type": "string",
+          "description": "API endpoint path for translation updates. Defaults to '/__localive-update'.",
+          "default": "/__localive-update"
+        },
+        "ws": {
+          "type": "boolean",
+          "description": "Enable WebSocket for multi-tab sync.",
+          "default": false
+        },
+        "wsPort": {
+          "type": "number",
+          "description": "WebSocket port for multi-tab sync (auto if omitted)."
+        }
+      },
+      "required": ["translationsPath", "locales"],
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false,
+  "required": ["buildTarget", "localive"]
+}

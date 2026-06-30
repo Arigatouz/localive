@@ -14,12 +14,23 @@ Requires the peer dependencies `@angular/core` (>=17), `@angular/common` (>=17),
 
 ## Usage
 
+`provideLocalive` takes an adapter factory as the first argument and an options object as the second. Add the `<localive-overlay>` component to your app template to render the inspector.
+
 ```ts
 import { provideLocalive } from '@localive/angular';
 import { withTransloco } from '@localive/adapter-transloco';
-import { TranslocoService } from '@jsverse/transloco';
+import { TranslocoService, TranslocoPipe } from '@jsverse/transloco';
 
-provideLocalive({ adapter: withTransloco(inject(TranslocoService)), locales: ['en', 'fr'], defaultLocale: 'en' });
+// In your app config:
+provideLocalive(
+  () => withTransloco(inject(TranslocoService), TranslocoPipe),
+  { locales: ['en', 'fr'], defaultLocale: 'en' }
+);
+```
+
+```html
+<!-- In your app component template: -->
+<localive-overlay></localive-overlay>
 ```
 
 See the full documentation at **https://localive.vercel.app/guides/angular/**.

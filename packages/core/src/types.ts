@@ -46,6 +46,8 @@ export interface I18nLiveConfig {
   wsPort?: number;
   /** Whether the inspector starts in active state (default: true in dev) */
   activeByDefault?: boolean;
+  /** API endpoint path for the dev server (default: /__localive-update) */
+  endpoint?: string;
 }
 
 // ─── Adapter Interface ──────────────────────────────────
@@ -64,6 +66,11 @@ export interface I18nAdapter {
    * Used by auto-tagging to inject invisible markers.
    */
   getKeyFromElement?(element: HTMLElement): string | null;
+  /**
+   * Optional: push a translation value back into the i18n library.
+   * Called after a successful save so the UI reflects the edit without reload.
+   */
+  setTranslation?(key: string, value: string, locale: Locale): void;
   /** Clean up any listeners or observers */
   destroy?(): void;
 }

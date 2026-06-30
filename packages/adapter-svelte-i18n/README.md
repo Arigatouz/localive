@@ -16,9 +16,9 @@ Requires the peer dependencies `svelte-i18n` (>=4) and `@localive/core`.
 
 ```ts
 import { withSvelteI18n } from '@localive/adapter-svelte-i18n';
-import { locale, locales, _ } from 'svelte-i18n';
+import { _, locale } from 'svelte-i18n';
 
-const adapter = withSvelteI18n({ locale, locales, t: $_ });
+const adapter = withSvelteI18n({ _, locale });
 ```
 
 See the full documentation at **https://localive.vercel.app/concepts/adapters/**.

@@ -17,11 +17,12 @@ export default defineConfig({
     },
     rollupOptions: {
       external: [
-        '@angular-devkit/build-angular',
-        '@angular-devkit/architect',
-        '@angular-devkit/core',
-        '@localive/core',
-        '@localive/vite',
+        /^@angular-devkit\/build-angular/,
+        /^@angular-devkit\/architect/,
+        /^@angular-devkit\/core/,
+        /^@localive\/core/,
+        /^@localive\/vite/,
+        /^rxjs/,
       ],
     },
     sourcemap: true,

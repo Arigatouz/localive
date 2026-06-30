@@ -2,8 +2,7 @@ import { createLocalive as createCoreInstance } from '@localive/core';
 import type { I18nLiveInstance, I18nAdapter, Locale, TranslationDictionary } from '@localive/core';
 import { setContext, getContext, hasContext } from 'svelte';
 import { writable, type Writable } from 'svelte/store';
-
-const LOCALIVE_KEY = Symbol('localive');
+import { localiveSymbol } from './symbols';
 
 export interface SvelteLocaliveState {
   instance: I18nLiveInstance;
@@ -40,15 +39,15 @@ export function initLocalive(
   });
 
   const state: SvelteLocaliveState = { instance, isActive, currentLocale };
-  setContext(LOCALIVE_KEY, state);
+  setContext(localiveSymbol, state);
   return state;
 }
 
 export function getLocaliveState(): SvelteLocaliveState {
-  if (!hasContext(LOCALIVE_KEY)) {
+  if (!hasContext(localiveSymbol)) {
     throw new Error('Localive state not found. Did you call initLocalive()?');
   }
-  return getContext<SvelteLocaliveState>(LOCALIVE_KEY);
+  return getContext<SvelteLocaliveState>(localiveSymbol);
 }
 
 export { createCoreInstance, type I18nLiveInstance, type I18nAdapter, type Locale, type TranslationDictionary };

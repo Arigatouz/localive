@@ -1,5 +1,5 @@
-import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
-import { createLocalive } from '@localive/core';
+import { ApplicationConfig, provideZonelessChangeDetection } from '@angular/core';
+import { provideLocalive } from '@localive/angular';
 import type { I18nAdapter, Locale, TranslationDictionary } from '@localive/core';
 
 import en from '../locales/en.json';
@@ -31,18 +31,15 @@ const simpleAdapter: I18nAdapter = {
 
 export function switchLocale(locale: string) {
   currentLocale = locale as Locale;
-  localeCallbacks.forEach(cb => cb(currentLocale));
+  localeCallbacks.forEach((cb) => cb(currentLocale));
 }
-
-export const localiveInstance = createLocalive({
-  translationsPath: '',
-  adapter: simpleAdapter,
-  locales: ['en', 'fr'],
-  defaultLocale: 'en',
-});
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideZoneChangeDetection({ eventCoalescing: true }),
+    provideZonelessChangeDetection(),
+    provideLocalive(() => simpleAdapter, {
+      locales: ['en', 'fr'],
+      defaultLocale: 'en',
+    }),
   ],
 };

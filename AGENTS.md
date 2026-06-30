@@ -2,17 +2,19 @@
 
 ## Repo status
 
-Phases 1-4 and 6 (website/docs) are complete. P5 (AI plugin) is deferred.
+Phases 1-4 and 6 (website/docs) are complete. P5 (AI plugin) is deferred — the `packages/ai-openai/` directory has been removed (was empty).
 Website redesign (cyberpunk theme + animated logo + light/dark mode) is complete.
-Release guide created at `RELEASE-GUIDE.md`. All packages are at `0.0.1` and ready for publishing.
 
 ## Release status
 
-- All 17 packages build, test, and typecheck clean
-- **Not yet published to npm** — all are at `0.0.1` with `@localive/*` scope
+- All 16 packages build, test, and typecheck clean
+- All documentation (root `README.md`, website `.mdx` pages, per-package `README.md`s) has been revised to match the actual public APIs of each package — every example in the docs runs verbatim against the published exports
+- The `@localive/plugin-angular:dev-server` builder is now a real delegating builder (TDD-verified): it wraps `@angular-devkit/build-angular:dev-server`, forwards all dev-server options, injects the Localive save middleware, exposes a JSON Schema, and ships a `createBuilder`-wrapped default export that Angular DevKit architect can load
+- Svelte `LiveEditorOverlay` now works inside `initLocalive()` — the two modules previously used independent `Symbol('localive')` keys that never matched; a shared `src/symbols.ts` unifies them, and `setLocaliveContext` wraps the instance into a `SvelteLocaliveState` so both `getLocaliveState` and `getLocaliveContext` work regardless of which setter was called
+- **All 15 npm packages published to npm** at `0.1.4` under the `@localive/*` scope
 - **VS Code extension not yet published** to Marketplace — publisher `localive` must be created
-- **Missing files for publishing**: No packages have `README.md` or `LICENSE` files (required by npm). See `RELEASE-GUIDE.md` Section 3.4-3.5 for instructions.
-- **Missing metadata**: No packages have `repository`, `homepage`, `bugs`, `keywords`, or `publishConfig` fields. See `RELEASE-GUIDE.md` Section 3.2.
+- **All packages have `README.md`, `LICENSE`, `repository`, `homepage`, `bugs`, `keywords`, and `publishConfig`** fields populated in their `package.json` — the only exception is the VS Code extension, which is published via `vsce` rather than npm and so does not need `publishConfig`
+- **The Angular playground now wires the Localive builder** (`@localive/plugin-angular:dev-server`) in its `angular.json` `serve` target; the React, Vue, and Svelte playgrounds continue to use `@localive/vite`
 
 ## Commands
 
@@ -51,14 +53,14 @@ scope:app         → core, adapters, clients, plugins (not cli)
 
 ### Key packages
 
-| Package | Tag | Notes |
-|---|---|---|
-| `@localive/core` | `scope:core` | Browser-compatible, zero runtime deps. Contains shared pure utils (`localeFromPath`, `sortedKeys`, validation). |
-| `@localive/cli` | `scope:cli` | Node CLI. Externalizes `@localive/core` and all Node builtins in Vite build. Has `paths: {}` in tsconfig to avoid DTS pulling in core source. |
-| `@localive/vite` | `scope:plugin` | Dev-server plugin. Has its own `writeTranslationToFile` (single-key, indentation-preserving) and `scanTranslationFiles` (locale-aware). |
-| `@localive/angular` | `scope:client:angular` | Built with ng-packagr, not Vite. Has `sourceRoot: undefined` in Nx project graph. |
-| `@localive/vscode` | `scope:vscode` | VS Code extension. Built with esbuild (CJS, node18 target). No Vite. No declaration files. Typecheck uses `tsc --noEmit`. Pure logic tested via vitest; VS Code providers tested manually in Extension Dev Host. |
-| `@localive/website` | `scope:app` | Astro 6 + Starlight 0.40 docs site. Landing page at `/`, docs at root level (no `/docs/` prefix). Built with `npx nx build website`. Cyberpunk dual-theme (dark/light) with animated inline SVG logo. Note: `<pre><code>` blocks with JS `import` syntax cause esbuild errors in Astro — use plain `<p>` or `<div>` for code examples on the landing page. OG meta tags must be added via Starlight head config, not raw HTML `<meta property="og:*">` tags (same esbuild bug). |
+| Package             | Tag                    | Notes                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| ------------------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@localive/core`    | `scope:core`           | Browser-compatible, zero runtime deps. Contains shared pure utils (`localeFromPath`, `sortedKeys`, validation).                                                                                                                                                                                                                                                                                                                                                                 |
+| `@localive/cli`     | `scope:cli`            | Node CLI. Externalizes `@localive/core` and all Node builtins in Vite build. Has `paths: {}` in tsconfig to avoid DTS pulling in core source.                                                                                                                                                                                                                                                                                                                                   |
+| `@localive/vite`    | `scope:plugin`         | Dev-server plugin. Has its own `writeTranslationToFile` (single-key, indentation-preserving) and `scanTranslationFiles` (locale-aware).                                                                                                                                                                                                                                                                                                                                         |
+| `@localive/angular` | `scope:client:angular` | Built with ng-packagr, not Vite. Has `sourceRoot: undefined` in Nx project graph.                                                                                                                                                                                                                                                                                                                                                                                               |
+| `@localive/vscode`  | `scope:vscode`         | VS Code extension. Built with esbuild (CJS, node18 target). No Vite. No declaration files. Typecheck uses `tsc --noEmit`. Pure logic tested via vitest; VS Code providers tested manually in Extension Dev Host.                                                                                                                                                                                                                                                                |
+| `@localive/website` | `scope:app`            | Astro 6 + Starlight 0.40 docs site. Landing page at `/`, docs at root level (no `/docs/` prefix). Built with `npx nx build website`. Cyberpunk dual-theme (dark/light) with animated inline SVG logo. Note: `<pre><code>` blocks with JS `import` syntax cause esbuild errors in Astro — use plain `<p>` or `<div>` for code examples on the landing page. OG meta tags must be added via Starlight head config, not raw HTML `<meta property="og:*">` tags (same esbuild bug). |
 
 ### Shared utilities in core
 
@@ -68,10 +70,9 @@ scope:app         → core, adapters, clients, plugins (not cli)
 
 See `RELEASE-GUIDE.md` for the complete step-by-step guide. Key points:
 
-- **npm packages**: 17 packages under `@localive/*` scope. Publish in dependency order: core → adapters → clients → plugins → CLI. Use `npm publish --access public` (or add `"publishConfig": { "access": "public" }` to each package.json).
+- **npm packages**: 15 npm packages under `@localive/*` scope — **all published to npm at `0.1.4`**. Publish in dependency order: core → adapters → clients → plugins → CLI. Use `npm publish --access public` (or add `"publishConfig": { "access": "public" }` to each package.json). All `package.json` files now have `publishConfig: { "access": "public" }` set.
 - **VS Code extension**: Published via `vsce` to the VS Code Marketplace, not npm. Publisher name `localive` in `packages/vscode/package.json` must match the Marketplace publisher ID exactly. Use `vsce package --no-dependencies` (esbuild bundles everything). PAT must have **Marketplace → Manage** scope and **All accessible organizations**.
-- **Missing files**: No packages have `README.md` or `LICENSE` files yet — both required by npm. See `RELEASE-GUIDE.md` Section 3.4-3.5.
-- **Missing metadata**: No packages have `repository`, `homepage`, `bugs`, `keywords`, or `publishConfig` fields. See `RELEASE-GUIDE.md` Section 3.2.
+- **All metadata is populated**: every publishable npm package has `README.md`, `LICENSE`, `repository`, `homepage`, `bugs`, `keywords`, and `publishConfig`. The VS Code extension omits `publishConfig` because it is published via `vsce` (see `RELEASE-GUIDE.md` Section 3 for details).
 
 ## Gotchas
 
@@ -91,10 +92,10 @@ See `RELEASE-GUIDE.md` for the complete step-by-step guide. Key points:
 <!-- nx configuration start-->
 <!-- Leave the start & end comments to automatically receive updates. -->
 
-# General Guidelines for working with Nx
+## General Guidelines for working with Nx
 
 - For navigating/exploring the workspace, invoke the `nx-workspace` skill first - it has patterns for querying projects, targets, and dependencies
-- When running tasks (for example build, lint, test, e2e, etc.), always prefer running the task through `nx` (i.e., `nx run`, `nx run-many`, `nx affected`) instead of using the underlying tooling directly
+- When running tasks (for example build, lint, test, e2e, etc.), always prefer running the task through `nx` (i.e. `nx run`, `nx run-many`, `nx affected`) instead of using the underlying tooling directly
 - Prefix nx commands with the workspace's package manager (e.g., `pnpm nx build`, `npm exec nx test`) - avoids using globally installed CLI
 - You have access to the Nx MCP server and its tools, use them to help the user
 - For Nx plugin best practices, check `node_modules/@nx/<plugin>/PLUGIN.md`. Not all plugins have this file - proceed without it if unavailable.

@@ -1,60 +1,84 @@
 ---
 title: Svelte
-description: Use Localive with Svelte and svelte-i18n.
+description: Use Localive with Svelte 5 and svelte-i18n.
 ---
 
 ## Install
 
 ```bash
-npm install @localive/svelte @localive/adapter-svelte-i18n svelte-i18n
+npm install @localive/svelte @localive/adapter-svelte-i18n @localive/vite svelte-i18n svelte
 ```
 
-## Create a Localive Instance
+> The Svelte client uses Svelte 5 runes (`$state`, `$derived`, `$effect`) internally and requires **Svelte 5 or later**.
 
-```ts
-import { createLocalive } from '@localive/core';
-import { withSvelteI18n } from '@localive/adapter-svelte-i18n';
-import { _, locale } from './i18n';
+## Initialize Localive Inside a Component
 
-const localive = createLocalive({
-  adapter: withSvelteI18n({ _, locale }),
-  locales: ['en', 'fr', 'de'],
-  defaultLocale: 'en',
-});
-```
-
-## Use in Your App
+Svelte's context API requires `setContext` to run during component initialization. **Do not** call `initLocalive` from `main.ts` outside a component — do it inside your root component's `<script>` block. `initLocalive` takes the `I18nAdapter` as its first argument and the locale options as the second:
 
 ```svelte
-<script>
-  import { LiveEditorOverlay } from '@localive/svelte';
-  import { localiveState } from './localive-instance';
+<!-- App.svelte -->
+<script lang="ts">
+  import { initLocalive, LiveEditorOverlay } from '@localive/svelte';
+  import { withSvelteI18n } from '@localive/adapter-svelte-i18n';
+  import { _, locale } from 'svelte-i18n';
+
+  initLocalive(withSvelteI18n({ _, locale }), {
+    locales: ['en', 'fr', 'de'],
+    defaultLocale: 'en',
+  });
 </script>
 
-<LiveEditorOverlay localive={localive} />
+<h1 data-i18n-key="app.title">{$_('app.title')}</h1>
+<LiveEditorOverlay />
 ```
 
+## Use the State in Your Component
+
+`initLocalive` returns a `SvelteLocaliveState` with `{ instance, isActive, currentLocale }`. The two writables (`isActive` and `currentLocale`) stay in sync with the Localive store and are convenient for reactive bindings. You can also use `getLocaliveState()` from a descendant component to retrieve the state:
+
+```svelte
+<!-- ChildComponent.svelte -->
+<script lang="ts">
+  import { getLocaliveState } from '@localive/svelte';
+
+  const { isActive, currentLocale, instance } = getLocaliveState();
+</script>
+
+<button onclick={() => instance.activate()}>
+  Open editor (currently {isActive ? 'on' : 'off'})
+</button>
+```
+
+## Tap into the State (Optional Hook)
+
+`useLocaliveEditor(instance)` returns a rune-backed object with `isActive`, `currentLocale`, `activate`, `deactivate`, `toggle`, `getTranslation`, `getTranslations`, `resolveKey`, and `saveTranslation`. Pass it the `instance` from `getLocaliveState()`:
+
+```svelte
+<script lang="ts">
+  import { getLocaliveState, useLocaliveEditor } from '@localive/svelte';
+
+  const { instance } = getLocaliveState();
+  const editor = useLocaliveEditor(instance);
+</script>
+```
+
+> `useLocaliveEditor` uses Svelte 5 runes internally and can only be called during a component's initialization phase (the rune compiler runs inside `.svelte` files).
+
 ## Tag Elements with `data-i18n-key`
+
+Tag any element whose text should be editable with a `data-i18n-key` attribute matching the translation key:
 
 ```svelte
 <span data-i18n-key="nav.home">{$_('nav.home')}</span>
 <span data-i18n-key="nav.about">{$_('nav.about')}</span>
 ```
 
-## Switch Locales
+## Overlay UI Note
 
-```svelte
-<script>
-  import { localiveState } from './localive-instance';
+The Svelte `LiveEditorOverlay` currently renders a single floating toggle button (a pencil icon) that activates/de-activates the inspector. The hover-highlight, editor panel, and Save UI present in the React and Vue overlays are not yet ported — track the issue on GitHub.
 
-  function switchLocale(locale) {
-    $localiveState.locale = locale;
-  }
-</script>
+## Next Steps
 
-<select on:change={(e) => switchLocale(e.target.value)}>
-  <option value="en">English</option>
-  <option value="fr">Français</option>
-  <option value="de">Deutsch</option>
-</select>
-```
+- [Dev Server Plugin](/plugins/vite/) — write-edits-to-disk on save
+- [CLI Tools](/cli/overview/) — extract, validate, sync, generate types
+- [Auto-Tagging Concept](/concepts/auto-tagging/) — how `data-i18n-key` is resolved

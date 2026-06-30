@@ -1,120 +1,177 @@
-import { describe, it, expect, vi } from 'vitest';
-import { createLocaliveBuilder } from './builders';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { Subject, firstValueFrom } from 'rxjs';
+import type { BuilderContext, BuilderOutput } from '@angular-devkit/architect';
 import type { LocaliveBuilderOptions } from './schema';
 
-function createMockContext() {
+vi.mock('./dev-server-delegate', () => ({
+  executeDevServer: vi.fn(),
+}));
+
+import { executeDevServer } from './dev-server-delegate';
+import { localiveBuilder } from './builders';
+
+function createMockContext(): BuilderContext {
   return {
     logger: {
       info: vi.fn(),
       error: vi.fn(),
       warn: vi.fn(),
-      createChild: () => ({
-        info: vi.fn(),
-        error: vi.fn(),
-        warn: vi.fn(),
-      }),
+      createChild: () => ({ info: vi.fn(), error: vi.fn(), warn: vi.fn() }),
     },
-  } as any;
+    target: { project: '', target: '', configuration: '' },
+    builder: { builderName: '', description: '', optionSchema: false },
+    id: 0,
+    currentDirectory: process.cwd(),
+    workspaceRoot: process.cwd(),
+    analytics: undefined,
+    scheduleTarget: vi.fn(),
+    scheduleBuilder: vi.fn(),
+    getBuilderNameForTarget: vi.fn(),
+    getTargetOptions: vi.fn(),
+    validateOptions: vi.fn(),
+    reportStatus: vi.fn(),
+    reportRunning: vi.fn(),
+    getConfigurationName: vi.fn(),
+    addTelemetry: vi.fn(),
+    addError: vi.fn(),
+  } as any as BuilderContext;
 }
 
-describe('createLocaliveBuilder', () => {
-  it('returns a builder function', () => {
-    const builder = createLocaliveBuilder();
-    expect(typeof builder).toBe('function');
+function createFakeObservable(): any {
+  const subject = new Subject<BuilderOutput>();
+  subject.next({ success: true } as BuilderOutput);
+  subject.complete();
+  return subject.asObservable();
+}
+
+describe('localiveBuilder', () => {
+  beforeEach(() => {
+    vi.mocked(executeDevServer).mockReset();
+    vi.mocked(executeDevServer).mockReturnValue(createFakeObservable() as any);
   });
 
-  it('fails when translationsPath is missing', async () => {
-    const builder = createLocaliveBuilder();
+  it('delegates to the upstream dev-server builder', async () => {
     const options: LocaliveBuilderOptions = {
+      buildTarget: 'my-app:build:development',
       localive: {
-        translationsPath: '',
-        locales: ['en'],
-      },
-    };
-
-    const result = await builder(options, createMockContext());
-    expect(result.success).toBe(false);
-  });
-
-  it('succeeds with valid translationsPath', async () => {
-    const builder = createLocaliveBuilder();
-    const options: LocaliveBuilderOptions = {
-      localive: {
-        translationsPath: '/path/to/translations',
+        translationsPath: 'src/locales',
         locales: ['en', 'fr'],
         defaultLocale: 'en',
       },
     };
 
-    const result = await builder(options, createMockContext());
-    expect(result.success).toBe(true);
+    await localiveBuilder(options, createMockContext());
+
+    expect(executeDevServer).toHaveBeenCalledTimes(1);
   });
 
-  it('uses default apiBase when not specified', async () => {
-    const builder = createLocaliveBuilder();
+  it('forwards dev-server options to the upstream builder (minus localive)', async () => {
     const options: LocaliveBuilderOptions = {
+      buildTarget: 'my-app:build:development',
+      port: 4500,
+      host: '0.0.0.0',
+      open: true,
       localive: {
-        translationsPath: '/path/to/translations',
+        translationsPath: 'src/locales',
         locales: ['en', 'fr'],
       },
     };
 
-    const result = await builder(options, createMockContext());
-    expect(result.success).toBe(true);
-    expect((result as any).localiveConfig.apiBase).toBe('/__localive__');
+    await localiveBuilder(options, createMockContext());
+
+    const [forwardedOptions] = vi.mocked(executeDevServer).mock.calls[0];
+    expect(forwardedOptions).toMatchObject({
+      buildTarget: 'my-app:build:development',
+      port: 4500,
+      host: '0.0.0.0',
+      open: true,
+    });
+    expect(forwardedOptions).not.toHaveProperty('localive');
   });
 
-  it('passes custom apiBase through', async () => {
-    const builder = createLocaliveBuilder();
+  it('injects Localive middleware via extensions.middleware', async () => {
     const options: LocaliveBuilderOptions = {
+      buildTarget: 'my-app:build:development',
       localive: {
-        translationsPath: '/path/to/translations',
+        translationsPath: 'src/locales',
         locales: ['en', 'fr'],
-        apiBase: '/custom-api',
       },
     };
 
-    const result = await builder(options, createMockContext());
-    expect((result as any).localiveConfig.apiBase).toBe('/custom-api');
+    await localiveBuilder(options, createMockContext());
+
+    const callArgs = vi.mocked(executeDevServer).mock.calls[0];
+    const extensions = callArgs?.[3];
+    expect(extensions).toBeDefined();
+    expect(Array.isArray(extensions?.middleware)).toBe(true);
+    expect(extensions?.middleware?.length).toBeGreaterThanOrEqual(1);
+    expect(typeof extensions?.middleware?.[0]).toBe('function');
   });
 
-  it('uses defaultLocale from config', async () => {
-    const builder = createLocaliveBuilder();
+  it('returns the observable from the upstream builder', async () => {
     const options: LocaliveBuilderOptions = {
+      buildTarget: 'my-app:build:development',
       localive: {
-        translationsPath: '/path/to/translations',
-        locales: ['en', 'fr', 'de'],
-        defaultLocale: 'fr',
-      },
-    };
-
-    const result = await builder(options, createMockContext());
-    expect((result as any).localiveConfig.defaultLocale).toBe('fr');
-  });
-
-  it('falls back to first locale when defaultLocale is not specified', async () => {
-    const builder = createLocaliveBuilder();
-    const options: LocaliveBuilderOptions = {
-      localive: {
-        translationsPath: '/path/to/translations',
-        locales: ['de', 'en', 'fr'],
-      },
-    };
-
-    const result = await builder(options, createMockContext());
-    expect((result as any).localiveConfig.defaultLocale).toBe('de');
-  });
-
-  it('defaults activeByDefault to false', async () => {
-    const builder = createLocaliveBuilder();
-    const options: LocaliveBuilderOptions = {
-      localive: {
-        translationsPath: '/path/to/translations',
+        translationsPath: 'src/locales',
         locales: ['en'],
       },
     };
 
-    const result = await builder(options, createMockContext());
-    expect((result as any).localiveConfig.activeByDefault).toBe(false);
+    const result = localiveBuilder(options, createMockContext());
+    expect(result).toBeDefined();
+    expect(typeof result).toBe('object');
+    expect(typeof (result as any).subscribe).toBe('function');
+  });
+
+  it('fails when buildTarget is missing', async () => {
+    const options = {
+      localive: {
+        translationsPath: 'src/locales',
+        locales: ['en'],
+      },
+    } as unknown as LocaliveBuilderOptions;
+
+    const ctx = createMockContext();
+    const result = await firstValueFrom(localiveBuilder(options, ctx));
+    expect(result).toHaveProperty('success', false);
+    expect(executeDevServer).not.toHaveBeenCalled();
+  });
+
+  it('fails when localive.translationsPath is missing', async () => {
+    const options: LocaliveBuilderOptions = {
+      buildTarget: 'my-app:build:development',
+      localive: { translationsPath: '', locales: ['en'] },
+    };
+
+    const ctx = createMockContext();
+    const result = await firstValueFrom(localiveBuilder(options, ctx));
+    expect(result).toHaveProperty('success', false);
+    expect(executeDevServer).not.toHaveBeenCalled();
+  });
+
+  it('fails when localive config is absent entirely', async () => {
+    const options = { buildTarget: 'my-app:build:development' } as unknown as LocaliveBuilderOptions;
+
+    const ctx = createMockContext();
+    const result = await firstValueFrom(localiveBuilder(options, ctx));
+    expect(result).toHaveProperty('success', false);
+    expect(executeDevServer).not.toHaveBeenCalled();
+  });
+
+  it('logs a startup message with the endpoint', async () => {
+    const options: LocaliveBuilderOptions = {
+      buildTarget: 'my-app:build:development',
+      localive: {
+        translationsPath: 'src/locales',
+        locales: ['en', 'fr'],
+        endpoint: '/custom-update',
+      },
+    };
+
+    const ctx = createMockContext();
+    await localiveBuilder(options, ctx);
+    expect(ctx.logger.info).toHaveBeenCalledWith(
+      expect.stringContaining('/custom-update'),
+    );
   });
 });

@@ -2,7 +2,7 @@
   "name": "@localive/vscode",
   "displayName": "Localive",
   "description": "Work with i18n keys without leaving your editor. Hover to preview translations, autocomplete keys, jump to definitions, find references, spot missing keys, and rename across every locale. Supports React, Vue, Angular, and Svelte.",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "license": "MIT",
   "publisher": "localive",
   "author": "Ali Gamal <aga@luftborn.com> (https://github.com/Arigatouz)",

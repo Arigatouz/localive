@@ -7,12 +7,23 @@ Part of [Localive](https://github.com/Arigatouz/localive), live in-context i18n 
 ## Install
 
 ```sh
-npm install @localive/adapter-react-intl
+npm install @localive/adapter-react-intl react-intl
 ```
 
-Requires `@localive/core` and `react-intl` in your app.
+Requires the peer dependencies `react-intl` (>=3) and `@localive/core`.
 
 ## Usage
+
+```ts
+import { withReactIntl } from '@localive/adapter-react-intl';
+import { IntlProvider } from 'react-intl';
+
+// Pass the intl shape — locale, messages, and optional onLocaleChange/setLocale
+const adapter = withReactIntl({
+  locale: 'en',
+  messages: { en: { 'app.title': 'Hello' }, fr: { 'app.title': 'Bonjour' } },
+});
+```
 
 See the full documentation at **https://localive.vercel.app/concepts/adapters/**.
 

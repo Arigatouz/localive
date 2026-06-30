@@ -53,6 +53,7 @@ export function writeTranslationToFile(
     let content: Record<string, unknown>;
     let indent = 2;
     let trailingNewline = true;
+    let isNestedFormat = false;
 
     try {
       const raw = readFileSync(resolvedTarget, 'utf-8');
@@ -65,9 +66,22 @@ export function writeTranslationToFile(
       }
 
       content = JSON.parse(raw);
+
+      // Detect nested format: { "en": { "key": "value" }, "fr": { ... } }
+      // where the file is named after one of the locale keys
+      const parsedLocale = basenameWithoutExt(resolvedTarget);
+      if (
+        parsedLocale &&
+        typeof content[parsedLocale] === 'object' &&
+        content[parsedLocale] !== null &&
+        !Array.isArray(content[parsedLocale])
+      ) {
+        isNestedFormat = true;
+      }
     } catch {
       // File doesn't exist or is invalid JSON — start fresh
       content = {};
+      isNestedFormat = false;
       try {
         mkdirSync(dirname(resolvedTarget), { recursive: true });
       } catch {
@@ -75,8 +89,17 @@ export function writeTranslationToFile(
       }
     }
 
-    // Set the key value
-    content[key] = value;
+    // Set the key value — write to the correct node
+    if (isNestedFormat) {
+      const parsedLocale = basenameWithoutExt(resolvedTarget);
+      if (parsedLocale && typeof content[parsedLocale] === 'object' && content[parsedLocale] !== null) {
+        (content[parsedLocale] as Record<string, unknown>)[key] = value;
+      } else {
+        content[key] = value;
+      }
+    } else {
+      content[key] = value;
+    }
 
     // Write back with preserved indentation
     const output = JSON.stringify(content, null, indent) + (trailingNewline ? '\n' : '');
@@ -95,25 +118,37 @@ function findFileForKey(key: string, locale: string, searchRoots: string[]): str
   const fileName = `${locale}.json`;
 
   for (const root of searchRoots) {
-    const result = searchDirForKey(root, fileName, key);
+    const result = searchDirForKey(root, fileName, key, locale);
     if (result) return result;
   }
 
   return null;
 }
 
-function searchDirForKey(dir: string, fileName: string, key: string): string | null {
+function searchDirForKey(dir: string, fileName: string, key: string, locale: string): string | null {
   try {
     const entries = readdirSync(dir, { withFileTypes: true });
     for (const entry of entries) {
       const fullPath = join(dir, entry.name);
       if (entry.isDirectory()) {
-        const result = searchDirForKey(fullPath, fileName, key);
+        const result = searchDirForKey(fullPath, fileName, key, locale);
         if (result) return result;
       } else if (entry.isFile() && entry.name === fileName) {
         try {
           const content = JSON.parse(readFileSync(fullPath, 'utf-8'));
+
+          // Check flat format: content[key] directly
           if (content[key] !== undefined) {
+            return fullPath;
+          }
+
+          // Check nested format: content[locale][key]
+          if (
+            typeof content[locale] === 'object' &&
+            content[locale] !== null &&
+            !Array.isArray(content[locale]) &&
+            (content[locale] as Record<string, unknown>)[key] !== undefined
+          ) {
             return fullPath;
           }
         } catch {
@@ -129,4 +164,11 @@ function searchDirForKey(dir: string, fileName: string, key: string): string | n
 
 function getDefaultFile(locale: string, defaultPath: string): string {
   return join(defaultPath, `${locale}.json`);
+}
+
+function basenameWithoutExt(filePath: string): string | null {
+  const name = filePath.split('/').pop()?.split('\\').pop();
+  if (!name) return null;
+  const dotIndex = name.lastIndexOf('.');
+  return dotIndex > 0 ? name.substring(0, dotIndex) : name;
 }

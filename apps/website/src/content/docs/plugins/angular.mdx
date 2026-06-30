@@ -1,30 +1,39 @@
 ---
 title: Angular Builder
-description: Use Localive with Angular CLI dev server.
+description: Replace the Angular CLI dev server with the Localive builder to enable live file-writes on save.
 ---
 
 ## Install
 
 ```bash
-npm install @localive/plugin-angular
+npm install @localive/plugin-angular @localive/adapter-transloco @jsverse/transloco
 ```
+
+> The builder wraps the standard `@angular-devkit/build-angular:dev-server` builder — it forwards all dev-server options unchanged and adds the Localive save endpoint on top. If you previously used `angular-cli serve`, every flag you used (`--port`, `--open`, `--hmr`, etc.) still works.
 
 ## Configuration
 
-Replace the default `browser` builder in your `angular.json`:
+Swap the `serve` target in `angular.json` so it uses `@localive/plugin-angular:dev-server` instead of `@angular-devkit/build-angular:dev-server`. Put the `localive` block in the top-level `options` (applies to every configuration) and keep `buildTarget` in each configuration, exactly like the stock dev server:
 
 ```json
 {
   "projects": {
     "my-app": {
       "architect": {
-        "build": {
+        "serve": {
           "builder": "@localive/plugin-angular:dev-server",
           "options": {
-            "translationsPath": "src/locales",
-            "locales": ["en", "fr", "de"],
-            "defaultLocale": "en"
-          }
+            "localive": {
+              "translationsPath": "src/locales",
+              "locales": ["en", "fr", "de"],
+              "defaultLocale": "en"
+            }
+          },
+          "configurations": {
+            "development": { "buildTarget": "my-app:build:development" },
+            "production":   { "buildTarget": "my-app:build:production" }
+          },
+          "defaultConfiguration": "development"
         }
       }
     }
@@ -32,8 +41,40 @@ Replace the default `browser` builder in your `angular.json`:
 }
 ```
 
-The Angular builder wraps the standard dev-server build and intercepts translation update requests.
+## Forwarded Dev-Server Options
 
-## Options
+The builder accepts every option the upstream `@angular-devkit/build-angular:dev-server` builder accepts — `port`, `host`, `open`, `proxyConfig`, `ssl`, `liveReload`, `hmr`, `watch`, `poll`, `forceEsbuild`, `prebundle`, `headers`, `allowedHosts`, `disableHostCheck`, `publicHost`, `servePath`, `verbose`, `sslKey`, `sslCert`, `inspect` — and passes them straight through. Only add the `localive` block in addition; everything else behaves exactly the same.
 
-Same as the Vite plugin. See [Vite Plugin](/plugins/vite) for details.
+## `localive` Options
+
+The `localive` sub-object controls the Localive save endpoint:
+
+| Option | Type | Required | Default | Description |
+|--------|------|:---:|---------|-------------|
+| `translationsPath` | `string` | yes | — | Root directory holding your locale JSON files (e.g. `src/locales`). |
+| `locales` | `string[]` | yes | — | Supported locale codes, e.g. `["en", "fr", "de"]`. |
+| `defaultLocale` | `string` | no | first in `locales` | Source / fallback locale. |
+| `endpoint` | `string` | no | `/__localive-update` | Path the overlay POSTs save requests to. |
+| `searchRoots` | `string[]` | no | `[]` | Additional directories scanned for locale JSON files at startup. |
+| `ws` | `boolean` | no | `false` | Enable WebSocket transport for multi-tab sync. |
+| `wsPort` | `number` | no | auto | Override the WebSocket port used for sync. |
+
+> The localive field names and defaults match the [Vite plugin](/plugins/vite/) (`translationsPath`, `endpoint`, `ws`, `wsPort`). An older naming (`apiBase`, `activeByDefault`) used by earlier betas is no longer supported — use the names above.
+
+## How It Works
+
+1. The builder reads your `localive.translationsPath`, scans it for locale JSON files at startup, and validates `locales`.
+2. It builds the Localive HTTP middleware (the same one the Vite plugin uses) and registers it with the underlying Angular dev server.
+3. When the [overlay](/guides/angular/) saves a translation, the middleware writes the value back to the matching locale JSON file on disk and returns the file path to the browser.
+4. The dev server applies all forwarded options (`port`, `proxyConfig`, live reload, etc.) exactly as it would without Localive.
+
+## Endpoints
+
+- `POST <endpoint>` (default `/__localive-update`) — accepts `{ key, value, locale, namespace? }`, writes the value into the locale file, responds `{ ok: true, filePath }` on success.
+- Other methods on the endpoint return `405 Method not allowed`.
+
+## Next Steps
+
+- [Angular guide](/guides/angular/) — wire `provideLocalive()` and the overlay selector
+- [Security](/concepts/security/) — input validation and dev-only mode
+- [Vite plugin](/plugins/vite/) — equivalent setup for Vite-based apps

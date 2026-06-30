@@ -1,6 +1,6 @@
 {
   "name": "@localive/vue",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Vue bindings for Localive. Drop in the provider and fix copy right on the page.",
   "license": "MIT",
   "author": "Ali Gamal <aga@luftborn.com> (https://github.com/Arigatouz)",

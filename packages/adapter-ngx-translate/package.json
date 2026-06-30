@@ -1,6 +1,6 @@
 {
   "name": "@localive/adapter-ngx-translate",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Wire Localive into ngx-translate to make Angular strings editable in the running app.",
   "license": "MIT",
   "author": "Ali Gamal <aga@luftborn.com> (https://github.com/Arigatouz)",

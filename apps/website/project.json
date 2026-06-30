@@ -11,6 +11,13 @@
         "cwd": "apps/website"
       }
     },
+    "serve": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npm run dev",
+        "cwd": "apps/website"
+      }
+    },
     "build": {
       "executor": "nx:run-commands",
       "options": {

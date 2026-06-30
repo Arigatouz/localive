@@ -3,8 +3,8 @@ import type { I18nAdapter, Locale, TranslationDictionary } from '@localive/core'
 export interface SvelteI18nInstance {
   locale: { subscribe: (cb: (v: string) => void) => () => void; set: (v: string) => void };
   _: { subscribe: (cb: (v: (key: string, options?: Record<string, unknown>) => string) => void) => () => void };
-  load: (locale: string, dict: Record<string, Record<string, string>>) => Promise<void>;
-  getLocale: () => string;
+  load?: (locale: string, dict: Record<string, Record<string, string>>) => Promise<void>;
+  getLocale?: () => string;
 }
 
 export interface WithSvelteI18nOptions {

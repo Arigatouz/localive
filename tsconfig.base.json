@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "baseUrl": ".",
+    "ignoreDeprecations": "6.0",
     "composite": true,
     "declarationMap": true,
     "emitDeclarationOnly": true,
@@ -34,8 +35,7 @@
       "@localive/webpack": ["packages/plugin-webpack/src/index.ts"],
       "@localive/plugin-angular": ["packages/plugin-angular/src/index.ts"],
       "@localive/cli": ["packages/cli/src/index.ts"],
-      "@localive/vscode": ["packages/vscode/src/index.ts"],
-      "@localive/ai-openai": ["packages/ai-openai/src/index.ts"]
+      "@localive/vscode": ["packages/vscode/src/index.ts"]
     }
   }
 }

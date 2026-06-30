@@ -1,6 +1,6 @@
 {
   "name": "@localive/core",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "The framework-agnostic engine behind Localive's in-app translation editing. No runtime dependencies.",
   "license": "MIT",
   "author": "Ali Gamal <aga@luftborn.com> (https://github.com/Arigatouz)",

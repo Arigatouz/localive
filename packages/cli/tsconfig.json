@@ -7,6 +7,7 @@
     "declarationMap": true,
     "sourceMap": true,
     "lib": ["es2022"],
+    "types": ["node"],
     "paths": {}
   },
   "include": ["src/**/*.ts"],

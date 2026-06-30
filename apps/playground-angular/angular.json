@@ -85,7 +85,14 @@
           "defaultConfiguration": "production"
         },
         "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
+          "builder": "@localive/plugin-angular:dev-server",
+          "options": {
+            "localive": {
+              "translationsPath": "src/locales",
+              "locales": ["en", "fr"],
+              "defaultLocale": "en"
+            }
+          },
           "configurations": {
             "production": {
               "buildTarget": "playground-angular:build:production"

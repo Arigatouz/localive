@@ -1,7 +1,7 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { localiveInstance, switchLocale } from './app.config';
-import { LiveEditorOverlayComponent } from '@localive/angular';
+import { switchLocale } from './app.config';
+import { LiveEditorOverlayComponent, LOCALIVE_INSTANCE } from '@localive/angular';
 
 @Component({
   selector: 'app-root',
@@ -70,7 +70,7 @@ export class AppComponent {
     },
   });
 
-  private instance = localiveInstance;
+  private instance = inject(LOCALIVE_INSTANCE);
 
   constructor() {
     this.instance.store.subscribe((state) => {

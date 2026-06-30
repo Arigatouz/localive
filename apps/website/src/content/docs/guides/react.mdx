@@ -1,39 +1,47 @@
 ---
 title: React
-description: Use Localive with React and i18next.
+description: Use Localive with React and i18next or react-intl.
 ---
 
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 
 ## Install
 
+<Tabs syncKey="react-i18n">
+  <TabItem label="i18next">
+
 ```bash
 npm install @localive/react @localive/adapter-i18next i18next react-i18next
 ```
 
-## Create a Localive Instance
+  </TabItem>
+  <TabItem label="react-intl">
+
+```bash
+npm install @localive/react @localive/adapter-react-intl react-intl
+```
+
+  </TabItem>
+</Tabs>
+
+## Wrap Your App with the Provider
+
+`LocaliveProvider` takes `adapter`, `locales`, and `defaultLocale` as props. It creates the Localive instance internally — you do **not** pass a pre-built `localive` instance:
 
 ```tsx
-import { createLocalive } from '@localive/core';
+import { LocaliveProvider, LiveEditorOverlay } from '@localive/react';
 import { withI18next } from '@localive/adapter-i18next';
 import i18n from './i18n';
 
-const localive = createLocalive({
-  adapter: withI18next(i18n),
-  locales: ['en', 'fr', 'de'],
-  defaultLocale: 'en',
-});
-```
-
-## Wrap Your App
-
-```tsx
-import { LocaliveProvider } from '@localive/react';
-
 function App() {
   return (
-    <LocaliveProvider localive={localive}>
+    <LocaliveProvider
+      adapter={withI18next(i18n)}
+      locales={['en', 'fr', 'de']}
+      defaultLocale="en"
+    >
       <MyApp />
+      <LiveEditorOverlay />
     </LocaliveProvider>
   );
 }
@@ -41,74 +49,61 @@ function App() {
 
 ## Tag Elements for Editing
 
-Use `useLocaliveTag` to make any element clickable in the overlay:
+Use `useLocaliveTag()` to make any element resolvable to a translation key. It returns `{ getTagProps, resolveKey }` — spread `getTagProps(key)` onto the element:
 
 ```tsx
 import { useLocaliveTag } from '@localive/react';
 
 function Nav() {
-  const homeTag = useLocaliveTag('nav.home');
-  const aboutTag = useLocaliveTag('nav.about');
+  const { getTagProps } = useLocaliveTag();
 
   return (
     <nav>
-      <a {...homeTag}>{t('nav.home')}</a>
-      <a {...aboutTag}>{t('nav.about')}</a>
+      <a {...getTagProps('nav.home')}>{t('nav.home')}</a>
+      <a {...getTagProps('nav.about')}>{t('nav.about')}</a>
     </nav>
   );
 }
 ```
 
-## Show the Editor Overlay
+## Toggle the Inspector
 
-Import and render the overlay component anywhere inside your `LocaliveProvider`:
-
-```tsx
-import { LiveEditorOverlay } from '@localive/react';
-
-function Layout({ children }) {
-  return (
-    <div>
-      {children}
-      <LiveEditorOverlay />
-    </div>
-  );
-}
-```
-
-## Switch Locales
+`useLocaliveEditor()` reads the instance from context (it takes no arguments) and returns `{ isActive, activate, deactivate, toggle, getTranslation }`. Note the **exact** return shape — there is no `locale` or `setLocale`; use your i18n library (e.g. `i18next.changeLanguage`) to switch locales:
 
 ```tsx
 import { useLocaliveEditor } from '@localive/react';
 
-function LocaleSwitcher() {
-  const { locale, setLocale } = useLocaliveEditor();
+function Toolbar() {
+  const { isActive, toggle, getTranslation } = useLocaliveEditor();
 
   return (
-    <select value={locale} onChange={(e) => setLocale(e.target.value)}>
-      <option value="en">English</option>
-      <option value="fr">Français</option>
-      <option value="de">Deutsch</option>
-    </select>
+    <button onClick={toggle}>
+      {isActive ? '✕ Close editor' : '✎ Open editor'}
+    </button>
   );
 }
 ```
 
 ## react-intl Adapter
 
-If you use `react-intl` instead of `i18next`:
-
-```bash
-npm install @localive/adapter-react-intl react-intl
-```
+If you use `react-intl` instead of `i18next`, swap the adapter:
 
 ```tsx
+import { LocaliveProvider } from '@localive/react';
 import { withReactIntl } from '@localive/adapter-react-intl';
-import { IntlProvider } from 'react-intl';
 
-const localive = createLocalive({
-  adapter: withReactIntl(intl),
-  locales: ['en', 'fr'],
-  defaultLocale: 'en',
-});
+<LocaliveProvider
+  adapter={withReactIntl(intl)}
+  locales={['en', 'fr']}
+  defaultLocale="en"
+>
+  <MyApp />
+  <LiveEditorOverlay />
+</LocaliveProvider>
 ```
+
+## Next Steps
+
+- [Dev Server Plugin](/plugins/vite/) — write-edits-to-disk on save
+- [CLI Tools](/cli/overview/) — extract, validate, sync, generate types from the terminal
+- [Auto-Tagging Concept](/concepts/auto-tagging/) — how `data-i18n-key` is resolved

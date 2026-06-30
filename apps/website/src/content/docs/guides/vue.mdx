@@ -1,41 +1,49 @@
 ---
 title: Vue
-description: Use Localive with Vue and vue-i18n.
+description: Use Localive with Vue 3 and vue-i18n.
 ---
 
 ## Install
 
 ```bash
-npm install @localive/vue @localive/adapter-vue-i18n vue-i18n
+npm install @localive/vue @localive/adapter-vue-i18n @localive/vite vue-i18n
 ```
 
-## Create a Localive Instance
+## Register the Localive Plugin
+
+`createLocalivePlugin` is a **factory** — you call it with options, then pass the returned plugin to `app.use()`. There is no `LocalivePlugin` class:
 
 ```ts
-import { createLocalive } from '@localive/core';
+import { createApp } from 'vue';
+import { createI18n } from 'vue-i18n';
+import { createLocalivePlugin, LiveEditorOverlay } from '@localive/vue';
 import { withVueI18n } from '@localive/adapter-vue-i18n';
-import i18n from './i18n';
+import App from './App.vue';
+import en from './locales/en.json';
+import fr from './locales/fr.json';
 
-const localive = createLocalive({
-  adapter: withVueI18n(i18n),
+const i18n = createI18n({
+  legacy: false,
+  locale: 'en',
+  fallbackLocale: 'en',
+  messages: { en, fr },
+});
+
+const localive = createLocalivePlugin({
+  adapter: withVueI18n(i18n.global),
   locales: ['en', 'fr', 'de'],
   defaultLocale: 'en',
 });
-```
-
-## Register the Plugin
-
-```ts
-import { LocalivePlugin } from '@localive/vue';
 
 const app = createApp(App);
-app.use(LocalivePlugin, { localive });
+app.use(i18n);
+app.use(localive);
 app.mount('#app');
 ```
 
 ## Tag Elements with `v-localive-tag`
 
-Use the `v-localive-tag` directive in your templates:
+The `v-localive-tag` directive sets the `data-i18n-key` attribute on the element so the overlay can resolve clicks to a translation key:
 
 ```vue
 <template>
@@ -47,6 +55,8 @@ Use the `v-localive-tag` directive in your templates:
 ```
 
 ## Show the Editor Overlay
+
+`LiveEditorOverlay` takes **no props** — it reads the Localive instance from the injected `localiveSymbol`. Render it anywhere inside the component tree where the plugin is installed:
 
 ```vue
 <template>
@@ -61,19 +71,30 @@ import { LiveEditorOverlay } from '@localive/vue';
 </script>
 ```
 
-## Switch Locales
+## Toggle the Inspector
+
+Vue's `useLocaliveEditor` **takes the `I18nLiveInstance` as an argument** (unlike React, which reads it from context). `inject(localiveSymbol)` returns the instance, then pass it to the hook. `isActive` is a `Ref<boolean>`:
 
 ```vue
 <template>
-  <select v-model="locale">
-    <option value="en">English</option>
-    <option value="fr">Français</option>
-    <option value="de">Deutsch</option>
-  </select>
+  <button @click="toggle">
+    {{ isActive ? '✕ Close editor' : '✎ Open editor' }}
+  </button>
 </template>
 
 <script setup>
-import { useLocaliveEditor } from '@localive/vue';
-const { locale, setLocale } = useLocaliveEditor();
+import { inject } from 'vue';
+import { useLocaliveEditor, localiveSymbol } from '@localive/vue';
+
+const instance = inject(localiveSymbol);
+const { isActive, activate, deactivate, toggle, getTranslation } = useLocaliveEditor(instance);
 </script>
 ```
+
+> Vue's `useLocaliveEditor` returns the same five fields as React's: `isActive`, `activate`, `deactivate`, `toggle`, `getTranslation`. To switch locales, use your i18n library (`i18n.global.locale.value = 'fr'`); Localive observes the change through the adapter.
+
+## Next Steps
+
+- [Dev Server Plugin](/plugins/vite/) — write-edits-to-disk on save
+- [CLI Tools](/cli/overview/) — extract, validate, sync, generate types
+- [Auto-Tagging Concept](/concepts/auto-tagging/) — how `data-i18n-key` is resolved

@@ -19,8 +19,10 @@ describe('plugin security', () => {
       expect(validateLocale('../etc').valid).toBe(false);
     });
 
-    it('rejects locales with underscores', () => {
-      expect(validateLocale('en_US').valid).toBe(false);
+    it('accepts locales with underscores', () => {
+      expect(validateLocale('en_US').valid).toBe(true);
+      expect(validateLocale('pt_BR').valid).toBe(true);
+      expect(validateLocale('zh_CN').valid).toBe(true);
     });
   });
 

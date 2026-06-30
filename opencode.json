@@ -5,6 +5,11 @@
       "type": "local",
       "command": ["npx", "nx", "mcp"],
       "enabled": true
+    },
+    "playwright-mcp": {
+      "type": "local",
+      "command": ["npx", "@playwright/mcp@latest", "--headless"],
+      "enabled": true
     }
   }
 }

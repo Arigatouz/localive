@@ -14,6 +14,23 @@ Requires the peer dependencies `webpack` (>=5) and `@localive/vite`.
 
 ## Usage
 
+```js
+// webpack.config.js
+const { LocaliveWebpackPlugin } = require('@localive/webpack');
+
+module.exports = {
+  devServer: {
+    // ...your dev server config
+  },
+  plugins: [
+    new LocaliveWebpackPlugin({
+      translationsPath: './src/locales',
+      locales: ['en', 'fr'],
+    }),
+  ],
+};
+```
+
 See the full documentation at **https://localive.vercel.app/plugins/webpack/**.
 
 ## License

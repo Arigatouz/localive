@@ -46,43 +46,68 @@ Pick the framework you work in. Each setup is three steps: install the packages,
 npm install @localive/angular @localive/adapter-transloco @localive/core @localive/plugin-angular @jsverse/transloco
 ```
 
-Register the Localive dev-server builder in `angular.json`:
+Register the Localive dev-server builder in `angular.json`. The builder wraps the standard Angular dev server and injects the Localive save endpoint. Set the `localive` options at the top level and `buildTarget` per configuration, just like the stock `dev-server`:
 
 ```json
 {
   "serve": {
     "builder": "@localive/plugin-angular:dev-server",
+    "options": {
+      "localive": {
+        "translationsPath": "src/locales",
+        "locales": ["en", "fr"],
+        "defaultLocale": "en"
+      }
+    },
     "configurations": {
-      "development": { "buildTarget": "your-app:build:development" }
-    }
+      "development": { "buildTarget": "your-app:build:development" },
+      "production":   { "buildTarget": "your-app:build:production" }
+    },
+    "defaultConfiguration": "development"
   }
 }
 ```
 
-Provide Localive when you bootstrap the app (`main.ts`):
+Provide Localive when you bootstrap the app (`main.ts` or `app.config.ts`). `provideLocalive` takes an adapter **factory** (a function returning the `I18nAdapter`) as its first argument and the locale options as its second:
 
 ```ts
-import { bootstrapApplication } from '@angular/platform-browser'
-import { provideLocalive } from '@localive/angular'
+import { provideLocalive, LiveEditorOverlayComponent } from '@localive/angular'
 import { withTransloco } from '@localive/adapter-transloco'
-import { TranslocoService } from '@jsverse/transloco'
+import { TranslocoService, TranslocoPipe } from '@jsverse/transloco'
+import { inject, ApplicationConfig } from '@angular/core'
 import { AppComponent } from './app/app.component'
 
-bootstrapApplication(AppComponent, {
+export const appConfig: ApplicationConfig = {
   providers: [
-    provideLocalive({
-      adapter: (transloco: TranslocoService) => withTransloco(transloco),
-      locales: ['en', 'fr'],
-      defaultLocale: 'en',
-    }),
+    provideLocalive(
+      () => withTransloco(inject(TranslocoService), TranslocoPipe),
+      { locales: ['en', 'fr'], defaultLocale: 'en' },
+    ),
   ],
-}).catch((err) => console.error(err))
+}
 ```
 
-Drop the overlay into your root template:
+> The Transloco adapter accepts the `TranslocoService` instance and the pipe/directive class so it can resolve keys from elements the Transloco directives touched.
+
+Drop the overlay into your root template. The selector is `localive-overlay`:
 
 ```html
 <localive-overlay></localive-overlay>
+```
+
+Import `LiveEditorOverlayComponent` in your standalone root component (or `NgModule`):
+
+```ts
+import { LiveEditorOverlayComponent } from '@localive/angular'
+
+@Component({
+  imports: [LiveEditorOverlayComponent],
+  template: `
+    <localive-overlay></localive-overlay>
+    <router-outlet />
+  `,
+})
+export class AppComponent {}
 ```
 
 ### React (with i18next)
@@ -172,6 +197,52 @@ const localive = createLocalivePlugin({
 createApp(App).use(i18n).use(localive).mount('#app')
 ```
 
+### Svelte (with svelte-i18n)
+
+```sh
+npm install @localive/svelte @localive/adapter-svelte-i18n @localive/core @localive/vite svelte-i18n svelte
+```
+
+Add the plugin to `vite.config.ts` (same shape as other Vite apps):
+
+```ts
+import { defineConfig } from 'vite'
+import { svelte } from '@sveltejs/vite-plugin-svelte'
+import { localiveVite } from '@localive/vite'
+
+export default defineConfig({
+  plugins: [
+    svelte(),
+    localiveVite({
+      translationsPath: './src/locales',
+      locales: ['en', 'fr'],
+      defaultLocale: 'en',
+    }),
+  ],
+})
+```
+
+Initialize Localive **inside a component** (Svelte context requires it). Call `initLocalive` during your root component's setup, then render the overlay descendant:
+
+```svelte
+<!-- App.svelte -->
+<script lang="ts">
+  import { initLocalive, LiveEditorOverlay } from '@localive/svelte'
+  import { withSvelteI18n } from '@localive/adapter-svelte-i18n'
+  import { _, locale } from 'svelte-i18n'
+
+  initLocalive(withSvelteI18n({ _, locale }), {
+    locales: ['en', 'fr'],
+    defaultLocale: 'en',
+  })
+</script>
+
+<h1 data-i18n-key="app.title">{$_('app.title')}</h1>
+<LiveEditorOverlay />
+```
+
+> The Svelte overlay provides a toggle button to activate the inspector. Tag elements with `data-i18n-key="your.key"` so clicks resolve to the right locale entry.
+
 Then start your dev server, open the app, and click any translated string to edit it. Full guides for every framework live at [localive.vercel.app](https://localive.vercel.app/).
 
 ## Packages
@@ -202,7 +273,7 @@ npm install -g @localive/cli     # or run it directly: npx @localive/cli --help
 
 | Command | What it does |
 |---|---|
-| `localive extract` | Scans your source files and collects translation keys into a locale JSON |
+| `localive extract` | Scans your source files and reports all translation keys (use `--json` for machine output) |
 | `localive validate` | Reports missing, extra, or empty translations, and exits with code 1 so it fits in CI |
 | `localive sync` | Copies missing keys from the default locale into every other locale |
 | `localive types` | Generates a TypeScript union type of all your keys |

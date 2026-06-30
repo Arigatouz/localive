@@ -16,9 +16,9 @@ Requires the peer dependencies `@ngx-translate/core` (>=15) and `@localive/core`
 
 ```ts
 import { withNgxTranslate } from '@localive/adapter-ngx-translate';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 
-const adapter = withNgxTranslate(inject(TranslateService));
+const adapter = withNgxTranslate(inject(TranslateService), TranslatePipe);
 ```
 
 See the full documentation at **https://localive.vercel.app/concepts/adapters/**.

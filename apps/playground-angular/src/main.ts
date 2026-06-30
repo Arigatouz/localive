@@ -1,12 +1,5 @@
 import { bootstrapApplication } from '@angular/platform-browser';
 import { AppComponent } from './app/app.component';
-import { appConfig, localiveInstance } from './app/app.config';
-import { LocaliveInspectorService, LOCALIVE_INSTANCE } from '@localive/angular';
+import { appConfig } from './app/app.config';
 
-bootstrapApplication(AppComponent, {
-  providers: [
-    ...appConfig.providers!,
-    { provide: LOCALIVE_INSTANCE, useValue: localiveInstance },
-    LocaliveInspectorService,
-  ],
-}).catch((err) => console.error(err));
+bootstrapApplication(AppComponent, appConfig).catch((err) => console.error(err));

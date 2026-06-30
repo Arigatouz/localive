@@ -16,9 +16,9 @@ Requires the peer dependencies `@jsverse/transloco` (>=7) and `@localive/core`.
 
 ```ts
 import { withTransloco } from '@localive/adapter-transloco';
-import { TranslocoService } from '@jsverse/transloco';
+import { TranslocoService, TranslocoPipe } from '@jsverse/transloco';
 
-const adapter = withTransloco(inject(TranslocoService));
+const adapter = withTransloco(inject(TranslocoService), TranslocoPipe);
 ```
 
 See the full documentation at **https://localive.vercel.app/concepts/adapters/**.

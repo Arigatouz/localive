@@ -1,6 +1,6 @@
 import type { TranslationEntry, SanitizationResult } from './types';
 
-const LOCALE_REGEX = /^[a-zA-Z][a-zA-Z0-9-]*$/;
+const LOCALE_REGEX = /^[a-zA-Z][a-zA-Z0-9_-]*$/;
 
 const DANGEROUS_KEY_SEGMENTS = ['__proto__', 'prototype', 'constructor'];
 
