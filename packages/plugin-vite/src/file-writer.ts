@@ -95,17 +95,14 @@ export function writeTranslationToFile(
       }
     }
 
-    // Set the key value — write to the correct node
-    if (isNestedFormat) {
-      const parsedLocale = basenameWithoutExt(resolvedTarget);
-      if (parsedLocale && typeof content[parsedLocale] === 'object' && content[parsedLocale] !== null) {
-        (content[parsedLocale] as Record<string, unknown>)[key] = value;
-      } else {
-        content[key] = value;
-      }
-    } else {
-      content[key] = value;
+    const localeNode = isNestedFormat ? basenameWithoutExt(resolvedTarget) : null;
+    const dictionary = localeNode ? (content[localeNode] as Record<string, unknown>) : content;
+
+    const existingValue = Object.hasOwn(dictionary, key) ? dictionary[key] : null;
+    if (existingValue !== null && typeof existingValue !== 'string') {
+      return { success: false, error: `Refusing to replace the non-string value of "${key}" with text` };
     }
+    dictionary[key] = value;
 
     // Write back with preserved indentation
     const json = JSON.stringify(content, null, indent) + (trailingNewline ? '\n' : '');

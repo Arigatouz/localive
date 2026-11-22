@@ -194,6 +194,28 @@ describe('writeTranslationToFile', () => {
     expect(saveOver('{\n\n    "hello": "old"\n}\n').saved).toBe('{\n    "hello": "new"\n}\n');
   });
 
+  it.each([
+    ['variants', 'count', '{"count":[{"match":{"n=one":"1 item"}}]}'],
+    ['a group', 'nav', '{"nav":{"home":"Home"}}'],
+    ['a number', 'limit', '{"limit":5}'],
+    ['variants under a locale node', 'count', '{"en":{"count":[{"match":{}}]}}'],
+  ])('refuses to replace %s with text', (_description, key, original) => {
+    const { result, saved } = saveOver(original, key);
+
+    expect(result.success).toBe(false);
+    expect(saved).toBe(original);
+  });
+
+  it.each([
+    ['an untranslated null', 'title', '{"title":null}'],
+    ['a key named like an Object method', 'toString', '{"title":"Title"}'],
+  ])('writes over %s', (_description, key, original) => {
+    const { result, saved } = saveOver(original, key);
+
+    expect(result.success).toBe(true);
+    expect(JSON.parse(saved!)[key]).toBe('new');
+  });
+
   it('throws for path outside allowed roots', () => {
     mkdirSync(join(testDir, 'i18n'), { recursive: true });
     const enPath = join(testDir, 'i18n', 'en.json');
