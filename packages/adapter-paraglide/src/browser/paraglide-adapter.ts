@@ -7,6 +7,7 @@ import {
   indexMarkers,
   setDraft,
 } from '../runtime/index.js';
+import { stripMarkersFromCopiesAndForms } from './strip-markers.js';
 
 export interface ParaglideAdapterOptions {
   /** Paraglide's `getLocale` from the generated runtime. */
@@ -40,6 +41,7 @@ export async function createParaglideAdapter({
   const keys = new Set(catalog.locales.flatMap((locale) => Object.keys(catalog.messages[locale] ?? {})));
   const markerIndex = indexMarkers(catalog.locales.flatMap((locale) => [...keys].map((key) => ({ locale, key }))));
   const readOnly = new Set(catalog.readOnly);
+  const stopStripping = hasEditCookie(document.cookie) ? stripMarkersFromCopiesAndForms() : undefined;
 
   return {
     name: 'paraglide',
@@ -55,7 +57,10 @@ export async function createParaglideAdapter({
     },
     preview: showDraft,
     isReadOnly: (key) => readOnly.has(key),
-    destroy: clearDrafts,
+    destroy() {
+      clearDrafts();
+      stopStripping?.();
+    },
   };
 }
 

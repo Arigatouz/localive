@@ -99,6 +99,26 @@ describe('createParaglideAdapter', () => {
     expect(untag(title())).toBe('Title');
   });
 
+  it('strips markers from submitted forms while in edit mode, until destroyed', async () => {
+    const submit = (value: string) => {
+      const formData = new FormData();
+      formData.append('title', value);
+      document.dispatchEvent(Object.assign(new Event('formdata'), { formData }));
+      return formData.get('title');
+    };
+    const marked = `Title${markerFor('en', 'title')}`;
+
+    const outsideEditMode = await create();
+    expect(submit(marked)).toBe(marked);
+    outsideEditMode.destroy!();
+
+    document.cookie = 'localive_edit=1; path=/';
+    const inEditMode = await create();
+    expect(submit(marked)).toBe('Title');
+    inEditMode.destroy!();
+    expect(submit(marked)).toBe(marked);
+  });
+
   it('works with createLocalive', async () => {
     const adapter = await create();
     document.cookie = 'localive_edit=1; path=/';
