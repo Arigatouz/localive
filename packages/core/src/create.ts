@@ -1,3 +1,4 @@
+import { KeyResolver } from './resolver';
 import { I18nLiveStore } from './store';
 import type {
   I18nLiveConfig,
@@ -40,6 +41,7 @@ export function createLocalive(config: I18nLiveConfig): I18nLiveInstance {
     active: config.activeByDefault ?? false,
   });
 
+  const resolver = new KeyResolver(store, adapter);
   let destroyed = false;
 
   adapter.onLocaleChange((newLocale: Locale) => {
@@ -81,12 +83,7 @@ export function createLocalive(config: I18nLiveConfig): I18nLiveInstance {
     },
 
     resolveKey(element: HTMLElement): string | null {
-      const keyAttr = element.getAttribute('data-i18n-key');
-      if (keyAttr) return keyAttr;
-      if (adapter.getKeyFromElement) {
-        return adapter.getKeyFromElement(element);
-      }
-      return reverseLookup(element, store);
+      return resolver.resolveKey(element);
     },
 
     getTranslation(key: string, locale: Locale): string | undefined {
@@ -186,27 +183,4 @@ async function readErrorMessage(response: Response): Promise<string> {
   } catch {
     return body;
   }
-}
-
-function reverseLookup(
-  element: HTMLElement,
-  store: I18nLiveStore
-): string | null {
-  const text = element.textContent?.trim();
-  if (!text) return null;
-
-  const dict = store.dictionaries.get(store.locale);
-  if (!dict) return null;
-
-  for (const [key, value] of Object.entries(dict)) {
-    if (typeof value === 'string') {
-      const pattern = value.replace(/\{\{[^}]+\}\}/g, '(.+?)');
-      if (pattern === text) return key;
-      const regex: RegExp = new RegExp(`^${pattern}$`);
-      if (regex.test(text)) return key;
-      if (value === text) return key;
-    }
-  }
-
-  return null;
 }

@@ -32,11 +32,11 @@ export class KeyResolver {
     const dict = this.store.dictionaries.get(this.store.locale);
     if (!dict) return null;
 
+    const exactMatch = Object.keys(dict).find((key) => dict[key] === text);
+    if (exactMatch !== undefined) return exactMatch;
+
     for (const [key, value] of Object.entries(dict)) {
       if (typeof value !== 'string') continue;
-
-      // Exact match
-      if (value === text) return key;
 
       // Pattern match: replace interpolation placeholders with wildcard regex
       const hasInterpolation = value.includes('{{') || value.includes('{');
@@ -45,6 +45,9 @@ export class KeyResolver {
         let pattern: string = value
           .replace(/\{\{[^}]+\}\}/g, '___INTERP___')   // {{name}} style
           .replace(/\{[^}]+\}/g, '___INTERP___');        // {name} style (ICU/FormatJS)
+
+        // A value made only of placeholders would match every element on the page.
+        if (!pattern.replaceAll('___INTERP___', '').trim()) continue;
 
         // Step 2: Escape all regex special characters
         pattern = pattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');

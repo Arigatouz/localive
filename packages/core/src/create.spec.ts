@@ -108,6 +108,25 @@ describe('createLocalive', () => {
     vi.unstubAllGlobals();
   });
 
+  it.each([
+    [{ cta: 'Click (here', greeting: 'Hello {name}' }, 'Hello Anna', 'greeting'],
+    [{ price: 'Costs $5 (approx.)' }, 'Costs $5 (approx.)', 'price'],
+    [{ dots: 'v1.2' }, 'v1x2', null],
+    [{ greeting: 'Hello {name}', world: 'Hello World' }, 'Hello World', 'world'],
+    [{ count: '{count}' }, 'Unrelated text', null],
+  ])('resolves %j from the text "%s"', (dictionary, text, key) => {
+    const instance = createLocalive({
+      ...validConfig,
+      adapter: createMockAdapter({ getTranslations: () => dictionary, getKeyFromElement: undefined }),
+    });
+    const element = document.createElement('span');
+    element.textContent = text;
+
+    expect(instance.resolveKey(element)).toBe(key);
+
+    instance.destroy();
+  });
+
   it('destroy cleans up observers and DOM elements', () => {
     const instance = createLocalive(validConfig);
     instance.activate();
