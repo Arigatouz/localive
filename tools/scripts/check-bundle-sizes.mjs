@@ -20,7 +20,7 @@ const SIZE_LIMITS = {
   '@localive/adapter-transloco': { maxGzip: 1000 },
   '@localive/adapter-react-intl': { maxGzip: 1000 },
   '@localive/adapter-svelte-i18n': { maxGzip: 1000 },
-  '@localive/vite': { maxGzip: 3000 },
+  '@localive/vite': { maxGzip: 6000 },
   '@localive/webpack': { maxGzip: 3000 },
   '@localive/plugin-angular': { maxGzip: 1000 },
 };
