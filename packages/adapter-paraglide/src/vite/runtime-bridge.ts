@@ -3,7 +3,16 @@ import { join } from 'node:path';
 
 export const RUNTIME_BRIDGE_ID = 'virtual:localive-paraglide-runtime';
 const RESOLVED_ID = `\0${RUNTIME_BRIDGE_ID}`;
-const RUNTIME = '@localive/adapter-paraglide/runtime';
+
+export interface RuntimeBridgeOptions {
+  /** Folder of the app, where Svelte is looked up. */
+  appRoot: string;
+  /**
+   * File of the runtime module, imported by path because Vite would discover a bare
+   * specifier only when the first edit-mode page loads, then re-optimize and reload it.
+   */
+  runtimeFile: string;
+}
 
 export function resolveRuntimeBridge(source: string): string | null {
   return source === RUNTIME_BRIDGE_ID ? RESOLVED_ID : null;
@@ -13,13 +22,14 @@ export function resolveRuntimeBridge(source: string): string | null {
  * The module instrumented messages import `tag` from.
  * When Svelte resolves from the app's folder, it also makes drafts reactive.
  */
-export function loadRuntimeBridge(id: string, appRoot: string): string | null {
+export function loadRuntimeBridge(id: string, { appRoot, runtimeFile }: RuntimeBridgeOptions): string | null {
   if (id !== RESOLVED_ID) return null;
 
-  const exportTag = `export { tag } from ${JSON.stringify(RUNTIME)};\n`;
+  const runtime = JSON.stringify(runtimeFile.replaceAll('\\', '/'));
+  const exportTag = `export { tag } from ${runtime};\n`;
   if (!isSvelteInstalled(appRoot)) return exportTag;
   return `import { createSubscriber } from 'svelte/reactivity';
-import { useSubscriber } from ${JSON.stringify(RUNTIME)};
+import { useSubscriber } from ${runtime};
 useSubscriber(createSubscriber);
 ${exportTag}`;
 }

@@ -1,6 +1,7 @@
 import type { TranslationEntry } from '@localive/core';
 import type { IncomingMessage } from 'node:http';
 import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { markerFor } from '../runtime/index.js';
 import { readCatalog, type MessageCatalog } from './catalog.js';
 import { instrumentMessageModule, type TransformedModule } from './instrument-messages.js';
@@ -25,6 +26,9 @@ export interface ParaglideIntegration {
   handleRequest(req: IncomingMessage, next: () => void): void;
 }
 
+// The built vite.js sits beside runtime.js in dist.
+const RUNTIME_FILE = fileURLToPath(new URL('./runtime.js', import.meta.url));
+
 export function paraglideIntegration({ project, exclude = [] }: ParaglideIntegrationOptions): ParaglideIntegration {
   const projectPath = resolve(project);
   const isExcluded = (key: string) => exclude.some((pattern) => (typeof pattern === 'string' ? pattern === key : pattern.test(key)));
@@ -42,7 +46,7 @@ export function paraglideIntegration({ project, exclude = [] }: ParaglideIntegra
       return catalog;
     },
     resolveId: resolveRuntimeBridge,
-    load: (id) => loadRuntimeBridge(id, dirname(projectPath)),
+    load: (id) => loadRuntimeBridge(id, { appRoot: dirname(projectPath), runtimeFile: RUNTIME_FILE }),
     transform(code, id) {
       return instrumentMessageModule(code, id, (source) => this.parse(source), { isExcluded });
     },

@@ -13,6 +13,7 @@ import { handleRequestInScope } from './request-scope.js';
 import { loadRuntimeBridge, resolveRuntimeBridge, RUNTIME_BRIDGE_ID } from './runtime-bridge.js';
 
 const require = createRequire(import.meta.url);
+const RUNTIME_FILE = fileURLToPath(new URL('../runtime/index.ts', import.meta.url));
 const KEYS = ['plain', 'greet', 'nav.home', 'helloWorld', 'count', 'rich', 'only_en'];
 const MESSAGES = {
   en: {
@@ -69,7 +70,6 @@ describe.each<Layout>(['message-modules', 'locale-modules', 'virtual-modules'])(
       appType: 'custom',
       cacheDir: join(root, '.vite'),
       optimizeDeps: { noDiscovery: true },
-      resolve: { alias: { '@localive/adapter-paraglide/runtime': fileURLToPath(new URL('../runtime/index.ts', import.meta.url)) } },
       server: { middlewareMode: true, hmr: false, ws: false, watch: null },
       plugins: [
         ...paraglide,
@@ -77,7 +77,7 @@ describe.each<Layout>(['message-modules', 'locale-modules', 'virtual-modules'])(
           name: 'localive-paraglide-test',
           enforce: 'post',
           resolveId: { order: 'pre', handler: resolveRuntimeBridge },
-          load: (id) => loadRuntimeBridge(id, root),
+          load: (id) => loadRuntimeBridge(id, { appRoot: root, runtimeFile: RUNTIME_FILE }),
           transform(code, id) {
             return instrumentMessageModule(code, id, (source) => this.parse(source), { isExcluded: () => false });
           },
@@ -171,7 +171,14 @@ describe('request scope', () => {
   it('makes drafts reactive only where Svelte resolves from the app', () => {
     const bridgeId = resolveRuntimeBridge(RUNTIME_BRIDGE_ID)!;
 
-    expect(loadRuntimeBridge(bridgeId, process.cwd())).toContain('useSubscriber(createSubscriber)');
-    expect(loadRuntimeBridge(bridgeId, tmpdir())).not.toContain('svelte');
+    expect(loadRuntimeBridge(bridgeId, { appRoot: process.cwd(), runtimeFile: RUNTIME_FILE })).toContain('useSubscriber(createSubscriber)');
+    expect(loadRuntimeBridge(bridgeId, { appRoot: tmpdir(), runtimeFile: RUNTIME_FILE })).not.toContain('svelte');
+  });
+
+  it('imports the runtime by file path, which Vite does not pre-bundle', () => {
+    const runtimeFile = String.raw`C:\app\runtime.js`;
+    const bridge = loadRuntimeBridge(resolveRuntimeBridge(RUNTIME_BRIDGE_ID)!, { appRoot: tmpdir(), runtimeFile });
+
+    expect(bridge?.trim()).toBe('export { tag } from "C:/app/runtime.js";');
   });
 });
