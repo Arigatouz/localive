@@ -24,6 +24,7 @@ export default defineConfig({
     environment: 'jsdom',
     include: ['src/**/*.spec.ts'],
     testTimeout: 30_000,
+    hookTimeout: 60_000,
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
