@@ -7,7 +7,7 @@ const nodeBuiltins = builtinModules.flatMap((name) => [name, `node:${name}`]);
 export default defineConfig({
   build: {
     lib: {
-      entry: { runtime: 'src/runtime/index.ts' },
+      entry: { index: 'src/index.ts', runtime: 'src/runtime/index.ts', vite: 'src/vite/index.ts' },
       formats: ['es'],
       fileName: (_format, entryName) => `${entryName}.js`,
     },
