@@ -9,7 +9,8 @@ const MAX_BODY_BYTES = 1024 * 1024;
 
 class BodyTooLargeError extends Error {}
 
-export function createMiddleware(config: DevServerConfig) {
+/** @param onSaved Called with the endpoint path after each successful write, before the response is sent. */
+export function createMiddleware(config: DevServerConfig, onSaved?: (path: string) => void) {
   const endpoint = config.endpoint ?? DEFAULT_ENDPOINT;
   const searchRoots = config.searchRoots ?? [config.translationsPath];
   const allRoots = [config.translationsPath, ...searchRoots.filter((r) => r !== config.translationsPath)];
@@ -63,6 +64,7 @@ export function createMiddleware(config: DevServerConfig) {
       const result = writeTranslationToFile(entry, allRoots, config.translationsPath);
 
       if (result.success) {
+        onSaved?.(endpoint);
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ ok: true, filePath: result.filePath }));
       } else {
