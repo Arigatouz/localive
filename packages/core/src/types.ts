@@ -15,6 +15,10 @@ export interface TranslationEntry {
   locale: Locale;
   namespace?: string;
   filePath?: string;
+  /** Selector of the plural or select branch this value belongs to, such as `plural=one`. */
+  variant?: string;
+  /** Value the edit was based on, or null for a missing translation; the save fails if it has changed. */
+  expected?: string | null;
 }
 
 export interface TranslationFile {
@@ -69,6 +73,7 @@ export interface I18nAdapter {
   /**
    * Optional: push a translation value back into the i18n library.
    * Called after a successful save so the UI reflects the edit without reload.
+   * Not called for variant saves, whose value is only one branch of the message.
    */
   setTranslation?(key: string, value: string, locale: Locale): void;
   /** Clean up any listeners or observers */

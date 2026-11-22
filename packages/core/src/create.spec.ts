@@ -127,6 +127,59 @@ describe('createLocalive', () => {
     instance.destroy();
   });
 
+  describe('saving a variant or a checked edit', () => {
+    const fetchMock = vi.fn();
+
+    beforeEach(() => {
+      fetchMock.mockReset().mockImplementation(async () => new Response('{"ok":true}'));
+      vi.stubGlobal('fetch', fetchMock);
+    });
+
+    afterEach(() => {
+      vi.unstubAllGlobals();
+    });
+
+    it.each([
+      [{ variant: 'plural=one', expected: '1 item' }],
+      [{ expected: null }],
+    ])('sends %j to the dev server', async (fields) => {
+      const entry = { key: 'count', value: 'One item', locale: 'en', ...fields };
+      await createLocalive(validConfig).saveTranslation(entry);
+
+      expect(JSON.parse(fetchMock.mock.calls[0][1].body)).toEqual(entry);
+    });
+
+    it('keeps the other variants in the store', async () => {
+      const instance = createLocalive({
+        ...validConfig,
+        adapter: createMockAdapter({
+          getTranslations: () => ({ count: { 'plural=one': '1 item', 'plural=other': 'items' } }),
+        }),
+      });
+
+      await instance.saveTranslation({ key: 'count', value: 'One item', locale: 'en', variant: 'plural=one' });
+
+      expect(instance.getTranslations('en').count).toEqual({ 'plural=one': 'One item', 'plural=other': 'items' });
+    });
+
+    it('starts a variant record for an untranslated key', async () => {
+      const instance = createLocalive({ ...validConfig, adapter: createMockAdapter() });
+
+      await instance.saveTranslation({ key: 'count', value: 'One item', locale: 'en', variant: 'plural=one' });
+
+      expect(instance.getTranslations('en').count).toEqual({ 'plural=one': 'One item' });
+    });
+
+    it('does not push a variant into the library as the whole message', async () => {
+      const setTranslation = vi.fn();
+      const instance = createLocalive({ ...validConfig, adapter: createMockAdapter({ setTranslation }) });
+
+      await instance.saveTranslation({ key: 'count', value: 'One item', locale: 'en', variant: 'plural=one' });
+
+      expect(setTranslation).not.toHaveBeenCalled();
+    });
+  });
+
   it('destroy cleans up observers and DOM elements', () => {
     const instance = createLocalive(validConfig);
     instance.activate();

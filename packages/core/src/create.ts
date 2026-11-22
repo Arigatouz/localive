@@ -9,6 +9,7 @@ import type {
   TranslationEntry,
   SaveResult,
   TranslationDictionary,
+  TranslationValue,
 } from './types';
 
 export function createLocalive(config: I18nLiveConfig): I18nLiveInstance {
@@ -123,6 +124,8 @@ export function createLocalive(config: I18nLiveConfig): I18nLiveInstance {
             value: processedEntry.value,
             locale: processedEntry.locale,
             namespace: processedEntry.namespace,
+            variant: processedEntry.variant,
+            expected: processedEntry.expected,
           }),
         });
 
@@ -141,11 +144,11 @@ export function createLocalive(config: I18nLiveConfig): I18nLiveInstance {
 
         const dict = store.dictionaries.get(processedEntry.locale);
         if (dict) {
-          dict[processedEntry.key] = processedEntry.value;
+          dict[processedEntry.key] = applyEntry(dict[processedEntry.key], processedEntry);
         }
 
         // Push the new value back into the i18n library so UI reflects the edit
-        if (adapter.setTranslation) {
+        if (adapter.setTranslation && processedEntry.variant === undefined) {
           adapter.setTranslation(processedEntry.key, processedEntry.value, processedEntry.locale);
         }
 
@@ -173,6 +176,13 @@ export function createLocalive(config: I18nLiveConfig): I18nLiveInstance {
   };
 
   return instance;
+}
+
+function applyEntry(current: TranslationValue | undefined, { value, variant }: TranslationEntry): TranslationValue {
+  if (variant === undefined) return value;
+
+  const otherVariants = typeof current === 'object' ? current : {};
+  return { ...otherVariants, [variant]: value };
 }
 
 async function readErrorMessage(response: Response): Promise<string> {
