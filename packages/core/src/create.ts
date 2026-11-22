@@ -102,11 +102,6 @@ export function createLocalive(config: I18nLiveConfig): I18nLiveInstance {
         return { success: false, error: 'localive: instance destroyed' };
       }
 
-      // Live editing is only available in dev mode
-      if (typeof import.meta !== 'undefined' && import.meta.env && !import.meta.env.DEV) {
-        return { success: false, error: 'localive: live editing is only available in dev mode' };
-      }
-
       let processedEntry = entry;
       for (const plugin of plugins) {
         if (plugin.beforeSave) {
