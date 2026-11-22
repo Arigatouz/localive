@@ -52,9 +52,9 @@
     hovered = findMarkedElement(event.target, resolve)?.element ?? null;
   }
 
-  // Alt+click reaches the page, so links and buttons stay usable in edit mode.
+  // Modified clicks reach the page: Ctrl or Cmd opens links in a new tab, Alt presses buttons.
   function handleClick(event: MouseEvent) {
-    if (event.altKey) return;
+    if (event.altKey || event.ctrlKey || event.metaKey) return;
     const marked = findMarkedElement(event.target, resolve);
     if (!marked) return;
 

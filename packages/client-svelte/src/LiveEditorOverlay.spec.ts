@@ -85,11 +85,13 @@ describe('LiveEditorOverlay', () => {
   });
 
   it.each([
-    ['an unmarked element', 'plain', false],
-    ['an Alt+click', 'both', true],
-  ])('lets %s through', async (_description, id, altKey) => {
+    ['an unmarked element', 'plain', {}],
+    ['an Alt+click', 'both', { altKey: true }],
+    ['a Ctrl+click, which opens links in a new tab', 'both', { ctrlKey: true }],
+    ['a Cmd+click, which opens links in a new tab', 'both', { metaKey: true }],
+  ])('lets %s through', async (_description, id, modifiers) => {
     setup();
-    const click = new MouseEvent('click', { bubbles: true, cancelable: true, altKey });
+    const click = new MouseEvent('click', { bubbles: true, cancelable: true, ...modifiers });
 
     document.getElementById(id)!.dispatchEvent(click);
 
