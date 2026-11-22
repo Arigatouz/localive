@@ -130,14 +130,7 @@ export function createLocalive(config: I18nLiveConfig): I18nLiveInstance {
         });
 
         if (!response.ok) {
-          let errorText: string;
-          try {
-            const errorJson = await response.json();
-            errorText = errorJson.error ?? errorJson.message ?? await response.text();
-          } catch {
-            errorText = await response.text();
-          }
-          return { success: false, error: `HTTP ${response.status}: ${errorText}` };
+          return { success: false, error: `HTTP ${response.status}: ${await readErrorMessage(response)}` };
         }
 
         const result = await response.json();
@@ -183,6 +176,16 @@ export function createLocalive(config: I18nLiveConfig): I18nLiveInstance {
   };
 
   return instance;
+}
+
+async function readErrorMessage(response: Response): Promise<string> {
+  const body = await response.text();
+  try {
+    const { error, message } = JSON.parse(body);
+    return error ?? message ?? body;
+  } catch {
+    return body;
+  }
 }
 
 function reverseLookup(

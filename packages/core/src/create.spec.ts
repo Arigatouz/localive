@@ -90,6 +90,24 @@ describe('createLocalive', () => {
     instance.destroy();
   });
 
+  it.each([
+    ['<h1>Not found</h1>', 'HTTP 404: <h1>Not found</h1>'],
+    ['{"error":"No such key"}', 'HTTP 404: No such key'],
+    ['{"unexpected":true}', 'HTTP 404: {"unexpected":true}'],
+    ['null', 'HTTP 404: null'],
+  ])('reports the error response %s', async (body, error) => {
+    vi.stubGlobal('fetch', async () => new Response(body, { status: 404 }));
+    const instance = createLocalive(validConfig);
+
+    expect(await instance.saveTranslation({ key: 'title', value: 'Hello', locale: 'en' })).toEqual({
+      success: false,
+      error,
+    });
+
+    instance.destroy();
+    vi.unstubAllGlobals();
+  });
+
   it('destroy cleans up observers and DOM elements', () => {
     const instance = createLocalive(validConfig);
     instance.activate();
