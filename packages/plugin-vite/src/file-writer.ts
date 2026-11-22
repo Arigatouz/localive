@@ -51,7 +51,8 @@ export function writeTranslationToFile(
 
   try {
     let content: Record<string, unknown> = {};
-    let indent = 2;
+    let indent = '  ';
+    let lineEnding = '\n';
     let trailingNewline = true;
     let isNestedFormat = false;
 
@@ -62,9 +63,12 @@ export function writeTranslationToFile(
       trailingNewline = raw.endsWith('\n');
 
       // Detect indentation
-      const indentMatch = raw.match(/^(\s+)\S/m);
+      const indentMatch = raw.match(/^[ \t]+(?=\S)/m);
       if (indentMatch) {
-        indent = indentMatch[1].length;
+        indent = indentMatch[0];
+      }
+      if (raw.includes('\r\n')) {
+        lineEnding = '\r\n';
       }
 
       if (raw.trim()) {
@@ -104,7 +108,8 @@ export function writeTranslationToFile(
     }
 
     // Write back with preserved indentation
-    const output = JSON.stringify(content, null, indent) + (trailingNewline ? '\n' : '');
+    const json = JSON.stringify(content, null, indent) + (trailingNewline ? '\n' : '');
+    const output = json.replaceAll('\n', lineEnding);
     writeFileSync(resolvedTarget, output, 'utf-8');
 
     return { success: true, filePath: resolvedTarget };

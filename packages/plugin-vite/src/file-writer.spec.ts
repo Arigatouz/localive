@@ -182,6 +182,18 @@ describe('writeTranslationToFile', () => {
     expect(JSON.parse(saved!)).toEqual({ hello: 'new' });
   });
 
+  it.each([
+    ['tabs', '{\n\t"hello": "old",\n\t"nav": {\n\t\t"home": "Home"\n\t}\n}\n'],
+    ['CRLF', '{\r\n  "hello": "old",\r\n  "other": "x"\r\n}\r\n'],
+    ['CRLF with tabs', '{\r\n\t"hello": "old"\r\n}'],
+  ])('preserves %s byte for byte', (_description, original) => {
+    expect(saveOver(original).saved).toBe(original.replace('old', 'new'));
+  });
+
+  it('detects indentation after a blank line', () => {
+    expect(saveOver('{\n\n    "hello": "old"\n}\n').saved).toBe('{\n    "hello": "new"\n}\n');
+  });
+
   it('throws for path outside allowed roots', () => {
     mkdirSync(join(testDir, 'i18n'), { recursive: true });
     const enPath = join(testDir, 'i18n', 'en.json');
