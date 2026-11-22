@@ -1,8 +1,11 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import { parse as parseUrl } from 'node:url';
 import { writeTranslationToFile } from './file-writer';
+import type { IntegrationServerConfig, LocaliveIntegration } from './integration';
 import { isJsonRequest, isSameOriginRequest, requestHost, sanitizeRequestBody } from './security';
-import type { DevServerConfig } from './types';
+import type { DevServerConfig, SaveResult, TranslationEntry } from './types';
+
+export type LocaliveServerConfig = (DevServerConfig & { integration?: undefined }) | IntegrationServerConfig;
 
 const DEFAULT_ENDPOINT = '/__localive-update';
 const MAX_BODY_BYTES = 1024 * 1024;
@@ -16,10 +19,10 @@ export interface MiddlewareHooks {
   onSaved?: (path: string) => void;
 }
 
-export function createMiddleware(config: DevServerConfig, { isAllowedHost, onSaved }: MiddlewareHooks = {}) {
+export function createMiddleware(config: LocaliveServerConfig, { isAllowedHost, onSaved }: MiddlewareHooks = {}) {
   const endpoint = config.endpoint ?? DEFAULT_ENDPOINT;
-  const searchRoots = config.searchRoots ?? [config.translationsPath];
-  const allRoots = [config.translationsPath, ...searchRoots.filter((r) => r !== config.translationsPath)];
+  const { integration } = config;
+  const writeEntry = createEntryWriter(config);
 
   return async function localiveMiddleware(
     req: IncomingMessage,
@@ -27,12 +30,18 @@ export function createMiddleware(config: DevServerConfig, { isAllowedHost, onSav
   ): Promise<void> {
     const parsedUrl = parseUrl(req.url ?? '', true);
 
-    if (parsedUrl.pathname !== endpoint) {
+    const catalogIntegration = parsedUrl.pathname === `${endpoint}/catalog` ? integration : undefined;
+    if (parsedUrl.pathname !== endpoint && !catalogIntegration) {
       return;
     }
 
     if (isAllowedHost && !isAllowedHost(requestHost(req.headers))) {
       respondWithError(res, 403, 'Host is not allowed; add it to server.allowedHosts');
+      return;
+    }
+
+    if (catalogIntegration) {
+      await respondWithCatalog(req, res, catalogIntegration);
       return;
     }
 
@@ -72,7 +81,7 @@ export function createMiddleware(config: DevServerConfig, { isAllowedHost, onSav
 
       const entry = sanitized.entry;
 
-      const result = writeTranslationToFile(entry, allRoots, config.translationsPath);
+      const result = await writeEntry(entry);
 
       if (result.success) {
         onSaved?.(endpoint);
@@ -93,6 +102,36 @@ export function createMiddleware(config: DevServerConfig, { isAllowedHost, onSav
       }));
     }
   };
+}
+
+function createEntryWriter(config: LocaliveServerConfig): (entry: TranslationEntry) => SaveResult | Promise<SaveResult> {
+  if (config.integration) {
+    const { integration } = config;
+    return (entry) => integration.write(entry);
+  }
+
+  const { translationsPath, searchRoots = [] } = config;
+  const roots = [translationsPath, ...searchRoots.filter((root) => root !== translationsPath)];
+  return (entry) => writeTranslationToFile(entry, roots, translationsPath);
+}
+
+async function respondWithCatalog(req: IncomingMessage, res: ServerResponse, integration: LocaliveIntegration): Promise<void> {
+  if (req.method !== 'GET') {
+    respondWithError(res, 405, 'Method not allowed. Use GET.');
+    return;
+  }
+  if (!isSameOriginRequest(req.headers)) {
+    respondWithError(res, 403, 'Cross-origin requests are not allowed');
+    return;
+  }
+
+  try {
+    const catalog = JSON.stringify(await integration.readCatalog());
+    res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' });
+    res.end(catalog);
+  } catch (error) {
+    respondWithError(res, 500, error instanceof Error ? error.message : 'Cannot read the catalog');
+  }
 }
 
 function respondWithError(res: ServerResponse, status: number, error: string): void {
