@@ -1,8 +1,8 @@
 import { hasContext, getContext, setContext } from 'svelte';
 import { writable } from 'svelte/store';
 import type { I18nLiveInstance, Locale } from '@localive/core';
-import type { SvelteLocaliveState } from './createLocalive';
-import { localiveSymbol } from './symbols';
+import type { SvelteLocaliveState } from './createLocalive.js';
+import { localiveSymbol } from './symbols.js';
 
 export function setLocaliveContext(instance: I18nLiveInstance): I18nLiveInstance {
   const isActive = writable(instance.isActive());

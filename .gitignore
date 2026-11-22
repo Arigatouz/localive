@@ -52,3 +52,6 @@ Thumbs.db
 .nx/polygraph
 .nx/self-healing
 .vercel
+
+# SvelteKit and svelte-package
+.svelte-kit

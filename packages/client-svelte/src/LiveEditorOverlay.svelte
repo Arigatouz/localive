@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { getLocaliveContext } from './useLocaliveEditor';
+  import { getLocaliveContext } from './useLocaliveEditor.svelte.js';
   import type { Locale } from '@localive/core';
 
   const instance = getLocaliveContext();

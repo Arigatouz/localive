@@ -1,26 +1,9 @@
-import { defineConfig } from 'vite';
-import dts from 'vite-plugin-dts';
 import { svelte } from '@sveltejs/vite-plugin-svelte';
+import { svelteTesting } from '@testing-library/svelte/vite';
+import { defineConfig } from 'vite';
 
 export default defineConfig({
-  build: {
-    lib: {
-      entry: ['src/index.ts'],
-      formats: ['es', 'cjs'],
-      fileName: (format) => `index.${format === 'es' ? 'js' : 'cjs'}`,
-    },
-    rollupOptions: {
-      external: (id) => {
-        return id === 'svelte' || id === '@localive/core' || id.startsWith('svelte/');
-      },
-    },
-    sourcemap: true,
-    minify: 'esbuild',
-  },
-  plugins: [
-    svelte(),
-    dts({ rollupTypes: true }),
-  ],
+  plugins: [svelte(), svelteTesting()],
   test: {
     globals: true,
     environment: 'jsdom',
@@ -28,7 +11,7 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
-      include: ['src/**/*.ts'],
+      include: ['src/**/*.ts', 'src/**/*.svelte'],
       exclude: ['src/**/*.spec.ts'],
     },
   },

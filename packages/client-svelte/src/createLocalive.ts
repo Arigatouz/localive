@@ -2,7 +2,7 @@ import { createLocalive as createCoreInstance } from '@localive/core';
 import type { I18nLiveInstance, I18nAdapter, Locale, TranslationDictionary } from '@localive/core';
 import { setContext, getContext, hasContext } from 'svelte';
 import { writable, type Writable } from 'svelte/store';
-import { localiveSymbol } from './symbols';
+import { localiveSymbol } from './symbols.js';
 
 export interface SvelteLocaliveState {
   instance: I18nLiveInstance;
