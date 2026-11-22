@@ -21,6 +21,12 @@ export interface TranslationEntry {
   expected?: string | null;
 }
 
+/** A message shown in the page, in the locale it is shown in. */
+export interface MessageReference {
+  key: string;
+  locale: Locale;
+}
+
 export interface TranslationFile {
   locale: Locale;
   path: string;
@@ -70,6 +76,20 @@ export interface I18nAdapter {
    * Used by auto-tagging to inject invisible markers.
    */
   getKeyFromElement?(element: HTMLElement): string | null;
+  /**
+   * Optional: list every message rendered in a DOM element.
+   * An empty list is final, so keys are then not guessed from the element's text.
+   */
+  getMessagesFromElement?(element: HTMLElement): MessageReference[];
+  /** Optional: whether edit mode was already on when the page loaded. Overrides `activeByDefault`. */
+  isEditMode?(): boolean;
+  /**
+   * Optional: switch edit mode, which may reload the page.
+   * Called when the instance is activated or deactivated, not when it is created or destroyed.
+   */
+  setEditMode?(active: boolean): void;
+  /** Optional: show an unsaved value in the page. Null removes every draft. */
+  preview?(entry: TranslationEntry | null): void;
   /**
    * Optional: push a translation value back into the i18n library.
    * Called after a successful save so the UI reflects the edit without reload.
@@ -124,6 +144,10 @@ export interface I18nLiveInstance {
   isActive(): boolean;
   /** Resolve an i18n key from a DOM element */
   resolveKey(element: HTMLElement): string | null;
+  /** Resolve every message rendered in a DOM element, with its locale */
+  resolveMessages(element: HTMLElement): MessageReference[];
+  /** Show an unsaved value in the page where the adapter supports it. Null removes every draft. */
+  previewTranslation(entry: TranslationEntry | null): void;
   /** Get a single translation value */
   getTranslation(key: string, locale: Locale): string | undefined;
   /** Get the full translation dictionary for a locale */

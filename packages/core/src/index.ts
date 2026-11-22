@@ -8,6 +8,7 @@ export { localeFromPath, sortedKeys } from './locale-utils';
 export type {
   Locale,
   TranslationEntry,
+  MessageReference,
   TranslationFile,
   TranslationDictionary,
   I18nLiveConfig,

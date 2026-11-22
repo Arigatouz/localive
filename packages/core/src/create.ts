@@ -6,6 +6,7 @@ import type {
   I18nAdapter,
   I18nPlugin,
   Locale,
+  MessageReference,
   TranslationEntry,
   SaveResult,
   TranslationDictionary,
@@ -39,7 +40,7 @@ export function createLocalive(config: I18nLiveConfig): I18nLiveInstance {
   const store = new I18nLiveStore({
     locale: initialLocale,
     dictionaries,
-    active: config.activeByDefault ?? false,
+    active: adapter.isEditMode?.() ?? config.activeByDefault ?? false,
   });
 
   const resolver = new KeyResolver(store, adapter);
@@ -70,13 +71,15 @@ export function createLocalive(config: I18nLiveConfig): I18nLiveInstance {
     store,
 
     activate(): void {
-      if (destroyed) return;
+      if (destroyed || store.active) return;
       store.active = true;
+      adapter.setEditMode?.(true);
     },
 
     deactivate(): void {
-      if (destroyed) return;
+      if (destroyed || !store.active) return;
       store.active = false;
+      adapter.setEditMode?.(false);
     },
 
     isActive(): boolean {
@@ -85,6 +88,15 @@ export function createLocalive(config: I18nLiveConfig): I18nLiveInstance {
 
     resolveKey(element: HTMLElement): string | null {
       return resolver.resolveKey(element);
+    },
+
+    resolveMessages(element: HTMLElement): MessageReference[] {
+      return resolver.resolveMessages(element);
+    },
+
+    previewTranslation(entry: TranslationEntry | null): void {
+      if (destroyed) return;
+      adapter.preview?.(entry);
     },
 
     getTranslation(key: string, locale: Locale): string | undefined {
