@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { AsyncLocalStorage } from 'node:async_hooks';
-import { markerFor, REQUEST_SCOPE, tag } from './index';
+import { markerFor, REQUEST_SCOPE, tag } from './index.js';
 
 describe('tag on the server', () => {
   const message = () => 'Title';

@@ -1,4 +1,4 @@
-import { clearDrafts, findMarkedMessages, indexMarkers, markerFor, setDraft, tag, untag, useSubscriber } from './index';
+import { clearDrafts, findMarkedMessages, indexMarkers, markerFor, setDraft, tag, untag, useSubscriber } from './index.js';
 
 const EDIT_COOKIE = 'localive_edit=1';
 

@@ -1,6 +1,6 @@
-import { readDraft } from './drafts';
-import { isEditing } from './edit-mode';
-import { appendMarker, markerFor } from './message-marker';
+import { readDraft } from './drafts.js';
+import { isEditing } from './edit-mode.js';
+import { appendMarker, markerFor } from './message-marker.js';
 
 interface MessageOptions {
   locale?: string;
