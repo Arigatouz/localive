@@ -150,6 +150,38 @@ describe('writeTranslationToFile', () => {
     expect(content.c).toBe('3');
   });
 
+  function saveOver(original: string | undefined, key = 'hello') {
+    const root = join(testDir, 'i18n');
+    const localeFile = join(root, 'en.json');
+    mkdirSync(root, { recursive: true });
+    if (original !== undefined) writeFileSync(localeFile, original);
+
+    const result = writeTranslationToFile({ key, value: 'new', locale: 'en' }, [root], root);
+    return { result, saved: existsSync(localeFile) ? readFileSync(localeFile, 'utf-8') : undefined };
+  }
+
+  it.each([
+    ['a trailing comma', '{"hello":"old","keep":"me",}'],
+    ['a merge conflict', '{\n<<<<<<< HEAD\n  "hello": "old"\n}\n'],
+    ['an array', '["keep me"]'],
+    ['null', 'null'],
+  ])('refuses to overwrite a file containing %s', (_description, original) => {
+    const { result, saved } = saveOver(original);
+
+    expect(result.success).toBe(false);
+    expect(saved).toBe(original);
+  });
+
+  it.each([
+    ['a missing file', undefined],
+    ['an empty file', ''],
+  ])('starts a dictionary in %s', (_description, original) => {
+    const { result, saved } = saveOver(original);
+
+    expect(result.success).toBe(true);
+    expect(JSON.parse(saved!)).toEqual({ hello: 'new' });
+  });
+
   it('throws for path outside allowed roots', () => {
     mkdirSync(join(testDir, 'i18n'), { recursive: true });
     const enPath = join(testDir, 'i18n', 'en.json');

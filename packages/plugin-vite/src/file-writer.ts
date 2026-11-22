@@ -50,13 +50,15 @@ export function writeTranslationToFile(
   }
 
   try {
-    let content: Record<string, unknown>;
+    let content: Record<string, unknown> = {};
     let indent = 2;
     let trailingNewline = true;
     let isNestedFormat = false;
 
-    try {
-      const raw = readFileSync(resolvedTarget, 'utf-8');
+    const raw = readFileIfExists(resolvedTarget);
+    if (raw === undefined) {
+      mkdirSync(dirname(resolvedTarget), { recursive: true });
+    } else {
       trailingNewline = raw.endsWith('\n');
 
       // Detect indentation
@@ -65,7 +67,16 @@ export function writeTranslationToFile(
         indent = indentMatch[1].length;
       }
 
-      content = JSON.parse(raw);
+      if (raw.trim()) {
+        const parsed = parseJsonObject(raw);
+        if (!parsed) {
+          return {
+            success: false,
+            error: `Refusing to overwrite "${resolvedTarget}": it is not a valid JSON object`,
+          };
+        }
+        content = parsed;
+      }
 
       // Detect nested format: { "en": { "key": "value" }, "fr": { ... } }
       // where the file is named after one of the locale keys
@@ -77,15 +88,6 @@ export function writeTranslationToFile(
         !Array.isArray(content[parsedLocale])
       ) {
         isNestedFormat = true;
-      }
-    } catch {
-      // File doesn't exist or is invalid JSON — start fresh
-      content = {};
-      isNestedFormat = false;
-      try {
-        mkdirSync(dirname(resolvedTarget), { recursive: true });
-      } catch {
-        // Directory might already exist
       }
     }
 
@@ -111,6 +113,25 @@ export function writeTranslationToFile(
       success: false,
       error: error instanceof Error ? error.message : String(error),
     };
+  }
+}
+
+function readFileIfExists(filePath: string): string | undefined {
+  try {
+    return readFileSync(filePath, 'utf-8');
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === 'ENOENT') return undefined;
+    throw error;
+  }
+}
+
+function parseJsonObject(raw: string): Record<string, unknown> | undefined {
+  try {
+    const parsed: unknown = JSON.parse(raw);
+    const isObject = typeof parsed === 'object' && parsed !== null && !Array.isArray(parsed);
+    return isObject ? (parsed as Record<string, unknown>) : undefined;
+  } catch {
+    return undefined;
   }
 }
 
