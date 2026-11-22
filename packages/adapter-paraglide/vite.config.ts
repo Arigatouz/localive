@@ -18,7 +18,8 @@ export default defineConfig({
     sourcemap: true,
     minify: 'esbuild',
   },
-  plugins: [dts({ exclude: ['src/**/*.spec.ts'] })],
+  // The workspace maps @localive/* to sources, which must not leak into published declarations.
+  plugins: [dts({ exclude: ['src/**/*.spec.ts'], aliasesExclude: [/^@localive\//] })],
   test: {
     globals: true,
     environment: 'jsdom',
