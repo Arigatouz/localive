@@ -1,7 +1,7 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import { parse as parseUrl } from 'node:url';
 import { writeTranslationToFile } from './file-writer';
-import { isJsonRequest, isSameOriginRequest, sanitizeRequestBody } from './security';
+import { isJsonRequest, isSameOriginRequest, requestHost, sanitizeRequestBody } from './security';
 import type { DevServerConfig } from './types';
 
 const DEFAULT_ENDPOINT = '/__localive-update';
@@ -9,8 +9,14 @@ const MAX_BODY_BYTES = 1024 * 1024;
 
 class BodyTooLargeError extends Error {}
 
-/** @param onSaved Called with the endpoint path after each successful write, before the response is sent. */
-export function createMiddleware(config: DevServerConfig, onSaved?: (path: string) => void) {
+export interface MiddlewareHooks {
+  /** Required unless the dev server validates the Host header before running this middleware. */
+  isAllowedHost?: (host: string | undefined) => boolean;
+  /** Called with the endpoint path after each successful write, before the response is sent. */
+  onSaved?: (path: string) => void;
+}
+
+export function createMiddleware(config: DevServerConfig, { isAllowedHost, onSaved }: MiddlewareHooks = {}) {
   const endpoint = config.endpoint ?? DEFAULT_ENDPOINT;
   const searchRoots = config.searchRoots ?? [config.translationsPath];
   const allRoots = [config.translationsPath, ...searchRoots.filter((r) => r !== config.translationsPath)];
@@ -22,6 +28,11 @@ export function createMiddleware(config: DevServerConfig, onSaved?: (path: strin
     const parsedUrl = parseUrl(req.url ?? '', true);
 
     if (parsedUrl.pathname !== endpoint) {
+      return;
+    }
+
+    if (isAllowedHost && !isAllowedHost(requestHost(req.headers))) {
+      respondWithError(res, 403, 'Host is not allowed; add it to server.allowedHosts');
       return;
     }
 

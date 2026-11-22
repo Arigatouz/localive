@@ -75,8 +75,12 @@ export function isSameOriginRequest(headers: IncomingHttpHeaders): boolean {
   const { origin } = headers;
   if (!origin) return true;
 
-  const host = headers.host ?? headers[':authority'];
-  return URL.canParse(origin) && new URL(origin).host === host;
+  return URL.canParse(origin) && new URL(origin).host === requestHost(headers);
+}
+
+export function requestHost(headers: IncomingHttpHeaders): string | undefined {
+  const authority = headers[':authority'];
+  return headers.host ?? (typeof authority === 'string' ? authority : undefined);
 }
 
 export function isJsonRequest(headers: IncomingHttpHeaders): boolean {

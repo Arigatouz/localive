@@ -1,4 +1,5 @@
 import type { Plugin, ViteDevServer } from 'vite';
+import { createHostValidator } from './host-validation';
 import { createMiddleware } from './middleware';
 import type { DevServerConfig } from './types';
 
@@ -10,8 +11,9 @@ export function localiveVite(options: LocaliveViteOptions): Plugin {
     apply: 'serve',
 
     configureServer(server: ViteDevServer) {
-      const middleware = createMiddleware(options, (path) => {
-        server.ws.send('localive:update', { path });
+      const middleware = createMiddleware(options, {
+        isAllowedHost: createHostValidator(server.config.server),
+        onSaved: (path) => server.ws.send('localive:update', { path }),
       });
 
       server.middlewares.use((req, res, next) => {
