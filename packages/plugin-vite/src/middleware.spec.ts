@@ -92,6 +92,16 @@ describe('createMiddleware', () => {
     });
   });
 
+  it('ignores a file path chosen by the client', async () => {
+    const otherFile = join(translationsPath, 'other.json');
+    writeFileSync(otherFile, ORIGINAL_CONTENT);
+    const body = Buffer.from(JSON.stringify({ key: 'title', value: 'Updated', locale: 'en', filePath: otherFile }));
+
+    expect(await post(JSON_HEADERS, [body])).toBe(200);
+    expect(readFileSync(otherFile, 'utf-8')).toBe(ORIGINAL_CONTENT);
+    expect(savedTitle()).toBe('Updated');
+  });
+
   describe('content type', () => {
     it.each(['text/plain', 'application/x-www-form-urlencoded', 'text/plain; application/json', ''])(
       'rejects "%s"',

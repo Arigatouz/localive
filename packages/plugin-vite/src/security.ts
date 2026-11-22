@@ -115,9 +115,5 @@ export function sanitizeRequestBody(body: unknown): SanitizationResult {
     entry.namespace = record.namespace;
   }
 
-  if (record.filePath && typeof record.filePath === 'string') {
-    entry.filePath = record.filePath;
-  }
-
   return { valid: true, entry };
 }
