@@ -150,13 +150,13 @@ describe('writeTranslationToFile', () => {
     expect(content.c).toBe('3');
   });
 
-  function saveOver(original: string | undefined, key = 'hello') {
+  function saveOver(original: string | undefined, key = 'hello', fields: Partial<TranslationEntry> = {}) {
     const root = join(testDir, 'i18n');
     const localeFile = join(root, 'en.json');
     mkdirSync(root, { recursive: true });
     if (original !== undefined) writeFileSync(localeFile, original);
 
-    const result = writeTranslationToFile({ key, value: 'new', locale: 'en' }, [root], root);
+    const result = writeTranslationToFile({ key, value: 'new', locale: 'en', ...fields }, [root], root);
     return { result, saved: existsSync(localeFile) ? readFileSync(localeFile, 'utf-8') : undefined };
   }
 
@@ -214,6 +214,39 @@ describe('writeTranslationToFile', () => {
 
     expect(result.success).toBe(true);
     expect(JSON.parse(saved!)[key]).toBe('new');
+  });
+
+  it.each([
+    ['{"hello":"old"}', 'old'],
+    ['{"other":"x"}', null],
+    ['{"hello":null}', null],
+    [undefined, null],
+  ])('saves over %s when expecting %s', (original, expected) => {
+    const { result, saved } = saveOver(original, 'hello', { expected });
+
+    expect(result.success).toBe(true);
+    expect(JSON.parse(saved!).hello).toBe('new');
+  });
+
+  it.each([
+    ['{"hello":"changed"}', 'old'],
+    ['{"hello":"translated"}', null],
+    ['{"other":"x"}', 'old'],
+    ['{"hello":["now variants"]}', 'old'],
+    ['{"hello":["now variants"]}', null],
+    [undefined, 'old'],
+  ])('reports a conflict for %s when expecting %s', (original, expected) => {
+    const { result, saved } = saveOver(original, 'hello', { expected });
+
+    expect(result).toMatchObject({ success: false, conflict: true });
+    expect(saved).toBe(original);
+  });
+
+  it('refuses variants, which only an integration understands', () => {
+    const { result, saved } = saveOver('{"hello":"old"}', 'hello', { variant: 'plural=one' });
+
+    expect(result.success).toBe(false);
+    expect(saved).toBe('{"hello":"old"}');
   });
 
   it('throws for path outside allowed roots', () => {

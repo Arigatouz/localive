@@ -102,6 +102,34 @@ describe('createMiddleware', () => {
     expect(savedTitle()).toBe('Updated');
   });
 
+  describe('checked edits', () => {
+    function checkedBody(fields: object): Buffer[] {
+      return [Buffer.from(JSON.stringify({ key: 'title', value: 'Updated', locale: 'en', ...fields }))];
+    }
+
+    it('saves when the expected value is current', async () => {
+      expect(await post(JSON_HEADERS, checkedBody({ expected: 'Original' }))).toBe(200);
+    });
+
+    it('answers 409 when the value has changed', async () => {
+      expect(await post(JSON_HEADERS, checkedBody({ expected: 'Older' }))).toBe(409);
+      expect(savedTitle()).toBe('Original');
+    });
+
+    it.each([
+      [{ variant: 'plural=one' }],
+      [{ variant: '' }],
+      [{ variant: 5 }],
+      [{ variant: null }],
+      [{ variant: '__proto__' }],
+      [{ expected: 5 }],
+      [{ expected: ['Original'] }],
+    ])('answers 400 to %j', async (fields) => {
+      expect(await post(JSON_HEADERS, checkedBody(fields))).toBe(400);
+      expect(savedTitle()).toBe('Original');
+    });
+  });
+
   describe('content type', () => {
     it.each(['text/plain', 'application/x-www-form-urlencoded', 'text/plain; application/json', ''])(
       'rejects "%s"',

@@ -79,7 +79,7 @@ export function createMiddleware(config: DevServerConfig, { isAllowedHost, onSav
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ ok: true, filePath: result.filePath }));
       } else {
-        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.writeHead(result.conflict ? 409 : 400, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ ok: false, error: result.error }));
       }
     } catch (error) {

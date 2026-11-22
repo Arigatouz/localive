@@ -7,7 +7,11 @@ export function writeTranslationToFile(
   searchRoots: string[],
   defaultPath: string
 ): SaveResult {
-  const { key, value, locale, filePath } = entry;
+  const { key, value, locale, filePath, variant, expected } = entry;
+
+  if (variant !== undefined) {
+    return { success: false, error: 'Saving a single variant needs an integration for the message format' };
+  }
 
   // Validate filePath if provided — must be within allowed roots
   if (filePath) {
@@ -99,6 +103,9 @@ export function writeTranslationToFile(
     const dictionary = localeNode ? (content[localeNode] as Record<string, unknown>) : content;
 
     const existingValue = Object.hasOwn(dictionary, key) ? dictionary[key] : null;
+    if (expected !== undefined && existingValue !== expected) {
+      return { success: false, conflict: true, error: `"${key}" changed since it was loaded` };
+    }
     if (existingValue !== null && typeof existingValue !== 'string') {
       return { success: false, error: `Refusing to replace the non-string value of "${key}" with text` };
     }

@@ -109,10 +109,20 @@ export function sanitizeRequestBody(body: unknown): SanitizationResult {
     return { valid: false, error: keyValidation.error! };
   }
 
+  const { variant, expected } = record;
+  if (variant !== undefined && (typeof variant !== 'string' || !validateKey(variant).valid)) {
+    return { valid: false, error: 'variant must be a non-empty string without dangerous segments' };
+  }
+  if (expected !== undefined && expected !== null && typeof expected !== 'string') {
+    return { valid: false, error: 'expected must be a string or null' };
+  }
+
   const entry: TranslationEntry = {
     key: record.key,
     value: record.value,
     locale: record.locale,
+    variant,
+    expected,
   };
 
   if (record.namespace && typeof record.namespace === 'string') {
