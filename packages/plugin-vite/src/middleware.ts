@@ -1,7 +1,7 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import { parse as parseUrl } from 'node:url';
 import { writeTranslationToFile } from './file-writer';
-import { sanitizeRequestBody } from './security';
+import { isJsonRequest, isSameOriginRequest, sanitizeRequestBody } from './security';
 import type { DevServerConfig } from './types';
 
 const DEFAULT_ENDPOINT = '/__localive-update';
@@ -30,6 +30,16 @@ export function createMiddleware(config: DevServerConfig) {
     if (req.method !== 'POST') {
       res.writeHead(405, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ error: 'Method not allowed' }));
+      return;
+    }
+
+    if (!isSameOriginRequest(req.headers)) {
+      respondWithError(res, 403, 'Cross-origin requests are not allowed');
+      return;
+    }
+
+    if (!isJsonRequest(req.headers)) {
+      respondWithError(res, 415, 'Content-Type must be application/json');
       return;
     }
 
@@ -63,6 +73,11 @@ export function createMiddleware(config: DevServerConfig) {
       }));
     }
   };
+}
+
+function respondWithError(res: ServerResponse, status: number, error: string): void {
+  res.writeHead(status, { 'Content-Type': 'application/json' });
+  res.end(JSON.stringify({ error }));
 }
 
 function readBody(req: IncomingMessage): Promise<string> {
