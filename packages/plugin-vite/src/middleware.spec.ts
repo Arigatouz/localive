@@ -75,6 +75,23 @@ describe('createMiddleware', () => {
     });
   });
 
+  describe('request body', () => {
+    it('keeps a character that is split across chunks', async () => {
+      const body = saveBody('żółw');
+      const splitInsideFirstLetter = body.indexOf(Buffer.from('ż')) + 1;
+
+      const status = await post(JSON_HEADERS, [body.subarray(0, splitInsideFirstLetter), body.subarray(splitInsideFirstLetter)]);
+
+      expect(status).toBe(200);
+      expect(savedTitle()).toBe('żółw');
+    });
+
+    it('rejects a body over 1 MB', async () => {
+      expect(await post(JSON_HEADERS, [saveBody('x'.repeat(1024 * 1024))])).toBe(413);
+      expect(savedTitle()).toBe('Original');
+    });
+  });
+
   describe('content type', () => {
     it.each(['text/plain', 'application/x-www-form-urlencoded', 'text/plain; application/json', ''])(
       'rejects "%s"',

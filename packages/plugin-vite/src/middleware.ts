@@ -5,6 +5,9 @@ import { isJsonRequest, isSameOriginRequest, sanitizeRequestBody } from './secur
 import type { DevServerConfig } from './types';
 
 const DEFAULT_ENDPOINT = '/__localive-update';
+const MAX_BODY_BYTES = 1024 * 1024;
+
+class BodyTooLargeError extends Error {}
 
 export function createMiddleware(config: DevServerConfig) {
   const endpoint = config.endpoint ?? DEFAULT_ENDPOINT;
@@ -67,6 +70,10 @@ export function createMiddleware(config: DevServerConfig) {
         res.end(JSON.stringify({ ok: false, error: result.error }));
       }
     } catch (error) {
+      if (error instanceof BodyTooLargeError) {
+        respondWithError(res, 413, `Request body exceeds ${MAX_BODY_BYTES} bytes`);
+        return;
+      }
       res.writeHead(500, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({
         error: error instanceof Error ? error.message : 'Internal server error',
@@ -82,12 +89,19 @@ function respondWithError(res: ServerResponse, status: number, error: string): v
 
 function readBody(req: IncomingMessage): Promise<string> {
   return new Promise((resolve, reject) => {
-    let body = '';
+    const chunks: Buffer[] = [];
+    let receivedBytes = 0;
     req.on('data', (chunk: Buffer) => {
-      body += chunk.toString();
+      receivedBytes += chunk.length;
+      if (receivedBytes > MAX_BODY_BYTES) {
+        chunks.length = 0;
+        reject(new BodyTooLargeError());
+        return;
+      }
+      chunks.push(chunk);
     });
     req.on('end', () => {
-      resolve(body);
+      resolve(Buffer.concat(chunks).toString('utf-8'));
     });
     req.on('error', reject);
   });
