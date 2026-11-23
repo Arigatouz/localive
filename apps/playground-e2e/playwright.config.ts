@@ -4,6 +4,7 @@ import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const workspaceRoot = resolve(__dirname, '../..');
+const SVELTEKIT_URL = 'http://localhost:5176';
 
 export default defineConfig({
   testDir: './tests',
@@ -31,6 +32,27 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'], baseURL: 'http://localhost:4201' },
       testDir: './tests/angular',
     },
+    // The SvelteKit projects share one dev server and its message files, so they run one after another.
+    {
+      name: 'sveltekit-chromium',
+      use: { ...devices['Desktop Chrome'], baseURL: SVELTEKIT_URL },
+      testDir: './tests/sveltekit',
+      fullyParallel: false,
+    },
+    {
+      name: 'sveltekit-firefox',
+      use: { ...devices['Desktop Firefox'], baseURL: SVELTEKIT_URL },
+      testDir: './tests/sveltekit',
+      fullyParallel: false,
+      dependencies: ['sveltekit-chromium'],
+    },
+    {
+      name: 'sveltekit-webkit',
+      use: { ...devices['Desktop Safari'], baseURL: SVELTEKIT_URL },
+      testDir: './tests/sveltekit',
+      fullyParallel: false,
+      dependencies: ['sveltekit-firefox'],
+    },
   ],
   webServer: [
     {
@@ -49,6 +71,14 @@ export default defineConfig({
       command: 'npx ng serve --port=4201',
       port: 4201,
       cwd: resolve(workspaceRoot, 'apps/playground-angular'),
+      reuseExistingServer: false,
+      timeout: 120000,
+    },
+    {
+      // Runs on a temporary copy of the messages, which a server already running on the real files would bypass.
+      command: 'npm run dev:e2e -- --port=5176 --strictPort',
+      port: 5176,
+      cwd: resolve(workspaceRoot, 'examples/sveltekit-paraglide'),
       reuseExistingServer: false,
       timeout: 120000,
     },
