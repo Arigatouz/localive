@@ -5,7 +5,7 @@ import { resolve } from 'node:path';
 export default defineConfig({
   resolve: {
     alias: {
-      '@localive/core': resolve(__dirname, '../core/src/index.ts'),
+      '@localive/core': resolve(import.meta.dirname, '../core/src/index.ts'),
     },
   },
   build: {
@@ -14,11 +14,12 @@ export default defineConfig({
       formats: ['es', 'cjs'],
       fileName: (format) => `index.${format === 'es' ? 'js' : 'cjs'}`,
     },
-    rollupOptions: {
-      external: ['react', 'react-dom', '@localive/core'],
+    rolldownOptions: {
+      // Subpaths such as react/jsx-runtime are CommonJS; bundling them leaves require() calls in the ESM build.
+      external: [/^react(-dom)?(\/|$)/, '@localive/core'],
     },
     sourcemap: true,
-    minify: 'esbuild',
+    minify: 'oxc',
   },
   plugins: [dts({ rollupTypes: true })],
   test: {

@@ -41,6 +41,7 @@ export default defineConfig({
             { label: 'Vue', slug: 'guides/vue' },
             { label: 'Angular', slug: 'guides/angular' },
             { label: 'Svelte', slug: 'guides/svelte' },
+            { label: 'SvelteKit + Paraglide', slug: 'guides/sveltekit-paraglide' },
           ],
         },
         {

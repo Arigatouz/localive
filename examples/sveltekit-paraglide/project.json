@@ -1,0 +1,34 @@
+{
+  "name": "example-sveltekit-paraglide",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "tags": ["scope:app", "type:app"],
+  "implicitDependencies": ["@localive/core", "@localive/vite", "@localive/adapter-paraglide", "@localive/svelte"],
+  "targets": {
+    "install": {
+      "executor": "nx:run-commands",
+      "cache": false,
+      "options": {
+        "command": "npm ci --no-audit --no-fund",
+        "cwd": "examples/sveltekit-paraglide"
+      }
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["install", "^build"],
+      "options": {
+        "command": "npm run build",
+        "cwd": "examples/sveltekit-paraglide"
+      }
+    },
+    "dev": {
+      "executor": "nx:run-commands",
+      "continuous": true,
+      "dependsOn": ["install", "^build"],
+      "options": {
+        "command": "npm run dev",
+        "cwd": "examples/sveltekit-paraglide"
+      }
+    }
+  }
+}

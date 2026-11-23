@@ -1,0 +1,35 @@
+{
+	"$schema": "https://inlang.com/schema/inlang-message-format",
+	"app_title": "Localive SvelteKit Playground",
+	"intro": "Click Edit translations, then click any text to edit it in place.",
+	"greeting": "Hello {name}",
+	"nav": {
+		"home": "Home",
+		"loads": "Data loading",
+		"form": "Form",
+		"language": "Language"
+	},
+	"cart_count": [
+		{
+			"declarations": ["input count", "local plural = count: plural"],
+			"selectors": ["plural"],
+			"match": {
+				"plural=one": "{count} item in your cart",
+				"plural=other": "{count} items in your cart"
+			}
+		}
+	],
+	"terms": "Read the {#link}terms{/link} first.",
+	"search_placeholder": "Search products",
+	"card_title": "Shared component",
+	"same_text_a": "Learn more",
+	"same_text_b": "Learn more",
+	"only_english": "This sentence has no French translation yet.",
+	"rename": "Rename",
+	"server_message": "Rendered by a server load function",
+	"universal_message": "Rendered by a universal load function",
+	"form_label": "Product name",
+	"form_submit": "Send",
+	"form_received": "The server received: {value}",
+	"save_target": "Edit me to try saving"
+}

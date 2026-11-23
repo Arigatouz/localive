@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { localiveVite } from '@localive/vite';
+import { nxReadySignal } from '@nx/vite/plugins/nx-ready-signal.plugin';
 
 export default defineConfig({
   plugins: [
@@ -10,5 +11,6 @@ export default defineConfig({
       locales: ['en', 'fr'],
       defaultLocale: 'en',
     }),
+    nxReadySignal(),
   ],
 });

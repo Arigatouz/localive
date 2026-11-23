@@ -13,14 +13,14 @@
     "@localive/core": "*",
     "@localive/svelte": "*",
     "@localive/vite": "*",
-    "svelte": "^5.0.0"
+    "svelte": "^5.59.1"
   },
   "devDependencies": {
-    "@sveltejs/vite-plugin-svelte": "^5.0.0",
-    "@tsconfig/svelte": "^5.0.4",
-    "svelte": "^5.0.0",
+    "@sveltejs/vite-plugin-svelte": "^7.3.1",
+    "@tsconfig/svelte": "^5.0.9",
+    "svelte": "^5.59.1",
     "typescript": "~6.0.3",
-    "vite": "^6.4.3"
+    "vite": "^8.3.8"
   },
   "nx": {
     "tags": ["scope:app", "type:app"]

@@ -8,9 +8,22 @@
     "test": "playwright test"
   },
   "devDependencies": {
-    "@playwright/test": "^1.52.0"
+    "@playwright/test": "^1.65.1"
   },
   "nx": {
-    "tags": ["scope:e2e", "type:app"]
+    "tags": [
+      "scope:e2e",
+      "type:app"
+    ],
+    "implicitDependencies": [
+      "example-sveltekit-paraglide"
+    ],
+    "targets": {
+      "test": {
+        "dependsOn": [
+          "^build"
+        ]
+      }
+    }
   }
 }

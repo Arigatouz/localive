@@ -7,7 +7,11 @@ export function writeTranslationToFile(
   searchRoots: string[],
   defaultPath: string
 ): SaveResult {
-  const { key, value, locale, filePath } = entry;
+  const { key, value, locale, filePath, variant, expected } = entry;
+
+  if (variant !== undefined) {
+    return { success: false, error: 'Saving a single variant needs an integration for the message format' };
+  }
 
   // Validate filePath if provided — must be within allowed roots
   if (filePath) {
@@ -50,22 +54,37 @@ export function writeTranslationToFile(
   }
 
   try {
-    let content: Record<string, unknown>;
-    let indent = 2;
+    let content: Record<string, unknown> = {};
+    let indent = '  ';
+    let lineEnding = '\n';
     let trailingNewline = true;
     let isNestedFormat = false;
 
-    try {
-      const raw = readFileSync(resolvedTarget, 'utf-8');
+    const raw = readFileIfExists(resolvedTarget);
+    if (raw === undefined) {
+      mkdirSync(dirname(resolvedTarget), { recursive: true });
+    } else {
       trailingNewline = raw.endsWith('\n');
 
       // Detect indentation
-      const indentMatch = raw.match(/^(\s+)\S/m);
+      const indentMatch = raw.match(/^[ \t]+(?=\S)/m);
       if (indentMatch) {
-        indent = indentMatch[1].length;
+        indent = indentMatch[0];
+      }
+      if (raw.includes('\r\n')) {
+        lineEnding = '\r\n';
       }
 
-      content = JSON.parse(raw);
+      if (raw.trim()) {
+        const parsed = parseJsonObject(raw);
+        if (!parsed) {
+          return {
+            success: false,
+            error: `Refusing to overwrite "${resolvedTarget}": it is not a valid JSON object`,
+          };
+        }
+        content = parsed;
+      }
 
       // Detect nested format: { "en": { "key": "value" }, "fr": { ... } }
       // where the file is named after one of the locale keys
@@ -78,31 +97,23 @@ export function writeTranslationToFile(
       ) {
         isNestedFormat = true;
       }
-    } catch {
-      // File doesn't exist or is invalid JSON — start fresh
-      content = {};
-      isNestedFormat = false;
-      try {
-        mkdirSync(dirname(resolvedTarget), { recursive: true });
-      } catch {
-        // Directory might already exist
-      }
     }
 
-    // Set the key value — write to the correct node
-    if (isNestedFormat) {
-      const parsedLocale = basenameWithoutExt(resolvedTarget);
-      if (parsedLocale && typeof content[parsedLocale] === 'object' && content[parsedLocale] !== null) {
-        (content[parsedLocale] as Record<string, unknown>)[key] = value;
-      } else {
-        content[key] = value;
-      }
-    } else {
-      content[key] = value;
+    const localeNode = isNestedFormat ? basenameWithoutExt(resolvedTarget) : null;
+    const dictionary = localeNode ? (content[localeNode] as Record<string, unknown>) : content;
+
+    const existingValue = Object.hasOwn(dictionary, key) ? dictionary[key] : null;
+    if (expected !== undefined && existingValue !== expected) {
+      return { success: false, conflict: true, error: `"${key}" changed since it was loaded` };
     }
+    if (existingValue !== null && typeof existingValue !== 'string') {
+      return { success: false, error: `Refusing to replace the non-string value of "${key}" with text` };
+    }
+    dictionary[key] = value;
 
     // Write back with preserved indentation
-    const output = JSON.stringify(content, null, indent) + (trailingNewline ? '\n' : '');
+    const json = JSON.stringify(content, null, indent) + (trailingNewline ? '\n' : '');
+    const output = json.replaceAll('\n', lineEnding);
     writeFileSync(resolvedTarget, output, 'utf-8');
 
     return { success: true, filePath: resolvedTarget };
@@ -111,6 +122,25 @@ export function writeTranslationToFile(
       success: false,
       error: error instanceof Error ? error.message : String(error),
     };
+  }
+}
+
+function readFileIfExists(filePath: string): string | undefined {
+  try {
+    return readFileSync(filePath, 'utf-8');
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === 'ENOENT') return undefined;
+    throw error;
+  }
+}
+
+function parseJsonObject(raw: string): Record<string, unknown> | undefined {
+  try {
+    const parsed: unknown = JSON.parse(raw);
+    const isObject = typeof parsed === 'object' && parsed !== null && !Array.isArray(parsed);
+    return isObject ? (parsed as Record<string, unknown>) : undefined;
+  } catch {
+    return undefined;
   }
 }
 

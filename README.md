@@ -35,6 +35,7 @@ Combine a framework **client** with an i18n-library **adapter** and a build **pl
 | React | `@localive/react` | i18next, react-intl | `@localive/vite` or `@localive/webpack` |
 | Vue | `@localive/vue` | vue-i18n | `@localive/vite` or `@localive/webpack` |
 | Svelte | `@localive/svelte` | svelte-i18n | `@localive/vite` or `@localive/webpack` |
+| SvelteKit | `@localive/svelte` | Paraglide JS 3 | `@localive/vite` |
 
 ## Quick start
 
@@ -241,7 +242,11 @@ Initialize Localive **inside a component** (Svelte context requires it). Call `i
 <LiveEditorOverlay />
 ```
 
-> The Svelte overlay provides a toggle button to activate the inspector. Tag elements with `data-i18n-key="your.key"` so clicks resolve to the right locale entry.
+> Tag elements with `data-i18n-key="your.key"` so clicks resolve to the right locale entry.
+
+### SvelteKit (with Paraglide JS)
+
+With Paraglide there is nothing to tag: in edit mode, each compiled message carries an invisible marker naming its key and locale. Add `localiveVite({ integration: paraglideIntegration({ project: './project.inlang' }) })` to your Vite config and `<LocaliveEditor>` to your root layout. See the [SvelteKit + Paraglide guide](https://localive.vercel.app/guides/sveltekit-paraglide/) and the runnable app in `examples/sveltekit-paraglide`.
 
 Then start your dev server, open the app, and click any translated string to edit it. Full guides for every framework live at [localive.vercel.app](https://localive.vercel.app/).
 
@@ -256,7 +261,7 @@ Everything ships under the [`@localive`](https://www.npmjs.com/org/localive) sco
 - [`@localive/react`](https://www.npmjs.com/package/@localive/react), [`@localive/vue`](https://www.npmjs.com/package/@localive/vue), [`@localive/angular`](https://www.npmjs.com/package/@localive/angular), [`@localive/svelte`](https://www.npmjs.com/package/@localive/svelte)
 
 **Adapters** (bridge to your i18n library)
-- [`@localive/adapter-i18next`](https://www.npmjs.com/package/@localive/adapter-i18next), [`@localive/adapter-react-intl`](https://www.npmjs.com/package/@localive/adapter-react-intl), [`@localive/adapter-vue-i18n`](https://www.npmjs.com/package/@localive/adapter-vue-i18n), [`@localive/adapter-transloco`](https://www.npmjs.com/package/@localive/adapter-transloco), [`@localive/adapter-ngx-translate`](https://www.npmjs.com/package/@localive/adapter-ngx-translate), [`@localive/adapter-svelte-i18n`](https://www.npmjs.com/package/@localive/adapter-svelte-i18n)
+- [`@localive/adapter-i18next`](https://www.npmjs.com/package/@localive/adapter-i18next), [`@localive/adapter-react-intl`](https://www.npmjs.com/package/@localive/adapter-react-intl), [`@localive/adapter-vue-i18n`](https://www.npmjs.com/package/@localive/adapter-vue-i18n), [`@localive/adapter-transloco`](https://www.npmjs.com/package/@localive/adapter-transloco), [`@localive/adapter-ngx-translate`](https://www.npmjs.com/package/@localive/adapter-ngx-translate), [`@localive/adapter-svelte-i18n`](https://www.npmjs.com/package/@localive/adapter-svelte-i18n), [`@localive/adapter-paraglide`](https://www.npmjs.com/package/@localive/adapter-paraglide)
 
 **Build plugins**
 - [`@localive/vite`](https://www.npmjs.com/package/@localive/vite), [`@localive/webpack`](https://www.npmjs.com/package/@localive/webpack), [`@localive/plugin-angular`](https://www.npmjs.com/package/@localive/plugin-angular)
@@ -288,6 +293,7 @@ Localive is an Nx monorepo built on npm workspaces:
 
 - `packages/*`: the libraries we publish, plus the CLI and the VS Code extension.
 - `apps/*`: framework playgrounds, the end-to-end test app (`playground-e2e`), and the documentation `website`. These are marked `private: true` and are never published. They serve as live demos and tests, and they stay part of the open-source repo.
+- `examples/*`: apps with their own install, outside the npm workspaces, such as the SvelteKit 3 + Paraglide example.
 
 ## License
 

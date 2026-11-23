@@ -14,8 +14,8 @@ vi.mock('svelte', async () => {
 
 import { createLocalive } from '@localive/core';
 import { createMockAdapter } from '../../../tools/testing';
-import { initLocalive, getLocaliveState } from './createLocalive';
-import { setLocaliveContext, getLocaliveContext, useLocaliveEditor } from './useLocaliveEditor';
+import { initLocalive, getLocaliveState } from './createLocalive.js';
+import { setLocaliveContext, getLocaliveContext, useLocaliveEditor } from './useLocaliveEditor.svelte.js';
 
 describe('Svelte context unification', () => {
   beforeEach(() => {

@@ -1,0 +1,30 @@
+{
+  "name": "example-sveltekit-paraglide",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "imports": {
+    "#lib/*": "./src/lib/*"
+  },
+  "scripts": {
+    "dev": "vite dev --port 5176",
+    "dev:e2e": "node scripts/dev-on-copy.js",
+    "build": "vite build && node scripts/check-production-build.js",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@localive/adapter-paraglide": "file:../../packages/adapter-paraglide",
+    "@localive/core": "file:../../packages/core",
+    "@localive/svelte": "file:../../packages/client-svelte",
+    "@localive/vite": "file:../../packages/plugin-vite"
+  },
+  "devDependencies": {
+    "@inlang/paraglide-js": "3.2.2",
+    "@inlang/paraglide-js-svelte": "1.0.5",
+    "@inlang/plugin-message-format": "4.6.0",
+    "@sveltejs/kit": "^3.4.0",
+    "@sveltejs/vite-plugin-svelte": "^7.3.1",
+    "svelte": "^5.59.1",
+    "vite": "^8.3.8"
+  }
+}

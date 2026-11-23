@@ -1,3 +1,4 @@
+import { KeyResolver } from './resolver';
 import { I18nLiveStore } from './store';
 import type {
   I18nLiveConfig,
@@ -5,9 +6,11 @@ import type {
   I18nAdapter,
   I18nPlugin,
   Locale,
+  MessageReference,
   TranslationEntry,
   SaveResult,
   TranslationDictionary,
+  TranslationValue,
 } from './types';
 
 export function createLocalive(config: I18nLiveConfig): I18nLiveInstance {
@@ -37,9 +40,10 @@ export function createLocalive(config: I18nLiveConfig): I18nLiveInstance {
   const store = new I18nLiveStore({
     locale: initialLocale,
     dictionaries,
-    active: config.activeByDefault ?? false,
+    active: adapter.isEditMode?.() ?? config.activeByDefault ?? false,
   });
 
+  const resolver = new KeyResolver(store, adapter);
   let destroyed = false;
 
   adapter.onLocaleChange((newLocale: Locale) => {
@@ -67,13 +71,15 @@ export function createLocalive(config: I18nLiveConfig): I18nLiveInstance {
     store,
 
     activate(): void {
-      if (destroyed) return;
+      if (destroyed || store.active) return;
       store.active = true;
+      adapter.setEditMode?.(true);
     },
 
     deactivate(): void {
-      if (destroyed) return;
+      if (destroyed || !store.active) return;
       store.active = false;
+      adapter.setEditMode?.(false);
     },
 
     isActive(): boolean {
@@ -81,12 +87,16 @@ export function createLocalive(config: I18nLiveConfig): I18nLiveInstance {
     },
 
     resolveKey(element: HTMLElement): string | null {
-      const keyAttr = element.getAttribute('data-i18n-key');
-      if (keyAttr) return keyAttr;
-      if (adapter.getKeyFromElement) {
-        return adapter.getKeyFromElement(element);
-      }
-      return reverseLookup(element, store);
+      return resolver.resolveKey(element);
+    },
+
+    resolveMessages(element: HTMLElement): MessageReference[] {
+      return resolver.resolveMessages(element);
+    },
+
+    previewTranslation(entry: TranslationEntry | null): void {
+      if (destroyed) return;
+      adapter.preview?.(entry);
     },
 
     getTranslation(key: string, locale: Locale): string | undefined {
@@ -100,11 +110,6 @@ export function createLocalive(config: I18nLiveConfig): I18nLiveInstance {
     async saveTranslation(entry: TranslationEntry): Promise<SaveResult> {
       if (destroyed) {
         return { success: false, error: 'localive: instance destroyed' };
-      }
-
-      // Live editing is only available in dev mode
-      if (typeof import.meta !== 'undefined' && import.meta.env && !import.meta.env.DEV) {
-        return { success: false, error: 'localive: live editing is only available in dev mode' };
       }
 
       let processedEntry = entry;
@@ -131,18 +136,13 @@ export function createLocalive(config: I18nLiveConfig): I18nLiveInstance {
             value: processedEntry.value,
             locale: processedEntry.locale,
             namespace: processedEntry.namespace,
+            variant: processedEntry.variant,
+            expected: processedEntry.expected,
           }),
         });
 
         if (!response.ok) {
-          let errorText: string;
-          try {
-            const errorJson = await response.json();
-            errorText = errorJson.error ?? errorJson.message ?? await response.text();
-          } catch {
-            errorText = await response.text();
-          }
-          return { success: false, error: `HTTP ${response.status}: ${errorText}` };
+          return { success: false, error: `HTTP ${response.status}: ${await readErrorMessage(response)}` };
         }
 
         const result = await response.json();
@@ -156,11 +156,11 @@ export function createLocalive(config: I18nLiveConfig): I18nLiveInstance {
 
         const dict = store.dictionaries.get(processedEntry.locale);
         if (dict) {
-          dict[processedEntry.key] = processedEntry.value;
+          dict[processedEntry.key] = applyEntry(dict[processedEntry.key], processedEntry);
         }
 
         // Push the new value back into the i18n library so UI reflects the edit
-        if (adapter.setTranslation) {
+        if (adapter.setTranslation && processedEntry.variant === undefined) {
           adapter.setTranslation(processedEntry.key, processedEntry.value, processedEntry.locale);
         }
 
@@ -190,25 +190,19 @@ export function createLocalive(config: I18nLiveConfig): I18nLiveInstance {
   return instance;
 }
 
-function reverseLookup(
-  element: HTMLElement,
-  store: I18nLiveStore
-): string | null {
-  const text = element.textContent?.trim();
-  if (!text) return null;
+function applyEntry(current: TranslationValue | undefined, { value, variant }: TranslationEntry): TranslationValue {
+  if (variant === undefined) return value;
 
-  const dict = store.dictionaries.get(store.locale);
-  if (!dict) return null;
+  const otherVariants = typeof current === 'object' ? current : {};
+  return { ...otherVariants, [variant]: value };
+}
 
-  for (const [key, value] of Object.entries(dict)) {
-    if (typeof value === 'string') {
-      const pattern = value.replace(/\{\{[^}]+\}\}/g, '(.+?)');
-      if (pattern === text) return key;
-      const regex: RegExp = new RegExp(`^${pattern}$`);
-      if (regex.test(text)) return key;
-      if (value === text) return key;
-    }
+async function readErrorMessage(response: Response): Promise<string> {
+  const body = await response.text();
+  try {
+    const { error, message } = JSON.parse(body);
+    return error ?? message ?? body;
+  } catch {
+    return body;
   }
-
-  return null;
 }

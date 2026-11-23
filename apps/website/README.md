@@ -7,7 +7,7 @@ The official Localive documentation site, built with Astro + Starlight.
 
 ## Tech stack
 
-- Astro 6 + Starlight 0.40
+- Astro 7 + Starlight 0.43
 - Custom Cyberpunk dual theme (`html[data-theme]` switching via `localStorage('starlight-theme')`)
 - Animated logo via inline SVG (`src/components/CyberLogo.astro`) — SMIL animations + CSS glow
 

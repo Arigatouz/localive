@@ -1,29 +1,37 @@
 ---
 title: Security
-description: How Localive validates inputs and prevents injection attacks.
+description: What protects your files while the Localive dev server endpoint is running.
 ---
 
-## Input Validation
+The dev server plugin exposes an endpoint that writes to your source files, so it only accepts requests that come from your own editor.
 
-Localive validates all inputs before processing:
+## Who Can Save
 
-- **Keys** must match `/^[a-zA-Z0-9_.-]+$/` — no special characters, no path traversal
-- **Values** are sanitized to prevent HTML/script injection
-- **Paths** are validated to prevent directory traversal attacks
-- **Locales** must match `/^[a-z]{2}(-[A-Z]{2})?$/` — standard locale codes only
+A save request is accepted only when it:
 
-## Dev-Only Mode
+- **Comes from the dev server's own origin.** The browser's `Sec-Fetch-Site` or `Origin` header must match, so other websites open in your browser cannot write your files.
+- **Uses an allowed host.** The `Host` must be localhost, an IP address, or listed in Vite's `server.allowedHosts`. This stops DNS rebinding, where an attacker's domain is pointed at your machine. The Vite plugin checks this itself, because Vite 5 and 6 run their own host check after plugin middleware.
+- **Sends JSON.** `Content-Type: application/json` is required, which browsers cannot send across origins without a CORS preflight, and bodies over 1 MB are refused.
 
-The editor overlay and dev-server plugin are **production-safe by default**:
+Non-browser tools such as `curl` send no `Origin` header and are allowed from an allowed host.
 
-- The `LiveEditorOverlay` component only renders when explicitly activated
-- The Vite/Webpack plugins only run during `dev` mode — they are stripped in production builds
-- No editing functionality is included in production bundles
+## What Gets Written
 
-## File Writing Safety
+- **Keys** may not contain the segments `__proto__`, `prototype` or `constructor`.
+- **Locales** must match `/^[a-zA-Z][a-zA-Z0-9_-]*$/`, so they cannot name a path.
+- **Files** are chosen by the server from the key and locale, inside your translation roots. A client cannot pick the file.
+- **Values** are written as JSON strings, which escapes them for the file. They are not HTML-sanitized: your i18n library decides how messages are rendered.
 
-The dev-server plugin uses indentation-preserving writes:
+## What Is Never Overwritten
 
-- Existing formatting and key order in your JSON files are preserved
-- Only the changed key is updated — the rest of the file remains untouched
-- Validate-before-write ensures no corrupt JSON is written
+- A locale file that is not valid JSON is left untouched instead of being replaced.
+- A key holding a group of keys, or plural variants, is not replaced by text.
+- With `expected`, a value that changed since the editor loaded it is not overwritten; the save fails with HTTP 409.
+
+The [Paraglide integration](/guides/sveltekit-paraglide/) also refuses edits that add inputs or markup a message does not have, and files with duplicate keys.
+
+## Development Only
+
+- The Vite and Webpack plugins run only in the dev server, so production builds have no endpoint.
+- Render the editor only in development, for example with `import.meta.env.DEV`, so no editing code reaches production bundles.
+- In production, a save request reaches no endpoint and fails.
