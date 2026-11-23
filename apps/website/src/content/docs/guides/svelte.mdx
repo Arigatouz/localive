@@ -73,12 +73,23 @@ Tag any element whose text should be editable with a `data-i18n-key` attribute m
 <span data-i18n-key="nav.about">{$_('nav.about')}</span>
 ```
 
-## Overlay UI Note
+## The Editor
 
-The Svelte `LiveEditorOverlay` currently renders a single floating toggle button (a pencil icon) that activates/de-activates the inspector. The hover-highlight, editor panel, and Save UI present in the React and Vue overlays are not yet ported — track the issue on GitHub.
+`LiveEditorOverlay` shows an **Edit translations** button. In edit mode, hovering highlights a message and clicking opens an editor with one field per locale, and per branch for plural and select messages. Enter saves, Shift+Enter adds a line and Escape closes. When one element holds several messages, the editor asks which one, and **Messages on this page** lists strings you cannot click, such as the title.
+
+While editing, Alt+click presses buttons and Ctrl/Cmd+click opens links.
+
+## Async Adapters with `LocaliveEditor`
+
+`LocaliveEditor` creates the instance after mounting from a function that may return a promise, so the adapter can load data first. The [Paraglide adapter](/guides/sveltekit-paraglide/) works this way:
+
+```svelte
+<LocaliveEditor createAdapter={() => createParaglideAdapter({ getLocale })} locales={['en', 'fr']} />
+```
 
 ## Next Steps
 
+- [SvelteKit + Paraglide](/guides/sveltekit-paraglide/) — edit Paraglide messages without tagging elements
 - [Dev Server Plugin](/plugins/vite/) — write-edits-to-disk on save
 - [CLI Tools](/cli/overview/) — extract, validate, sync, generate types
 - [Auto-Tagging Concept](/concepts/auto-tagging/) — how `data-i18n-key` is resolved
