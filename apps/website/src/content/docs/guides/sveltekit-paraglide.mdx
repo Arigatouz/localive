@@ -1,0 +1,103 @@
+---
+title: SvelteKit + Paraglide
+description: Click any Paraglide message in your SvelteKit app and edit it in place.
+---
+
+Paraglide JS compiles your messages into functions, so the text on the page no longer says which key produced it. The Paraglide adapter restores that link during development: in edit mode, each message's output ends with a few invisible characters naming its key and locale. Click any text and Localive opens that exact message, wherever it was rendered.
+
+Requires Paraglide JS 3, with messages stored by `@inlang/plugin-message-format`. Tested with SvelteKit 3.
+
+## Install
+
+```bash
+npm install -D @localive/adapter-paraglide @localive/core @localive/vite @localive/svelte
+```
+
+## Add the dev server plugin
+
+Add `localiveVite` after Paraglide's plugin, with the same project path:
+
+```js
+// vite.config.js
+import { paraglideVitePlugin } from '@inlang/paraglide-js';
+import { paraglideIntegration } from '@localive/adapter-paraglide/vite';
+import { localiveVite } from '@localive/vite';
+import { sveltekit } from '@sveltejs/kit/vite';
+import { defineConfig } from 'vite';
+
+export default defineConfig({
+  plugins: [
+    paraglideVitePlugin({ project: './project.inlang', outdir: './src/lib/paraglide' }),
+    localiveVite({ integration: paraglideIntegration({ project: './project.inlang' }) }),
+    sveltekit(),
+  ],
+});
+```
+
+Start the dev server from the folder the project path is relative to, as Paraglide expects.
+
+## Render the editor
+
+Add `LocaliveEditor` to your root layout, only in development:
+
+```svelte
+<!-- src/routes/+layout.svelte -->
+<script>
+  import { createParaglideAdapter } from '@localive/adapter-paraglide';
+  import { LocaliveEditor } from '@localive/svelte';
+  import { getLocale, locales } from '#lib/paraglide/runtime.js'; // $lib/... in SvelteKit 2
+
+  let { children } = $props();
+</script>
+
+{@render children()}
+
+{#if import.meta.env.DEV}
+  <LocaliveEditor createAdapter={() => createParaglideAdapter({ getLocale })} locales={[...locales]} />
+{/if}
+```
+
+## Edit a message
+
+1. Click **Edit translations** in the bottom-right corner. The page reloads in edit mode.
+2. Hover over text to highlight it, and click it. The editor shows one field per locale, with the one you clicked first.
+3. Type to preview the change in the page, then press Enter to save. Paraglide recompiles and reloads, and the editor reopens on the same message.
+
+Plural and select messages get one field per branch. A translation missing in a locale is marked and can be added from its field. For strings you cannot click, such as the page title, use **Messages on this page**.
+
+While editing, Alt+click presses buttons and Ctrl/Cmd+click opens links.
+
+## What gets saved
+
+Saving changes only the bytes of that message in the file Paraglide reads, and keeps your formatting. A missing translation is added in the same file and nesting as the base locale. Localive refuses a save that would:
+
+- add an input such as `{user}` that the message does not declare,
+- add markup the message does not use, or leave markup unbalanced,
+- overwrite a value that changed since you opened it.
+
+## Things to know in edit mode
+
+Markers exist only in edit mode. Outside it, and in production builds, Paraglide's output is unchanged. In edit mode:
+
+- A message no longer equals its plain text, so `m.title() === 'Home'` is false.
+- A message used in a URL, an HTTP header or a comparison should be passed through `untag()`, or its key excluded:
+
+  ```js
+  import { untag } from '@localive/adapter-paraglide';
+
+  paraglideIntegration({ project: './project.inlang', exclude: ['product_slug', /^seo\./] });
+  ```
+
+  A marked string in a response header throws, because headers allow only Latin-1 characters.
+- Copied text and submitted form values have their markers removed for you.
+- Avoid message keys named `then` or `default`. Paraglide's own output makes the first hang `await import()` and hides the second, with or without Localive.
+
+## Try the example
+
+The repository includes a SvelteKit 3 example covering every kind of message, data from `load` functions and a form. See `examples/sveltekit-paraglide`.
+
+## Next steps
+
+- [Vite Plugin](/plugins/vite/): the save endpoint and its security checks
+- [Svelte](/guides/svelte/): the editor components
+- [Adapters](/concepts/adapters/): how adapters connect Localive to an i18n library

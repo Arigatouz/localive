@@ -1,10 +1,10 @@
 # Localive — Release Guide
 
-Step-by-step guide for publishing all 16 Localive packages to npm and the VS Code Marketplace.
+Step-by-step guide for publishing all 17 Localive packages to npm and the VS Code Marketplace.
 
 ## 0. Prerequisites
 
-- Node 20+ and npm 9+
+- Node 22+ (`@sveltejs/package`, which builds `@localive/svelte`, requires it) and npm 9+
 - `npm` CLI authenticated to npmjs (run `npm whoami` to confirm; `npm login` if not)
 - `vsce` CLI installed (`npm i -g @vscode/vsce`)
 - An npm org `@localive` created at https://www.npmjs.com/org/create — this scopes every publish under `@localive/*`
@@ -17,7 +17,7 @@ From the repo root (`localive/`):
 
 ```sh
 npm install --legacy-peer-deps                   # required (Angular zone.js peer conflict)
-npx nx run-many -t build --outputStyle=static    # all 16 packages + apps
+npx nx run-many -t build --outputStyle=static    # all 17 packages, apps and examples
 npx nx run-many -t typecheck --outputStyle=static
 npx nx run-many -t test --outputStyle=static
 npm run lint:all                                  # flat eslint (NOT npm run lint — no Nx lint target)
@@ -27,14 +27,14 @@ npx nx build website                               # Astro docs site (optional, 
 
 All of the above must pass before publishing. If any fail, fix the failure — do not publish a broken build.
 
-## 2. npm packages (15 packages)
+## 2. npm packages (16 packages)
 
 ### Publish order (dependency-first)
 
 Publish in this order so each package's transitive deps are already on the registry when consumers install it:
 
 1. `@localive/core`
-2. 6 adapters → `@localive/adapter-i18next`, `@localive/adapter-vue-i18n`, `@localive/adapter-svelte-i18n`, `@localive/adapter-transloco`, `@localive/adapter-ngx-translate`, `@localive/adapter-react-intl`
+2. 7 adapters → `@localive/adapter-i18next`, `@localive/adapter-vue-i18n`, `@localive/adapter-svelte-i18n`, `@localive/adapter-transloco`, `@localive/adapter-ngx-translate`, `@localive/adapter-react-intl`, `@localive/adapter-paraglide`
 3. 4 clients → `@localive/react`, `@localive/vue`, `@localive/angular`, `@localive/svelte`
 4. 3 plugins → `@localive/vite`, `@localive/webpack`, `@localive/plugin-angular`
 5. `@localive/cli`
@@ -43,8 +43,8 @@ Publish in this order so each package's transitive deps are already on the regis
 
 For each package directory (`cd packages/<name>`):
 
-1. Confirm `package.json` `version` is correct (currently `0.1.4`; bump per semver on subsequent releases).
-2. Confirm `publishConfig.access` is `"public"` (already set in all 15 packages).
+1. Confirm `package.json` `version` is correct (currently `0.2.5`; bump per semver on subsequent releases).
+2. Confirm `publishConfig.access` is `"public"` (already set in all 16 packages).
 3. Confirm the build output exists in `dist/` (run `npx nx build <name>` from the repo root if not).
 4. Inspect what will be published:
    ```sh
@@ -62,11 +62,11 @@ For each package directory (`cd packages/<name>`):
 
 ### One-command publish (optional)
 
-To publish all 15 npm packages from the repo root in dependency order:
+To publish all 16 npm packages from the repo root in dependency order:
 
 ```sh
 npm publish --access public -w packages/core
-for p in adapter-i18next adapter-vue-i18n adapter-svelte-i18n adapter-transloco adapter-ngx-translate adapter-react-intl; do
+for p in adapter-i18next adapter-vue-i18n adapter-svelte-i18n adapter-transloco adapter-ngx-translate adapter-react-intl adapter-paraglide; do
   npm publish --access public -w packages/$p
 done
 for p in client-react client-vue client-angular client-svelte; do
@@ -97,15 +97,15 @@ The VS Code extension (`packages/vscode`) is **not** published to npm — it goe
 
 From `packages/vscode`:
 
-1. Confirm `version` in `package.json` matches the npm release (currently `0.1.4`).
+1. Confirm `version` in `package.json` matches the npm release (currently `0.2.5`).
 2. Build the extension (run `npx nx build vscode` from the repo root).
 3. Package to a `.vsix` for inspection:
    ```sh
    vsce package --no-dependencies
    ```
-   This produces `localive-0.1.3.vsix`. You can install it locally to smoke-test:
+   This produces `localive-0.2.5.vsix`. You can install it locally to smoke-test:
    ```sh
-   code --install-extension localive-0.1.3.vsix
+   code --install-extension localive-0.2.5.vsix
    ```
 4. Publish:
    ```sh
@@ -122,7 +122,7 @@ From `packages/vscode`:
 
 ## 4. Versioning
 
-- All 16 packages share one version (`0.1.4` currently). Bump them in lockstep for consistency — consumers should be able to update one `@localive/*` package and trust the others at the same version are compatible.
+- All 17 packages share one version (`0.2.5` currently). Bump them in lockstep for consistency — consumers should be able to update one `@localive/*` package and trust the others at the same version are compatible.
 - Use `npm version patch | minor | major` from the package directory, or manually edit `package.json` `version` then commit + tag the repo.
 - After bumping, re-run the full verification suite (Section 1) before publishing.
 
@@ -141,7 +141,7 @@ From `packages/vscode`:
 
 ## 7. Common pitfalls
 
-- **`npm install` fails without `--legacy-peer-deps`** — Angular's `zone.js` peer-conflict. Always use `npm install --legacy-peer-deps` or `npm ci` for installs in this repo; the published packages don't carry the conflict because their `peerDependencies` are correctly narrowed.
+- **`npm install` fails without `--legacy-peer-deps`** — Angular's `zone.js` peer-conflict. Always use `npm install --legacy-peer-deps` or `npm ci --legacy-peer-deps` for installs in this repo; the published packages don't carry the conflict because their `peerDependencies` are correctly narrowed.
 - **`npm publish` fails with 403 / "You need a paid account"** — the `@localive` scope is unscoped public; if you accidentally prefix with a scoped-private config you'll get 403. Run `npm publish --access public` so npm publishes the package publicly regardless of org defaults.
 - **`vsce publish` fails with 401** — the PAT's scope or organization access is wrong. Re-create the PAT with **Marketplace → Manage** scope and **All accessible organizations**, then `vsce logout localive && vsce login localive`.
 - **`vsce publish` fails with "publisher not found"** — `publisher` in `packages/vscode/package.json` doesn't match the Marketplace publisher ID. Must be `localive` (all lowercase, no `@`).

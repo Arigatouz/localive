@@ -1,6 +1,6 @@
 {
   "name": "@localive/adapter-react-intl",
-  "version": "0.1.4",
+  "version": "0.2.5",
   "description": "Connect Localive to react-intl and fix copy without digging through message files.",
   "license": "MIT",
   "author": "Ali Gamal <aga@luftborn.com> (https://github.com/Arigatouz)",
@@ -46,10 +46,10 @@
   },
   "peerDependencies": {
     "react-intl": ">=3.0.0",
-    "@localive/core": "^0.1.3"
+    "@localive/core": "^0.2.5"
   },
   "devDependencies": {
-    "@localive/core": "^0.1.3"
+    "@localive/core": "^0.2.5"
   },
   "nx": {
     "tags": [

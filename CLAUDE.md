@@ -4,12 +4,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repo status
 
-Localive is a live in-context i18n editing toolkit for React, Vue, Angular, and Svelte. Nx monorepo with npm workspaces.
+Localive is a live in-context i18n editing toolkit for React, Vue, Angular, Svelte and SvelteKit with Paraglide JS. Nx monorepo with npm workspaces.
 
 Phases 1–4 and 6 are complete. P5 (AI plugin) is deferred — the `packages/ai-openai/` directory has been removed.
 
-- All 16 packages build, test, and typecheck clean.
-- **Published to npm**: all 15 npm packages are at `0.1.4` under the `@localive/*` scope. The VS Code extension is not yet on the Marketplace.
+- All 17 packages build, test, and typecheck clean.
+- **Published to npm**: 15 npm packages are at `0.1.4` under the `@localive/*` scope. `@localive/adapter-paraglide` is not published yet, and the published 0.1.4 lacks the save, security and Svelte fixes made since. The VS Code extension is not yet on the Marketplace.
 - All packages have `README.md`, `LICENSE`, `repository`, `homepage`, `bugs`, `keywords`, and `publishConfig` metadata. See `RELEASE-GUIDE.md` for the full release process.
 
 ## Commands
@@ -23,13 +23,13 @@ npx nx run-many -t typecheck --outputStyle=static    # typecheck all
 npx nx test <project-name>                           # single package test
 npm run lint:all                                     # lint (direct eslint; no Nx lint targets exist)
 npm run check-bundle-sizes                           # browser bundle size limits (CLI excluded)
-npx nx e2e playground-e2e                             # e2e
+npx nx e2e playground-e2e                             # e2e (SvelteKit tests need Chromium, Firefox and WebKit: npx playwright install)
 npm install --legacy-peer-deps                       # install (required: Angular zone.js peer conflict)
 ```
 
 **Important**: `npm run lint` (via `npx nx run-many -t lint`) does nothing — no project has a `lint` Nx target. Always use `npm run lint:all` instead.
 
-**Important**: `npm install` fails without `--legacy-peer-deps` due to an Angular zone.js peer dependency conflict. Always use `npm install --legacy-peer-deps` or `npm ci`.
+**Important**: `npm install` fails without `--legacy-peer-deps` due to an Angular zone.js peer dependency conflict. Always use `npm install --legacy-peer-deps` or `npm ci --legacy-peer-deps`; plain `npm ci` fails too.
 
 ## Architecture
 
@@ -38,12 +38,13 @@ npm install --legacy-peer-deps                       # install (required: Angula
 | Layer                           | Packages                                                                                            |
 | ------------------------------- | --------------------------------------------------------------------------------------------------- |
 | Core                            | `@localive/core`                                                                                    |
-| Adapters (`packages/adapter-*`) | i18next, react-intl, vue-i18n, transloco, ngx-translate, svelte-i18n                                |
+| Adapters (`packages/adapter-*`) | i18next, react-intl, vue-i18n, transloco, ngx-translate, svelte-i18n, paraglide                     |
 | Clients (`packages/client-*`)   | `@localive/react`, `@localive/vue`, `@localive/angular`, `@localive/svelte`                         |
 | Plugins                         | `@localive/vite`, `@localive/webpack`, `@localive/plugin-angular`                                   |
 | CLI                             | `@localive/cli` — `extract`, `validate`, `sync`, `types` commands                                   |
 | VS Code                         | `@localive/vscode` — hover, completion, definition, references, diagnostics, create-key, rename-key |
 | Apps (`apps/*`)                 | `playground-{react,vue,angular,svelte}`, `playground-e2e`, `website`                                |
+| Examples (`examples/*`)         | `sveltekit-paraglide`: own install, outside the npm workspaces (see Gotchas)                        |
 
 ### Package dependency graph (scope tags → allowed deps)
 
@@ -57,7 +58,7 @@ scope:vscode      → core, cli
 scope:app         → core, adapters, clients, plugins (not cli)
 ```
 
-`scope:app` intentionally excludes `scope:cli` — playgrounds must not depend on CLI tooling. Most packages infer tags from the Nx graph; explicit `tags` in `project.json` exist for `cli`, `vscode`, and `website`.
+`scope:app` intentionally excludes `scope:cli` — playgrounds must not depend on CLI tooling. Most packages infer tags from the Nx graph; explicit `tags` in `project.json` exist for `cli`, `vscode`, `website` and `example-sveltekit-paraglide`.
 
 ### Key packages
 
@@ -66,6 +67,8 @@ scope:app         → core, adapters, clients, plugins (not cli)
 | `@localive/core`           | `scope:core`           | Browser-compatible, zero runtime deps. Shared pure utils (`localeFromPath`, `sortedKeys`, validation).                                                                                                                 |
 | `@localive/cli`            | `scope:cli`            | Node CLI. Externalizes `@localive/core` and all Node builtins in its Vite build. Has `paths: {}` in tsconfig to avoid DTS pulling in core source.                                                                      |
 | `@localive/vite`           | `scope:plugin`         | Dev-server plugin. Has its own `writeTranslationToFile` (single-key, indentation-preserving) and `scanTranslationFiles` (locale-aware). No runtime dep on core.                                                        |
+| `@localive/adapter-paraglide` | `scope:adapter`     | Three entries: `.` (browser adapter), `./runtime` (marks messages in edit mode), `./vite` (integration for `localiveVite`: instruments compiled messages, catalog, writer). Depends structurally on `@localive/vite`, never imports it. |
+| `@localive/svelte`         | `scope:client:svelte`  | Built with `svelte-package`, not Vite: ships `.svelte` and `.svelte.js` sources for the app to compile. ESM only. |
 | `@localive/angular`        | `scope:client:angular` | Built with ng-packagr, not Vite. Has `sourceRoot: undefined` in the Nx project graph.                                                                                                                                  |
 | `@localive/vscode`         | `scope:vscode`         | VS Code extension. Built with esbuild (CJS, node18 target) — not Vite, no declaration files. Typecheck uses `tsc --noEmit`. Pure logic tested via vitest; VS Code providers tested manually in the Extension Dev Host. |
 | `website` (`apps/website`) | `scope:app`            | Astro 6 + Starlight 0.40 docs site. Landing page at `/`, docs at root level (no `/docs/` prefix). Cyberpunk dual-theme (dark/light) with an animated inline SVG logo. Build with `npx nx build website`.               |
@@ -85,6 +88,10 @@ scope:app         → core, adapters, clients, plugins (not cli)
 - **Test environments**: Core and browser packages use `jsdom`; CLI and VS Code use the `node` environment.
 - **VS Code extension**: Uses esbuild (not Vite) since extensions require CJS output. The `@localive/vscode` tsconfig deliberately does **not** extend `tsconfig.base.json`, to avoid a `moduleResolution: bundler` vs `module: commonjs` conflict. VS Code API–dependent code is tested manually in the Extension Development Host.
 - **Website (Astro + Starlight)**: `<pre><code>` blocks containing JS `import` syntax cause esbuild parse errors during build — use `<p>`/`<div>` for code examples on the landing page. The same bug affects `<meta property="og:*">` tags; add OG meta via Starlight's `head` config in `astro.config.mjs` instead. `@astrojs/sitemap` requires `site` to be set in `astro.config.mjs`.
+- **Website docs are gitignored**: the root `.gitignore` ignores every folder named `docs`, including `apps/website/src/content/docs`. Existing pages are tracked; add a new page with `git add -f`.
+- **Examples outside the workspace**: `examples/sveltekit-paraglide` needs Vite 8, while the workspace uses Vite 6. Inside the workspace npm hoists SvelteKit to the root, where it resolves Vite 6 and crashes. It has its own lockfile and links the packages with `file:` paths; its Nx `install` target runs `npm ci` there. Its `build` fails if Localive code reaches the client bundle.
+- **Declarations of new packages**: `tsconfig.base.json` maps `@localive/*` to sources, and vite-plugin-dts rewrites those imports to relative `../../core/src` paths unless told not to. `adapter-paraglide` sets `aliasesExclude`, and a spec builds the package and fails on declarations importing from outside it. Check packaged output by installing the `npm pack` tarballs into a separate project, not by copying package folders.
+- **SvelteKit e2e**: runs on a copy of the example's messages in `.e2e-messages` (recreated on each start), so tests never change committed files. Only the Chromium project saves.
 - **Website logo**: The animated logo is **inline SVG** via `src/components/CyberLogo.astro`. Do NOT use `<img src="logo.svg">` — SVGs with `fill="none"` render invisible in `<img>` (`naturalWidth: 0`). Theme switching keys off `html[data-theme="dark|light"]`; both themes share `localStorage('starlight-theme')`.
 
 <!-- nx configuration start-->

@@ -1,15 +1,28 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import { parse as parseUrl } from 'node:url';
 import { writeTranslationToFile } from './file-writer';
-import { sanitizeRequestBody } from './security';
-import type { DevServerConfig } from './types';
+import type { IntegrationServerConfig, LocaliveIntegration } from './integration';
+import { isJsonRequest, isSameOriginRequest, requestHost, sanitizeRequestBody } from './security';
+import type { DevServerConfig, SaveResult, TranslationEntry } from './types';
+
+export type LocaliveServerConfig = (DevServerConfig & { integration?: undefined }) | IntegrationServerConfig;
 
 const DEFAULT_ENDPOINT = '/__localive-update';
+const MAX_BODY_BYTES = 1024 * 1024;
 
-export function createMiddleware(config: DevServerConfig) {
+class BodyTooLargeError extends Error {}
+
+export interface MiddlewareHooks {
+  /** Required unless the dev server validates the Host header before running this middleware. */
+  isAllowedHost?: (host: string | undefined) => boolean;
+  /** Called with the endpoint path after each successful write, before the response is sent. */
+  onSaved?: (path: string) => void;
+}
+
+export function createMiddleware(config: LocaliveServerConfig, { isAllowedHost, onSaved }: MiddlewareHooks = {}) {
   const endpoint = config.endpoint ?? DEFAULT_ENDPOINT;
-  const searchRoots = config.searchRoots ?? [config.translationsPath];
-  const allRoots = [config.translationsPath, ...searchRoots.filter((r) => r !== config.translationsPath)];
+  const { integration } = config;
+  const writeEntry = createEntryWriter(config);
 
   return async function localiveMiddleware(
     req: IncomingMessage,
@@ -17,7 +30,18 @@ export function createMiddleware(config: DevServerConfig) {
   ): Promise<void> {
     const parsedUrl = parseUrl(req.url ?? '', true);
 
-    if (parsedUrl.pathname !== endpoint) {
+    const catalogIntegration = parsedUrl.pathname === `${endpoint}/catalog` ? integration : undefined;
+    if (parsedUrl.pathname !== endpoint && !catalogIntegration) {
+      return;
+    }
+
+    if (isAllowedHost && !isAllowedHost(requestHost(req.headers))) {
+      respondWithError(res, 403, 'Host is not allowed; add it to server.allowedHosts');
+      return;
+    }
+
+    if (catalogIntegration) {
+      await respondWithCatalog(req, res, catalogIntegration);
       return;
     }
 
@@ -30,6 +54,16 @@ export function createMiddleware(config: DevServerConfig) {
     if (req.method !== 'POST') {
       res.writeHead(405, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ error: 'Method not allowed' }));
+      return;
+    }
+
+    if (!isSameOriginRequest(req.headers)) {
+      respondWithError(res, 403, 'Cross-origin requests are not allowed');
+      return;
+    }
+
+    if (!isJsonRequest(req.headers)) {
+      respondWithError(res, 415, 'Content-Type must be application/json');
       return;
     }
 
@@ -47,16 +81,21 @@ export function createMiddleware(config: DevServerConfig) {
 
       const entry = sanitized.entry;
 
-      const result = writeTranslationToFile(entry, allRoots, config.translationsPath);
+      const result = await writeEntry(entry);
 
       if (result.success) {
+        onSaved?.(endpoint);
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ ok: true, filePath: result.filePath }));
       } else {
-        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.writeHead(result.conflict ? 409 : 400, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ ok: false, error: result.error }));
       }
     } catch (error) {
+      if (error instanceof BodyTooLargeError) {
+        respondWithError(res, 413, `Request body exceeds ${MAX_BODY_BYTES} bytes`);
+        return;
+      }
       res.writeHead(500, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({
         error: error instanceof Error ? error.message : 'Internal server error',
@@ -65,14 +104,56 @@ export function createMiddleware(config: DevServerConfig) {
   };
 }
 
+function createEntryWriter(config: LocaliveServerConfig): (entry: TranslationEntry) => SaveResult | Promise<SaveResult> {
+  if (config.integration) {
+    const { integration } = config;
+    return (entry) => integration.write(entry);
+  }
+
+  const { translationsPath, searchRoots = [] } = config;
+  const roots = [translationsPath, ...searchRoots.filter((root) => root !== translationsPath)];
+  return (entry) => writeTranslationToFile(entry, roots, translationsPath);
+}
+
+async function respondWithCatalog(req: IncomingMessage, res: ServerResponse, integration: LocaliveIntegration): Promise<void> {
+  if (req.method !== 'GET') {
+    respondWithError(res, 405, 'Method not allowed. Use GET.');
+    return;
+  }
+  if (!isSameOriginRequest(req.headers)) {
+    respondWithError(res, 403, 'Cross-origin requests are not allowed');
+    return;
+  }
+
+  try {
+    const catalog = JSON.stringify(await integration.readCatalog());
+    res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' });
+    res.end(catalog);
+  } catch (error) {
+    respondWithError(res, 500, error instanceof Error ? error.message : 'Cannot read the catalog');
+  }
+}
+
+function respondWithError(res: ServerResponse, status: number, error: string): void {
+  res.writeHead(status, { 'Content-Type': 'application/json' });
+  res.end(JSON.stringify({ error }));
+}
+
 function readBody(req: IncomingMessage): Promise<string> {
   return new Promise((resolve, reject) => {
-    let body = '';
+    const chunks: Buffer[] = [];
+    let receivedBytes = 0;
     req.on('data', (chunk: Buffer) => {
-      body += chunk.toString();
+      receivedBytes += chunk.length;
+      if (receivedBytes > MAX_BODY_BYTES) {
+        chunks.length = 0;
+        reject(new BodyTooLargeError());
+        return;
+      }
+      chunks.push(chunk);
     });
     req.on('end', () => {
-      resolve(body);
+      resolve(Buffer.concat(chunks).toString('utf-8'));
     });
     req.on('error', reject);
   });

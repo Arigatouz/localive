@@ -1,0 +1,76 @@
+{
+  "name": "@localive/adapter-paraglide",
+  "version": "0.2.5",
+  "description": "Edit Paraglide JS messages by clicking them in your running app.",
+  "license": "MIT",
+  "author": "Ali Gamal <aga@luftborn.com> (https://github.com/Arigatouz)",
+  "homepage": "https://localive.vercel.app/concepts/adapters/",
+  "bugs": "https://github.com/Arigatouz/localive/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Arigatouz/localive.git",
+    "directory": "packages/adapter-paraglide"
+  },
+  "keywords": [
+    "i18n",
+    "paraglide",
+    "inlang",
+    "sveltekit",
+    "translation",
+    "localization",
+    "live-editing",
+    "localive"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./runtime": {
+      "types": "./dist/runtime/index.d.ts",
+      "import": "./dist/runtime.js"
+    },
+    "./vite": {
+      "types": "./dist/vite/index.d.ts",
+      "import": "./dist/vite.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "vite build",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "jsonc-parser": "^3.3.1",
+    "magic-string": "^0.30.21"
+  },
+  "peerDependencies": {
+    "@localive/core": "^0.2.5",
+    "svelte": ">=5.0.0"
+  },
+  "peerDependenciesMeta": {
+    "svelte": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@inlang/paraglide-js": "3.2.2",
+    "@inlang/plugin-message-format": "4.6.0",
+    "@localive/core": "^0.2.5"
+  },
+  "nx": {
+    "tags": [
+      "scope:adapter",
+      "type:lib"
+    ]
+  }
+}

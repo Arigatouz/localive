@@ -1,6 +1,6 @@
 {
   "name": "@localive/react",
-  "version": "0.1.4",
+  "version": "0.2.5",
   "description": "React bindings for Localive. Add the provider and edit translations inline as the app runs.",
   "license": "MIT",
   "author": "Ali Gamal <aga@luftborn.com> (https://github.com/Arigatouz)",
@@ -47,7 +47,7 @@
   "peerDependencies": {
     "react": ">=18",
     "react-dom": ">=18",
-    "@localive/core": "^0.1.3"
+    "@localive/core": "^0.2.5"
   },
   "devDependencies": {
     "react": "^19.1.0",
@@ -57,7 +57,7 @@
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.0",
     "jsdom": "^25.0.0",
-    "@localive/core": "^0.1.3"
+    "@localive/core": "^0.2.5"
   },
   "nx": {
     "tags": [

@@ -1,0 +1,34 @@
+{
+	"$schema": "https://inlang.com/schema/inlang-message-format",
+	"app_title": "Bac à sable SvelteKit Localive",
+	"intro": "Cliquez sur Modifier les traductions, puis sur n'importe quel texte pour le modifier sur place.",
+	"greeting": "Bonjour {name}",
+	"nav": {
+		"home": "Accueil",
+		"loads": "Chargement des données",
+		"form": "Formulaire",
+		"language": "Langue"
+	},
+	"cart_count": [
+		{
+			"declarations": ["input count", "local plural = count: plural"],
+			"selectors": ["plural"],
+			"match": {
+				"plural=one": "{count} article dans votre panier",
+				"plural=other": "{count} articles dans votre panier"
+			}
+		}
+	],
+	"terms": "Lisez d'abord les {#link}conditions{/link}.",
+	"search_placeholder": "Rechercher des produits",
+	"card_title": "Composant partagé",
+	"same_text_a": "En savoir plus",
+	"same_text_b": "En savoir plus",
+	"rename": "Renommer",
+	"server_message": "Affiché par une fonction load serveur",
+	"universal_message": "Affiché par une fonction load universelle",
+	"form_label": "Nom du produit",
+	"form_submit": "Envoyer",
+	"form_received": "Le serveur a reçu : {value}",
+	"save_target": "Modifiez-moi pour essayer d'enregistrer"
+}

@@ -34,9 +34,10 @@ export default defineConfig({
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
-| `translationsPath` | `string` | required | Root directory for translation JSON files |
+| `translationsPath` | `string` | required without `integration` | Root directory for translation JSON files |
 | `searchRoots` | `string[]` | `[]` | Additional directories to scan for translations |
-| `locales` | `string[]` | required | Supported locale codes |
+| `locales` | `string[]` | required without `integration` | Supported locale codes |
+| `integration` | `LocaliveIntegration` | — | Reads and writes a message format other than plain JSON, such as [Paraglide](/guides/sveltekit-paraglide/) |
 | `defaultLocale` | `string` | first in `locales` | Default/source locale |
 | `endpoint` | `string` | `'/__localive-update'` | API endpoint path |
 | `ws` | `boolean` | `false` | Enable WebSocket for multi-tab sync |
@@ -44,10 +45,17 @@ export default defineConfig({
 
 ## How It Works
 
-1. The plugin scans your `translationsPath` for JSON locale files at startup.
-2. When you edit a translation in the overlay, it sends a POST to the `endpoint`.
-3. The server updates the locale file on disk, preserving formatting and key order.
-4. The browser receives the update and refreshes the displayed translation instantly.
+1. When you save a translation in the overlay, it sends a POST to the `endpoint`.
+2. The plugin finds the locale file holding the key and updates only that key, keeping indentation, line endings and key order. It never overwrites a file that is not valid JSON, or a key holding a group or variants.
+3. Connected browsers receive a `localive:update` event.
+
+The plugin runs only in the dev server (`apply: 'serve'`).
+
+## The Save Endpoint
+
+`POST <endpoint>` takes `{ key, value, locale, variant?, expected? }` as JSON. `variant` names a plural or select branch and is accepted only by integrations. `expected` is the value the edit started from, or `null` for a missing translation; if the stored value differs, the save fails with HTTP 409.
+
+Requests must come from the dev server's own origin, use a host Vite allows (localhost, an IP address or one in `server.allowedHosts`), and send `Content-Type: application/json` with a body under 1 MB. See [Security](/concepts/security/).
 
 ## Multi-Tab Sync
 

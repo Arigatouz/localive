@@ -12,7 +12,17 @@ interface I18nAdapter {
   getTranslations(locale: Locale): TranslationDictionary;
   onLocaleChange(callback: (locale: Locale) => void): () => void;
   getKeyFromElement?(element: HTMLElement): string | null;
+  getMessagesFromElement?(element: HTMLElement): MessageReference[];
+  isEditMode?(): boolean;
+  setEditMode?(active: boolean): void;
+  preview?(entry: TranslationEntry | null): void;
+  setTranslation?(key: string, value: string, locale: Locale): void;
   destroy?(): void;
+}
+
+interface MessageReference {
+  key: string;
+  locale: Locale;
 }
 ```
 
@@ -23,6 +33,11 @@ interface I18nAdapter {
 | `getTranslations(locale)` | ✅ | Returns the full translation dictionary for a locale |
 | `onLocaleChange(cb)` | ✅ | Subscribes to locale changes. Returns unsubscribe function |
 | `getKeyFromElement(el)` | ❌ | Extract the i18n key from a DOM element (for auto-tagging) |
+| `getMessagesFromElement(el)` | ❌ | List every message rendered in an element and its descendants, each with the locale it is shown in. An empty list is final: keys are then not guessed from the text |
+| `isEditMode()` | ❌ | Whether edit mode was on when the page loaded. Overrides `activeByDefault` |
+| `setEditMode(active)` | ❌ | Switch edit mode when the instance is activated or deactivated; may reload the page |
+| `preview(entry)` | ❌ | Show an unsaved value in the page; `null` removes every draft |
+| `setTranslation(key, value, locale)` | ❌ | Push a saved value into the i18n library. Not called for variant saves |
 | `destroy()` | ❌ | Clean up any listeners or observers |
 
 ## TranslationDictionary

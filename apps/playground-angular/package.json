@@ -17,9 +17,9 @@
     "@angular/platform-browser": "^22.0.0",
     "@angular/platform-browser-dynamic": "^22.0.0",
     "@angular/router": "^22.0.0",
-    "@localive/adapter-transloco": "^0.1.3",
-    "@localive/angular": "^0.1.3",
-    "@localive/core": "^0.1.3",
+    "@localive/adapter-transloco": "*",
+    "@localive/angular": "*",
+    "@localive/core": "*",
     "@ngneat/transloco": "^6.0.4",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"

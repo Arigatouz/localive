@@ -11,6 +11,19 @@
     "@playwright/test": "^1.52.0"
   },
   "nx": {
-    "tags": ["scope:e2e", "type:app"]
+    "tags": [
+      "scope:e2e",
+      "type:app"
+    ],
+    "implicitDependencies": [
+      "example-sveltekit-paraglide"
+    ],
+    "targets": {
+      "test": {
+        "dependsOn": [
+          "^build"
+        ]
+      }
+    }
   }
 }

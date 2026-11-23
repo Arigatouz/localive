@@ -1,3 +1,4 @@
+import type { IncomingHttpHeaders } from 'node:http';
 import type { TranslationEntry, SanitizationResult } from './types';
 
 const LOCALE_REGEX = /^[a-zA-Z][a-zA-Z0-9_-]*$/;
@@ -63,6 +64,30 @@ function resolvePath(p: string): string {
   return '/' + stack.join('/');
 }
 
+/**
+ * Whether the request comes from the dev server's own pages or from a non-browser client.
+ * Relies on the dev server having validated the Host header, which is what stops DNS rebinding.
+ */
+export function isSameOriginRequest(headers: IncomingHttpHeaders): boolean {
+  const fetchSite = headers['sec-fetch-site'];
+  if (fetchSite) return fetchSite === 'same-origin';
+
+  const { origin } = headers;
+  if (!origin) return true;
+
+  return URL.canParse(origin) && new URL(origin).host === requestHost(headers);
+}
+
+export function requestHost(headers: IncomingHttpHeaders): string | undefined {
+  const authority = headers[':authority'];
+  return headers.host ?? (typeof authority === 'string' ? authority : undefined);
+}
+
+export function isJsonRequest(headers: IncomingHttpHeaders): boolean {
+  const mediaType = headers['content-type']?.split(';')[0].trim().toLowerCase();
+  return mediaType === 'application/json';
+}
+
 export function sanitizeRequestBody(body: unknown): SanitizationResult {
   if (!body || typeof body !== 'object') {
     return { valid: false, error: 'Request body must be an object' };
@@ -84,18 +109,24 @@ export function sanitizeRequestBody(body: unknown): SanitizationResult {
     return { valid: false, error: keyValidation.error! };
   }
 
+  const { variant, expected } = record;
+  if (variant !== undefined && (typeof variant !== 'string' || !validateKey(variant).valid)) {
+    return { valid: false, error: 'variant must be a non-empty string without dangerous segments' };
+  }
+  if (expected !== undefined && expected !== null && typeof expected !== 'string') {
+    return { valid: false, error: 'expected must be a string or null' };
+  }
+
   const entry: TranslationEntry = {
     key: record.key,
     value: record.value,
     locale: record.locale,
+    variant,
+    expected,
   };
 
   if (record.namespace && typeof record.namespace === 'string') {
     entry.namespace = record.namespace;
-  }
-
-  if (record.filePath && typeof record.filePath === 'string') {
-    entry.filePath = record.filePath;
   }
 
   return { valid: true, entry };
