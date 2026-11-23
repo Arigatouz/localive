@@ -1,5 +1,4 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
-import { parse as parseUrl } from 'node:url';
 import { writeTranslationToFile } from './file-writer';
 import type { IntegrationServerConfig, LocaliveIntegration } from './integration';
 import { isJsonRequest, isSameOriginRequest, requestHost, sanitizeRequestBody } from './security';
@@ -28,10 +27,10 @@ export function createMiddleware(config: LocaliveServerConfig, { isAllowedHost, 
     req: IncomingMessage,
     res: ServerResponse
   ): Promise<void> {
-    const parsedUrl = parseUrl(req.url ?? '', true);
+    const pathname = (req.url ?? '').split(/[?#]/, 1)[0];
 
-    const catalogIntegration = parsedUrl.pathname === `${endpoint}/catalog` ? integration : undefined;
-    if (parsedUrl.pathname !== endpoint && !catalogIntegration) {
+    const catalogIntegration = pathname === `${endpoint}/catalog` ? integration : undefined;
+    if (pathname !== endpoint && !catalogIntegration) {
       return;
     }
 
@@ -147,12 +146,16 @@ function readBody(req: IncomingMessage): Promise<string> {
       receivedBytes += chunk.length;
       if (receivedBytes > MAX_BODY_BYTES) {
         chunks.length = 0;
-        reject(new BodyTooLargeError());
         return;
       }
       chunks.push(chunk);
     });
+    // Answering before the body is fully read resets the socket, and the client sees a network error instead of 413.
     req.on('end', () => {
+      if (receivedBytes > MAX_BODY_BYTES) {
+        reject(new BodyTooLargeError());
+        return;
+      }
       resolve(Buffer.concat(chunks).toString('utf-8'));
     });
     req.on('error', reject);
