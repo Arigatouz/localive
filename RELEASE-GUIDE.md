@@ -43,7 +43,7 @@ Publish in this order so each package's transitive deps are already on the regis
 
 For each package directory (`cd packages/<name>`):
 
-1. Confirm `package.json` `version` is correct (currently `0.1.4`; bump per semver on subsequent releases).
+1. Confirm `package.json` `version` is correct (currently `0.2.5`; bump per semver on subsequent releases).
 2. Confirm `publishConfig.access` is `"public"` (already set in all 16 packages).
 3. Confirm the build output exists in `dist/` (run `npx nx build <name>` from the repo root if not).
 4. Inspect what will be published:
@@ -97,15 +97,15 @@ The VS Code extension (`packages/vscode`) is **not** published to npm — it goe
 
 From `packages/vscode`:
 
-1. Confirm `version` in `package.json` matches the npm release (currently `0.1.4`).
+1. Confirm `version` in `package.json` matches the npm release (currently `0.2.5`).
 2. Build the extension (run `npx nx build vscode` from the repo root).
 3. Package to a `.vsix` for inspection:
    ```sh
    vsce package --no-dependencies
    ```
-   This produces `localive-0.1.3.vsix`. You can install it locally to smoke-test:
+   This produces `localive-0.2.5.vsix`. You can install it locally to smoke-test:
    ```sh
-   code --install-extension localive-0.1.3.vsix
+   code --install-extension localive-0.2.5.vsix
    ```
 4. Publish:
    ```sh
@@ -122,7 +122,7 @@ From `packages/vscode`:
 
 ## 4. Versioning
 
-- All 17 packages share one version (`0.1.4` currently). Bump them in lockstep for consistency — consumers should be able to update one `@localive/*` package and trust the others at the same version are compatible.
+- All 17 packages share one version (`0.2.5` currently). Bump them in lockstep for consistency — consumers should be able to update one `@localive/*` package and trust the others at the same version are compatible.
 - Use `npm version patch | minor | major` from the package directory, or manually edit `package.json` `version` then commit + tag the repo.
 - After bumping, re-run the full verification suite (Section 1) before publishing.
 

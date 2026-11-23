@@ -1,6 +1,6 @@
 {
   "name": "@localive/angular",
-  "version": "0.1.4",
+  "version": "0.2.5",
   "description": "Angular bindings for Localive, so your team can edit text inside the running app.",
   "license": "MIT",
   "author": "Ali Gamal <aga@luftborn.com> (https://github.com/Arigatouz)",
@@ -38,7 +38,7 @@
   "peerDependencies": {
     "@angular/common": ">=17",
     "@angular/core": ">=17",
-    "@localive/core": "^0.1.3"
+    "@localive/core": "^0.2.5"
   },
   "devDependencies": {
     "@angular/common": "^22.0.0",
@@ -47,7 +47,7 @@
     "@angular/core": "^22.0.0",
     "@angular/platform-browser": "^22.0.0",
     "@angular/platform-browser-dynamic": "^22.0.0",
-    "@localive/core": "^0.1.3",
+    "@localive/core": "^0.2.5",
     "ng-packagr": "^22.0.0",
     "rxjs": "^7.8.0"
   },
