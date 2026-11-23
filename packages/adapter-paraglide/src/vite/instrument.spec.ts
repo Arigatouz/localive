@@ -77,7 +77,7 @@ describe.each<Layout>(['message-modules', 'locale-modules', 'virtual-modules'])(
           name: 'localive-paraglide-test',
           enforce: 'post',
           resolveId: { order: 'pre', handler: resolveRuntimeBridge },
-          load: (id) => loadRuntimeBridge(id, { appRoot: root, runtimeFile: RUNTIME_FILE }),
+          load: (id) => loadRuntimeBridge(id, { searchFolders: [root], runtimeFile: RUNTIME_FILE }),
           transform(code, id) {
             return instrumentMessageModule(code, id, (source) => this.parse(source), { isExcluded: () => false });
           },
@@ -168,16 +168,16 @@ describe('request scope', () => {
     expect(resolveRuntimeBridge('svelte')).toBeNull();
   });
 
-  it('makes drafts reactive only where Svelte resolves from the app', () => {
+  it('makes drafts reactive when Svelte resolves from any of the folders, such as the app beside a shared project', () => {
     const bridgeId = resolveRuntimeBridge(RUNTIME_BRIDGE_ID)!;
 
-    expect(loadRuntimeBridge(bridgeId, { appRoot: process.cwd(), runtimeFile: RUNTIME_FILE })).toContain('useSubscriber(createSubscriber)');
-    expect(loadRuntimeBridge(bridgeId, { appRoot: tmpdir(), runtimeFile: RUNTIME_FILE })).not.toContain('svelte');
+    expect(loadRuntimeBridge(bridgeId, { searchFolders: [tmpdir(), process.cwd()], runtimeFile: RUNTIME_FILE })).toContain('useSubscriber(createSubscriber)');
+    expect(loadRuntimeBridge(bridgeId, { searchFolders: [tmpdir()], runtimeFile: RUNTIME_FILE })).not.toContain('svelte');
   });
 
   it('imports the runtime by file path, which Vite does not pre-bundle', () => {
     const runtimeFile = String.raw`C:\app\runtime.js`;
-    const bridge = loadRuntimeBridge(resolveRuntimeBridge(RUNTIME_BRIDGE_ID)!, { appRoot: tmpdir(), runtimeFile });
+    const bridge = loadRuntimeBridge(resolveRuntimeBridge(RUNTIME_BRIDGE_ID)!, { searchFolders: [tmpdir()], runtimeFile });
 
     expect(bridge?.trim()).toBe('export { tag } from "C:/app/runtime.js";');
   });

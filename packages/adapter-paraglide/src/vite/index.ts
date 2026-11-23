@@ -46,7 +46,7 @@ export function paraglideIntegration({ project, exclude = [] }: ParaglideIntegra
       return catalog;
     },
     resolveId: resolveRuntimeBridge,
-    load: (id) => loadRuntimeBridge(id, { appRoot: dirname(projectPath), runtimeFile: RUNTIME_FILE }),
+    load: (id) => loadRuntimeBridge(id, { searchFolders: [dirname(projectPath), process.cwd()], runtimeFile: RUNTIME_FILE }),
     transform(code, id) {
       return instrumentMessageModule(code, id, (source) => this.parse(source), { isExcluded });
     },
