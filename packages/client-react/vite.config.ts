@@ -15,7 +15,8 @@ export default defineConfig({
       fileName: (format) => `index.${format === 'es' ? 'js' : 'cjs'}`,
     },
     rolldownOptions: {
-      external: ['react', 'react-dom', '@localive/core'],
+      // Subpaths such as react/jsx-runtime are CommonJS; bundling them leaves require() calls in the ESM build.
+      external: [/^react(-dom)?(\/|$)/, '@localive/core'],
     },
     sourcemap: true,
     minify: 'oxc',
