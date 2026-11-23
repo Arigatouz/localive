@@ -21,7 +21,10 @@
       "@localive/adapter-transloco": [
         "../../packages/adapter-transloco/dist/index.d.ts"
       ]
-    }
+    },
+    "noUncheckedSideEffectImports": false,
+    "types": ["*"],
+    "rootDir": "src"
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
