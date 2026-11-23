@@ -8,7 +8,6 @@ export interface I18nextInstance {
   on(event: string, callback: (...args: unknown[]) => void): I18nextInstance | void;
   off(event: string, callback: (...args: unknown[]) => void): I18nextInstance | void;
   changeLanguage(locale: string): Promise<unknown>;
-  t(key: string, options?: Record<string, unknown>): string;
 }
 
 export interface WithI18nextOptions {
