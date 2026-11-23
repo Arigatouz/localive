@@ -293,7 +293,7 @@ Localive is an Nx monorepo built on npm workspaces:
 
 - `packages/*`: the libraries we publish, plus the CLI and the VS Code extension.
 - `apps/*`: framework playgrounds, the end-to-end test app (`playground-e2e`), and the documentation `website`. These are marked `private: true` and are never published. They serve as live demos and tests, and they stay part of the open-source repo.
-- `examples/*`: apps with their own install, outside the npm workspaces, such as the SvelteKit 3 + Paraglide example, which needs Vite 8 while the workspace uses Vite 6.
+- `examples/*`: apps with their own install, outside the npm workspaces, such as the SvelteKit 3 + Paraglide example.
 
 ## License
 

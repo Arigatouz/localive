@@ -28,12 +28,10 @@ npx nx test <project-name>                           # single package test
 npm run lint:all                                     # lint (direct eslint; no Nx lint targets exist)
 npm run check-bundle-sizes                           # browser bundle size limits (CLI excluded)
 npx nx e2e playground-e2e                             # e2e
-npm install --legacy-peer-deps                       # install (required: Angular zone.js peer conflict)
+npm install                                          # install
 ```
 
 **Important**: `npm run lint` (via `npx nx run-many -t lint`) does nothing — no project has a `lint` Nx target. Always use `npm run lint:all` instead.
-
-**Important**: `npm install` fails without `--legacy-peer-deps` due to Angular zone.js peer dependency conflict. Always use `npm install --legacy-peer-deps` or `npm ci`.
 
 ## Architecture
 
@@ -60,7 +58,7 @@ scope:app         → core, adapters, clients, plugins (not cli)
 | `@localive/vite`    | `scope:plugin`         | Dev-server plugin. Has its own `writeTranslationToFile` (single-key, indentation-preserving) and `scanTranslationFiles` (locale-aware).                                                                                                                                                                                                                                                                                                                                         |
 | `@localive/angular` | `scope:client:angular` | Built with ng-packagr, not Vite. Has `sourceRoot: undefined` in Nx project graph.                                                                                                                                                                                                                                                                                                                                                                                               |
 | `@localive/vscode`  | `scope:vscode`         | VS Code extension. Built with esbuild (CJS, node18 target). No Vite. No declaration files. Typecheck uses `tsc --noEmit`. Pure logic tested via vitest; VS Code providers tested manually in Extension Dev Host.                                                                                                                                                                                                                                                                |
-| `@localive/website` | `scope:app`            | Astro 6 + Starlight 0.40 docs site. Landing page at `/`, docs at root level (no `/docs/` prefix). Built with `npx nx build website`. Cyberpunk dual-theme (dark/light) with animated inline SVG logo. Note: `<pre><code>` blocks with JS `import` syntax cause esbuild errors in Astro — use plain `<p>` or `<div>` for code examples on the landing page. OG meta tags must be added via Starlight head config, not raw HTML `<meta property="og:*">` tags (same esbuild bug). |
+| `@localive/website` | `scope:app`            | Astro 7 + Starlight 0.43 docs site. Landing page at `/`, docs at root level (no `/docs/` prefix). Built with `npx nx build website`. Cyberpunk dual-theme (dark/light) with animated inline SVG logo. Note: `<pre><code>` blocks with JS `import` syntax cause esbuild errors in Astro — use plain `<p>` or `<div>` for code examples on the landing page. OG meta tags must be added via Starlight head config, not raw HTML `<meta property="og:*">` tags (same esbuild bug). |
 
 ### Shared utilities in core
 

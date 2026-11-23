@@ -24,12 +24,10 @@ npx nx test <project-name>                           # single package test
 npm run lint:all                                     # lint (direct eslint; no Nx lint targets exist)
 npm run check-bundle-sizes                           # browser bundle size limits (CLI excluded)
 npx nx e2e playground-e2e                             # e2e (SvelteKit tests need Chromium, Firefox and WebKit: npx playwright install)
-npm install --legacy-peer-deps                       # install (required: Angular zone.js peer conflict)
+npm install                                          # install
 ```
 
 **Important**: `npm run lint` (via `npx nx run-many -t lint`) does nothing — no project has a `lint` Nx target. Always use `npm run lint:all` instead.
-
-**Important**: `npm install` fails without `--legacy-peer-deps` due to an Angular zone.js peer dependency conflict. Always use `npm install --legacy-peer-deps` or `npm ci --legacy-peer-deps`; plain `npm ci` fails too.
 
 ## Architecture
 
@@ -71,7 +69,7 @@ scope:app         → core, adapters, clients, plugins (not cli)
 | `@localive/svelte`         | `scope:client:svelte`  | Built with `svelte-package`, not Vite: ships `.svelte` and `.svelte.js` sources for the app to compile. ESM only. |
 | `@localive/angular`        | `scope:client:angular` | Built with ng-packagr, not Vite. Has `sourceRoot: undefined` in the Nx project graph.                                                                                                                                  |
 | `@localive/vscode`         | `scope:vscode`         | VS Code extension. Built with esbuild (CJS, node18 target) — not Vite, no declaration files. Typecheck uses `tsc --noEmit`. Pure logic tested via vitest; VS Code providers tested manually in the Extension Dev Host. |
-| `website` (`apps/website`) | `scope:app`            | Astro 6 + Starlight 0.40 docs site. Landing page at `/`, docs at root level (no `/docs/` prefix). Cyberpunk dual-theme (dark/light) with an animated inline SVG logo. Build with `npx nx build website`.               |
+| `website` (`apps/website`) | `scope:app`            | Astro 7 + Starlight 0.43 docs site. Landing page at `/`, docs at root level (no `/docs/` prefix). Cyberpunk dual-theme (dark/light) with an animated inline SVG logo. Build with `npx nx build website`.               |
 
 ### Shared utilities in core
 
@@ -81,15 +79,16 @@ scope:app         → core, adapters, clients, plugins (not cli)
 
 - **CLI tsconfig**: `packages/cli/tsconfig.json` overrides `paths: {}` to prevent vite-plugin-dts from resolving `@localive/core` to source files. If you add a new workspace package dependency to the CLI, mirror this override.
 - **CLI Vite build**: `@localive/core` is explicitly externalized in `rollupOptions.external`. New workspace deps added to the CLI must also be added there.
+- **Library builds (Vite 8, Rolldown)**: mark a dependency external with its subpaths, as `@localive/react` does with `/^react(-dom)?(\/|$)/`. A bundled CommonJS subpath such as `react/jsx-runtime` leaves `require()` calls in the ESM output, which throw in the browser.
 - **Bundle size script** (`npm run check-bundle-sizes`): Only checks browser-facing packages. CLI is intentionally excluded.
 - **Angular playground**: Has no `project.json`; config lives in `package.json`. May show intermittent Nx boundary-rule warnings when the daemon cache is cold — not a real violation.
 - **Prettier**: `singleQuote: true`, no semicolons — matches the existing codebase.
 - **ESLint**: Flat config at `eslint.config.mjs` (repo root). No per-project eslint files.
 - **Test environments**: Core and browser packages use `jsdom`; CLI and VS Code use the `node` environment.
-- **VS Code extension**: Uses esbuild (not Vite) since extensions require CJS output. The `@localive/vscode` tsconfig deliberately does **not** extend `tsconfig.base.json`, to avoid a `moduleResolution: bundler` vs `module: commonjs` conflict. VS Code API–dependent code is tested manually in the Extension Development Host.
+- **VS Code extension**: Uses esbuild (not Vite) since extensions require CJS output. The `@localive/vscode` tsconfig does **not** extend `tsconfig.base.json`; it type-checks with `module: preserve` and `bundler` resolution, matching the esbuild bundle. VS Code API–dependent code is tested manually in the Extension Development Host.
 - **Website (Astro + Starlight)**: `<pre><code>` blocks containing JS `import` syntax cause esbuild parse errors during build — use `<p>`/`<div>` for code examples on the landing page. The same bug affects `<meta property="og:*">` tags; add OG meta via Starlight's `head` config in `astro.config.mjs` instead. `@astrojs/sitemap` requires `site` to be set in `astro.config.mjs`.
 - **Website docs are gitignored**: the root `.gitignore` ignores every folder named `docs`, including `apps/website/src/content/docs`. Existing pages are tracked; add a new page with `git add -f`.
-- **Examples outside the workspace**: `examples/sveltekit-paraglide` needs Vite 8, while the workspace uses Vite 6. Inside the workspace npm hoists SvelteKit to the root, where it resolves Vite 6 and crashes. It has its own lockfile and links the packages with `file:` paths; its Nx `install` target runs `npm ci` there. Its `build` fails if Localive code reaches the client bundle.
+- **Examples outside the workspace**: `examples/sveltekit-paraglide` is not an npm workspace. It has its own lockfile and links the packages with `file:` paths; its Nx `install` target runs `npm ci` there. Its `build` fails if Localive code reaches the client bundle.
 - **Declarations of new packages**: `tsconfig.base.json` maps `@localive/*` to sources, and vite-plugin-dts rewrites those imports to relative `../../core/src` paths unless told not to. `adapter-paraglide` sets `aliasesExclude`, and a spec builds the package and fails on declarations importing from outside it. Check packaged output by installing the `npm pack` tarballs into a separate project, not by copying package folders.
 - **SvelteKit e2e**: runs on a copy of the example's messages in `.e2e-messages` (recreated on each start), so tests never change committed files. Only the Chromium project saves.
 - **Website logo**: The animated logo is **inline SVG** via `src/components/CyberLogo.astro`. Do NOT use `<img src="logo.svg">` — SVGs with `fill="none"` render invisible in `<img>` (`naturalWidth: 0`). Theme switching keys off `html[data-theme="dark|light"]`; both themes share `localStorage('starlight-theme')`.

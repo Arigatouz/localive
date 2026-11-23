@@ -2,8 +2,6 @@
 
 A SvelteKit 3 app using Paraglide JS 3, with Localive's visual editor. It installs the Localive packages from this repository, as an app installs them from npm.
 
-It lives outside the npm workspaces because SvelteKit 3 needs Vite 8, while the workspace uses Vite 6.
-
 ## Run it
 
 Build the Localive packages, then install and start the example:

@@ -16,7 +16,7 @@ Step-by-step guide for publishing all 17 Localive packages to npm and the VS Cod
 From the repo root (`localive/`):
 
 ```sh
-npm install --legacy-peer-deps                   # required (Angular zone.js peer conflict)
+npm install
 npx nx run-many -t build --outputStyle=static    # all 17 packages, apps and examples
 npx nx run-many -t typecheck --outputStyle=static
 npx nx run-many -t test --outputStyle=static
@@ -141,7 +141,6 @@ From `packages/vscode`:
 
 ## 7. Common pitfalls
 
-- **`npm install` fails without `--legacy-peer-deps`** — Angular's `zone.js` peer-conflict. Always use `npm install --legacy-peer-deps` or `npm ci --legacy-peer-deps` for installs in this repo; the published packages don't carry the conflict because their `peerDependencies` are correctly narrowed.
 - **`npm publish` fails with 403 / "You need a paid account"** — the `@localive` scope is unscoped public; if you accidentally prefix with a scoped-private config you'll get 403. Run `npm publish --access public` so npm publishes the package publicly regardless of org defaults.
 - **`vsce publish` fails with 401** — the PAT's scope or organization access is wrong. Re-create the PAT with **Marketplace → Manage** scope and **All accessible organizations**, then `vsce logout localive && vsce login localive`.
 - **`vsce publish` fails with "publisher not found"** — `publisher` in `packages/vscode/package.json` doesn't match the Marketplace publisher ID. Must be `localive` (all lowercase, no `@`).
