@@ -49,8 +49,8 @@
     "@localive/core": "^0.2.5"
   },
   "devDependencies": {
-    "i18next": "^24.2.0",
-    "@localive/core": "^0.2.5"
+    "@localive/core": "^0.2.5",
+    "i18next": "^27.2.4"
   },
   "nx": {
     "tags": [

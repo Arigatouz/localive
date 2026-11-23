@@ -57,9 +57,9 @@
     "rxjs": ">=7"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^22.0.0",
-    "@angular-devkit/architect": "^0.2200.0",
-    "@angular-devkit/core": "^22.0.0",
+    "@angular-devkit/architect": "^0.2203.0",
+    "@angular-devkit/build-angular": "^22.3.0",
+    "@angular-devkit/core": "^22.3.0",
     "@localive/core": "^0.2.5",
     "@localive/vite": "^0.2.5"
   },

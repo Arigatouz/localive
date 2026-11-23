@@ -9,14 +9,14 @@ export default defineConfig({
       formats: ['es', 'cjs'],
       fileName: (format) => `index.${format === 'es' ? 'js' : 'cjs'}`,
     },
-    rollupOptions: {
+    rolldownOptions: {
       external: [...builtinModules.flatMap((moduleName) => [moduleName, `node:${moduleName}`]), '@localive/core'],
       output: {
         banner: '#!/usr/bin/env node',
       },
     },
     sourcemap: true,
-    minify: 'esbuild',
+    minify: 'oxc',
   },
   plugins: [dts({ rollupTypes: true })],
   test: {

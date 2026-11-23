@@ -11,12 +11,12 @@ export default defineConfig({
       formats: ['es'],
       fileName: (_format, entryName) => `${entryName}.js`,
     },
-    rollupOptions: {
+    rolldownOptions: {
       external: (id) =>
         nodeBuiltins.includes(id) || ['jsonc-parser', 'magic-string', 'svelte', '@localive/core'].includes(id) || id.startsWith('svelte/'),
     },
     sourcemap: true,
-    minify: 'esbuild',
+    minify: 'oxc',
   },
   // The workspace maps @localive/* to sources, which must not leak into published declarations.
   plugins: [dts({ exclude: ['src/**/*.spec.ts'], aliasesExclude: [/^@localive\//] })],

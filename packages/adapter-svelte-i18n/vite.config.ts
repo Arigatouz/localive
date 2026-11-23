@@ -9,7 +9,7 @@ export default defineConfig({
       fileName: (format) => `index.${format === 'es' ? 'js' : 'cjs'}`,
     },
     sourcemap: true,
-    minify: 'esbuild',
+    minify: 'oxc',
   },
   plugins: [dts({ rollupTypes: true })],
   test: {

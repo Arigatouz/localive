@@ -8,11 +8,11 @@ export default defineConfig({
       formats: ['es', 'cjs'],
       fileName: (format) => `index.${format === 'es' ? 'js' : 'cjs'}`,
     },
-    rollupOptions: {
+    rolldownOptions: {
       external: [],
     },
     sourcemap: true,
-    minify: 'esbuild',
+    minify: 'oxc',
   },
   plugins: [dts({ rollupTypes: true })],
   test: {

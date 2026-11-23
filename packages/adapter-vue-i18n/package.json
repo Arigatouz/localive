@@ -49,8 +49,8 @@
     "@localive/core": "^0.2.5"
   },
   "devDependencies": {
-    "vue-i18n": "^11.1.0",
-    "@localive/core": "^0.2.5"
+    "@localive/core": "^0.2.5",
+    "vue-i18n": "^11.4.23"
   },
   "nx": {
     "tags": [

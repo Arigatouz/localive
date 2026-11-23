@@ -41,15 +41,15 @@
     "@localive/core": "^0.2.5"
   },
   "devDependencies": {
-    "@angular/common": "^22.0.0",
-    "@angular/compiler": "^22.0.0",
-    "@angular/compiler-cli": "^22.0.0",
-    "@angular/core": "^22.0.0",
-    "@angular/platform-browser": "^22.0.0",
-    "@angular/platform-browser-dynamic": "^22.0.0",
+    "@angular/common": "^22.3.0",
+    "@angular/compiler": "^22.3.0",
+    "@angular/compiler-cli": "^22.3.0",
+    "@angular/core": "^22.3.0",
+    "@angular/platform-browser": "^22.3.0",
+    "@angular/platform-browser-dynamic": "^22.3.0",
     "@localive/core": "^0.2.5",
-    "ng-packagr": "^22.0.0",
-    "rxjs": "^7.8.0"
+    "ng-packagr": "^22.3.0",
+    "rxjs": "^7.8.2"
   },
   "nx": {
     "tags": [

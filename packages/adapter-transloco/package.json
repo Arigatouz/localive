@@ -49,7 +49,7 @@
     "@localive/core": "^0.2.5"
   },
   "devDependencies": {
-    "@jsverse/transloco": "^7.0.0",
+    "@jsverse/transloco": "^8.4.0",
     "@localive/core": "^0.2.5"
   },
   "nx": {

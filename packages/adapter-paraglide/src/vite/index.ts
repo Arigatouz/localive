@@ -27,7 +27,7 @@ export interface ParaglideIntegration {
 }
 
 // The built vite.js sits beside runtime.js in dist.
-const RUNTIME_FILE = fileURLToPath(new URL('./runtime.js', import.meta.url));
+const RUNTIME_FILE = fileURLToPath(new URL(/* @vite-ignore */ './runtime.js', import.meta.url));
 
 export function paraglideIntegration({ project, exclude = [] }: ParaglideIntegrationOptions): ParaglideIntegration {
   const projectPath = resolve(project);

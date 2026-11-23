@@ -5,7 +5,7 @@ import { resolve } from 'node:path';
 export default defineConfig({
   resolve: {
     alias: {
-      '@localive/core': resolve(__dirname, '../core/src/index.ts'),
+      '@localive/core': resolve(import.meta.dirname, '../core/src/index.ts'),
     },
   },
   build: {
@@ -14,7 +14,7 @@ export default defineConfig({
       formats: ['es'],
       fileName: () => 'index.js',
     },
-    rollupOptions: {
+    rolldownOptions: {
       external: [
         '@angular/core',
         '@angular/common',
@@ -24,7 +24,7 @@ export default defineConfig({
       ],
     },
     sourcemap: true,
-    minify: 'esbuild',
+    minify: 'oxc',
   },
   plugins: [dts({ rollupTypes: true })],
   test: {

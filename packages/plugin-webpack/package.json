@@ -49,8 +49,8 @@
     "@localive/vite": "^0.2.5"
   },
   "devDependencies": {
-    "webpack": "^5.99.0",
-    "@localive/vite": "^0.2.5"
+    "@localive/vite": "^0.2.5",
+    "webpack": "^5.113.0"
   },
   "nx": {
     "tags": [

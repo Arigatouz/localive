@@ -5,8 +5,8 @@ import { resolve } from 'node:path';
 export default defineConfig({
   resolve: {
     alias: {
-      '@localive/core': resolve(__dirname, '../core/src/index.ts'),
-      '@localive/vite': resolve(__dirname, '../plugin-vite/src/index.ts'),
+      '@localive/core': resolve(import.meta.dirname, '../core/src/index.ts'),
+      '@localive/vite': resolve(import.meta.dirname, '../plugin-vite/src/index.ts'),
     },
   },
   build: {
@@ -15,7 +15,7 @@ export default defineConfig({
       formats: ['es'],
       fileName: (_format, entryName) => `${entryName}.js`,
     },
-    rollupOptions: {
+    rolldownOptions: {
       external: [
         /^@angular-devkit\/build-angular/,
         /^@angular-devkit\/architect/,
@@ -26,7 +26,7 @@ export default defineConfig({
       ],
     },
     sourcemap: true,
-    minify: 'esbuild',
+    minify: 'oxc',
   },
   plugins: [dts({ rollupTypes: true })],
   test: {
